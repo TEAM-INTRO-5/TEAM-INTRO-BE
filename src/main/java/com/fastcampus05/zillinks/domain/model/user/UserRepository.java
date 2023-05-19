@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.model.user;
+package com.fastcampus05.zillinks.domain.model.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
