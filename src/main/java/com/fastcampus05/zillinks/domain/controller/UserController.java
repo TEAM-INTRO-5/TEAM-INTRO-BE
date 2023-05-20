@@ -1,21 +1,20 @@
 package com.fastcampus05.zillinks.domain.controller;
 
+import com.fastcampus05.zillinks.core.annotation.MyErrorLog;
+import com.fastcampus05.zillinks.core.annotation.MyLog;
+import com.fastcampus05.zillinks.core.auth.jwt.MyJwtProvider;
+import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
+import com.fastcampus05.zillinks.core.exception.Exception403;
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
+import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
+import com.fastcampus05.zillinks.domain.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import shop.mtcoding.restend.core.annotation.MyErrorLog;
-import shop.mtcoding.restend.core.annotation.MyLog;
-import shop.mtcoding.restend.core.auth.jwt.MyJwtProvider;
-import shop.mtcoding.restend.core.auth.session.MyUserDetails;
-import shop.mtcoding.restend.core.exception.Exception403;
-import shop.mtcoding.restend.dto.ResponseDTO;
-import shop.mtcoding.restend.dto.user.UserRequest;
-import shop.mtcoding.restend.dto.user.UserResponse;
-import shop.mtcoding.restend.service.UserService;
 
 import javax.validation.Valid;
 

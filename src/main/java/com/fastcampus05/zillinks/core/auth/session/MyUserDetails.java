@@ -1,10 +1,10 @@
 package com.fastcampus05.zillinks.core.auth.session;
 
+import com.fastcampus05.zillinks.domain.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import shop.mtcoding.restend.model.user.User;
 
 import java.util.ArrayList;
 import java.util.Collection;

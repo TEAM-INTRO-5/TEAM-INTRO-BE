@@ -8,11 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import shop.mtcoding.restend.core.auth.session.MyUserDetails;
 
 import java.lang.reflect.Method;
 
@@ -25,10 +21,10 @@ public class MyLogAdvice {
     // private final ErrorLogRepository errorLogRepository;
     // private final LogRepository logRepository;
 
-    @Pointcut("@annotation(shop.mtcoding.restend.core.annotation.MyLog)")
+    @Pointcut("@annotation(com.fastcampus05.zillinks.core.annotation.MyLog)")
     public void myLog(){}
 
-    @Pointcut("@annotation(shop.mtcoding.restend.core.annotation.MyErrorLog)")
+    @Pointcut("@annotation(com.fastcampus05.zillinks.core.annotation.MyErrorLog)")
     public void myErrorLog(){}
 
     @AfterReturning("myLog()")

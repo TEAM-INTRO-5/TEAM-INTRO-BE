@@ -1,7 +1,7 @@
 package com.fastcampus05.zillinks.core.util;
 
+import com.fastcampus05.zillinks.core.exception.Exception500;
 import org.springframework.web.multipart.MultipartFile;
-import shop.mtcoding.restend.core.exception.Exception500;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

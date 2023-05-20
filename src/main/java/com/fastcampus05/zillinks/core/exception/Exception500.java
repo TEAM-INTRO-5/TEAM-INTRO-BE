@@ -1,8 +1,8 @@
 package com.fastcampus05.zillinks.core.exception;
 
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import shop.mtcoding.restend.dto.ResponseDTO;
 
 // 서버 에러
 @Getter

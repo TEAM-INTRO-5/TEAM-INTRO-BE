@@ -1,9 +1,9 @@
 package com.fastcampus05.zillinks.core.exception;
 
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import com.fastcampus05.zillinks.domain.dto.ValidDTO;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import shop.mtcoding.restend.dto.ResponseDTO;
-import shop.mtcoding.restend.dto.ValidDTO;
 
 
 // 유효성 검사 실패, 잘못된 파라메터 요청

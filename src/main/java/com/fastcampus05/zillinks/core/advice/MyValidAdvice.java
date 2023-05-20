@@ -1,12 +1,12 @@
 package com.fastcampus05.zillinks.core.advice;
 
+import com.fastcampus05.zillinks.core.exception.Exception400;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import shop.mtcoding.restend.core.exception.Exception400;
 
 @Aspect
 @Component

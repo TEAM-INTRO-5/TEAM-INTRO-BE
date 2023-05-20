@@ -1,14 +1,13 @@
 package com.fastcampus05.zillinks.core.auth.session;
 
+import com.fastcampus05.zillinks.domain.model.user.User;
+import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import shop.mtcoding.restend.model.user.User;
-import shop.mtcoding.restend.model.user.UserRepository;
 
 @RequiredArgsConstructor
 @Service
