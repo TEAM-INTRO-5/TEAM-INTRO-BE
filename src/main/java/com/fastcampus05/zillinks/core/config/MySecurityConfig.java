@@ -1,5 +1,9 @@
 package com.fastcampus05.zillinks.core.config;
 
+import com.fastcampus05.zillinks.core.auth.jwt.MyJwtAuthorizationFilter;
+import com.fastcampus05.zillinks.core.exception.Exception401;
+import com.fastcampus05.zillinks.core.exception.Exception403;
+import com.fastcampus05.zillinks.core.util.MyFilterResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import shop.mtcoding.restend.core.auth.jwt.MyJwtAuthorizationFilter;
-import shop.mtcoding.restend.core.exception.Exception401;
-import shop.mtcoding.restend.core.exception.Exception403;
-import shop.mtcoding.restend.core.util.MyFilterResponseUtil;
 
 @Slf4j
 @Configuration

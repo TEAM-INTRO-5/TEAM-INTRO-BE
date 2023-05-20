@@ -1,9 +1,9 @@
 package com.fastcampus05.zillinks.core.config;
 
+import com.fastcampus05.zillinks.core.filter.MyTempFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import shop.mtcoding.restend.core.filter.MyTempFilter;
 
 @Configuration
 public class MyFilterRegisterConfig {

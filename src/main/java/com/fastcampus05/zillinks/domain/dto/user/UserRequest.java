@@ -1,8 +1,8 @@
 package com.fastcampus05.zillinks.domain.dto.user;
 
+import com.fastcampus05.zillinks.domain.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
-import shop.mtcoding.restend.model.user.User;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;

@@ -1,7 +1,7 @@
 package com.fastcampus05.zillinks.core.dummy;
 
+import com.fastcampus05.zillinks.domain.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import shop.mtcoding.restend.model.user.User;
 
 import java.time.LocalDateTime;
 
