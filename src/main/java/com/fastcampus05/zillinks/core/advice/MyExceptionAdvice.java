@@ -41,7 +41,7 @@ public class MyExceptionAdvice {
     @MyErrorLog
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e){
-//        Sentry.captureException(e);
+//        Sentry.captureException(e); checkpoint, 서버 배포전 해제
         return new ResponseEntity<>(e.body(), e.status());
     }
 
