@@ -5,11 +5,13 @@ import com.fastcampus05.zillinks.core.annotation.MyLog;
 import com.fastcampus05.zillinks.core.auth.jwt.MyJwtProvider;
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.core.exception.Exception403;
+import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
 import com.fastcampus05.zillinks.domain.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,14 +42,19 @@ public class UserController {
         return ResponseEntity.ok().header(MyJwtProvider.HEADER, jwt).body(responseDTO);
     }
 
-    @GetMapping("/s/user/{id}")
+    @GetMapping("/api/user/{id}")
     public ResponseEntity<?> detail(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) throws JsonProcessingException {
         if(id.longValue() != myUserDetails.getUser().getId()){
             throw new Exception403("권한이 없습니다");
         }
         UserResponse.DetailOutDTO detailOutDTO = userService.회원상세보기(id);
-        //System.out.println(new ObjectMapper().writeValueAsString(detailOutDTO));
+        // System.out.println(new ObjectMapper().writeValueAsString(detailOutDTO));
         ResponseDTO<?> responseDTO = new ResponseDTO<>(detailOutDTO);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/api/error-test")
+    public ResponseEntity<?> error() {
+        throw new Exception500("Sentry io error test");
     }
 }

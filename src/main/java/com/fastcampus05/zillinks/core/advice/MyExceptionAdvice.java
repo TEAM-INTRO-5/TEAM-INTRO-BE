@@ -3,6 +3,7 @@ package com.fastcampus05.zillinks.core.advice;
 import com.fastcampus05.zillinks.core.annotation.MyErrorLog;
 import com.fastcampus05.zillinks.core.exception.*;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ public class MyExceptionAdvice {
     @MyErrorLog
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e){
+//        Sentry.captureException(e);
         return new ResponseEntity<>(e.body(), e.status());
     }
 
