@@ -7,10 +7,10 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}?allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     driver-class-name: org.mariadb.jdbc.Driver
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    username: ${rds.username}
+    password: ${rds.password}
   jpa:
     open-in-view: false
     hibernate:
@@ -30,3 +30,7 @@ logging:
 
 file:
   path: ./upload/ # UPLOAD 폴더 상대경로 / AWS에 S3 사용하는게 좋음
+
+sentry:
+  dsn: {sentry.dsn}
+  traces-sample-rate: 1.0
