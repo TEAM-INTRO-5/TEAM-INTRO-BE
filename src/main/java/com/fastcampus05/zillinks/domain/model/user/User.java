@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "user_tb")
 @Entity
+@Setter
 public class User {
 
     @Id
@@ -29,7 +30,7 @@ public class User {
     private String fullName;
 
     private String role;
-
+    private String profile; // 유저 프로필 사진의 경로
     private Boolean status; // true, false
 
     @Column(nullable = false)
