@@ -1,28 +1,65 @@
-//package com.fastcampus05.zillinks.domain.controller;
-//
-//import com.fastcampus05.zillinks.core.annotation.MyErrorLog;
-//import com.fastcampus05.zillinks.core.annotation.MyLog;
-//import com.fastcampus05.zillinks.core.auth.jwt.MyJwtProvider;
-//import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
-//import com.fastcampus05.zillinks.core.exception.Exception403;
-//import com.fastcampus05.zillinks.core.exception.Exception500;
-//import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
-//import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
-//import com.fastcampus05.zillinks.domain.service.UserService;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//import org.springframework.validation.Errors;
-//import org.springframework.web.bind.annotation.*;
-//
-//import javax.validation.Valid;
-//
-//@RequiredArgsConstructor
-//@RestController
-//public class UserController {
-//
-//    private final UserService userService;
-//
+package com.fastcampus05.zillinks.domain.controller;
+
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
+import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
+import com.fastcampus05.zillinks.domain.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
+public class UserController {
+
+    private final UserService userService;
+
+    @Operation(summary = "login", description = "유저의 로그인과 함께 accessToken과 refreshToken을 반환해준다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
+            @ApiResponse(responseCode = "403", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "404", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    @Parameters({
+            @Parameter(name = "loginInDTO", description = "로그인 정보",
+                    example="{" +
+                            "   \"email\":\"taeheoki@naver.com\"," +
+                            "   \"password\":\"1234\"" +
+                            "}"),
+            @Parameter(name = "request", description = "요청 정보", example="request")
+    })
+    @PostMapping("/loginUser")
+    public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO, HttpServletRequest request) {
+        List<String> validList = new ArrayList<>();
+        validList.add(request.getRemoteAddr());
+        validList.add(request.getHeader("user-agent"));
+
+        UserResponse.LoginOutDTO loginOutDTO = userService.login(loginInDTO, validList);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(loginOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/s/authorization-test")
+    public String test() {
+        return "ok";
+    }
+
 //    @MyErrorLog
 //    @MyLog
 //    @PostMapping("/api/joinUser")
@@ -31,20 +68,13 @@
 ////        ResponseDTO<?> responseDTO = new ResponseDTO<>(joinOutDTO);
 //        return ResponseEntity.ok(responseDTO);
 //    }
-////    @PostMapping("/api/user/saveItem")
-////    @PostMapping("/api/user/items")
-////    @PostMapping("/api/user/items/{itemId}")
-//
-//    @PostMapping("/api/loginUser")
-//    public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO){
-//        String jwt = userService.로그인(loginInDTO);
-//        ResponseDTO<?> responseDTO = new ResponseDTO<>();
-//        return ResponseEntity.ok().header(MyJwtProvider.HEADER, jwt).body(responseDTO);
-//    }
-//
-////    @GetMapping("/blog/api/user/...")
-////    @GetMapping("/{domain}/{인증}/{권한}/...")
-////    @Ge
+//    @PostMapping("/api/user/saveItem")
+//    @PostMapping("/api/user/items")
+//    @PostMapping("/api/user/items/{itemId}")
+
+//    @GetMapping("/blog/api/user/...")
+//    @GetMapping("/{domain}/{인증}/{권한}/...")
+//    @Ge
 //    public ResponseEntity<?> detail(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
 //        if(id.longValue() != myUserDetails.getUser().getId()){
 //            throw new Exception403("권한이 없습니다");
@@ -59,4 +89,4 @@
 //    public ResponseEntity<?> error() {
 //        throw new Exception500("Sentry io error test");
 //    }
-//}
+}
