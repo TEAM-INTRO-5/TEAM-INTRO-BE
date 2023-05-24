@@ -1,9 +1,14 @@
 package com.fastcampus05.zillinks.domain.model.user;
 
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -16,35 +21,31 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 20)
-    private String username;
+    @Column(unique = true)
+    @NotEmpty
+    private String email;
 
-    @Column(nullable = false, length = 60) // 패스워드 인코딩(BCrypt)
+    @NotEmpty
+    @Column(length = 60)
     private String password;
 
-    @Column(nullable = false, length = 20)
-    private String email;
-    @Column(nullable = false, length = 20)
-    private String fullName;
+    @Column(unique = true) // checkpoint
+    private String businessNum;
 
-    private String role;
-    private String profile; // 유저 프로필 사진의 경로
-    private Boolean status; // true, false
+    private String role; // USER|ADMIN
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    // /{intropageId}/작업
+    // -> Intropage -> user_id /JWT - id => 접근권한있다.
 
-    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Marketing> marketings = new ArrayList<>();
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    //== 연관관계 메서드==//
+    public void addMargeting(Marketing marketing) {
+        marketings.add(marketing);
+        marketing.setUser(this);
     }
 }
