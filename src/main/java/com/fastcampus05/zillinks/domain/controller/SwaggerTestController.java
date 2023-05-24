@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.controller;
 
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Nullable;
 
 @Tag(name = "Swagger 테스트", description = "Swagger 문법을 공부하기 위한 컨트롤러입니다.")
 @RestController
@@ -53,6 +52,7 @@ public class SwaggerTestController {
         String tmp = province + " " + city;
         if (StringUtils.hasText(hashtag))
             tmp += " " + hashtag;
-        return ResponseEntity.ok(tmp);
+        ResponseDTO responseBody = new ResponseDTO(tmp);
+        return ResponseEntity.ok(responseBody);
     }
 }

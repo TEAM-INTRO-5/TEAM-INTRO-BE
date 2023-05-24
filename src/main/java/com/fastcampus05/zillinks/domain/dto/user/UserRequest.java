@@ -41,12 +41,9 @@ public class UserRequest {
 
         public User toEntity() {
             return User.builder()
-                    .username(username)
                     .password(password)
                     .email(email)
-                    .fullName(fullName)
                     .role("USER")
-                    .status(true)
                     .build();
         }
     }
