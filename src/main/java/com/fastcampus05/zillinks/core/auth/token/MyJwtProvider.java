@@ -37,7 +37,6 @@ public class MyJwtProvider {
         String rtk = JWT.create()
                 .withSubject(SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + RTK_EXP))
-                .withClaim("id", refreshToken.getUserId())
                 .withClaim("refreshToken", refreshToken.getRefreshToken())
                 .sign(Algorithm.HMAC512(SECRET));
         return TOKEN_PREFIX + rtk;

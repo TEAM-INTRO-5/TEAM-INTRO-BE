@@ -26,16 +26,15 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public TokenResponse generateAccessToken(String refreshToken, Long userId, List<String> validList, Boolean isWithInWeek) {
+    public TokenResponse generateAccessToken(String refreshToken, List<String> validList, Boolean isWithInWeek) {
         RefreshToken rtkPS = refreshTokenRepository.findById(refreshToken)
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다."));
         if (!rtkPS.getValidList().get(0).equals(validList.get(0)) ||
-                !rtkPS.getValidList().get(1).equals(validList.get(1)) ||
-                !rtkPS.getUserId().equals(userId)) {
+                !rtkPS.getValidList().get(1).equals(validList.get(1))) {
             refreshTokenRepository.delete(rtkPS);
             throw new Exception401("인증되지 않았습니다.");
         }
-        User userPS = userRepository.findById(userId).orElseThrow(
+        User userPS = userRepository.findById(rtkPS.getUserId()).orElseThrow(
                 () -> new Exception401("인증되지 않았습니다.")
         );
 

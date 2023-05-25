@@ -71,7 +71,7 @@ public class AuthController {
             Duration timeLeft = Duration.between(now, exp);
             Boolean isWithInWeek = timeLeft.compareTo(Duration.ofDays(7)) < 0;
 
-            TokenResponse tokenResponse = refreshTokenService.generateAccessToken(refreshToken, userId, validList, isWithInWeek);
+            TokenResponse tokenResponse = refreshTokenService.generateAccessToken(refreshToken, validList, isWithInWeek);
             if (!StringUtils.hasText(tokenResponse.getRefreshToken())) {
                 tokenResponse.setRefreshToken(refreshJwt);
             }
