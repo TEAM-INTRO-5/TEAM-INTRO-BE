@@ -1,6 +1,6 @@
 package com.fastcampus05.zillinks.core.config;
 
-import com.fastcampus05.zillinks.core.auth.jwt.MyJwtAuthorizationFilter;
+import com.fastcampus05.zillinks.core.auth.token.MyJwtAuthorizationFilter;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.core.util.MyFilterResponseUtil;
@@ -81,8 +81,8 @@ public class MySecurityConfig {
         // 11. 인증, 권한 필터 설정
         http.authorizeRequests(
                 authorize -> authorize.antMatchers("/s/**").authenticated()
-                        .antMatchers("/manager/**")
-                        .access("hasRole('ADMIN') or hasRole('MANAGER')")
+                        .antMatchers("/user/**")
+                        .access("hasRole('USER') or hasRole('ADMIN')")
                         .antMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
         );

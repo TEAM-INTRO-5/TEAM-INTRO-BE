@@ -1,10 +1,10 @@
-//package com.fastcampus05.zillinks.domain.dto.user;
-//
-//import com.fastcampus05.zillinks.domain.model.user.User;
-//import lombok.Getter;
-//import lombok.Setter;
-//
-//public class UserResponse {
+package com.fastcampus05.zillinks.domain.dto.user;
+
+import com.fastcampus05.zillinks.domain.model.user.User;
+import lombok.Getter;
+import lombok.Setter;
+
+public class UserResponse {
 //    @Getter @Setter
 //    public static class DetailOutDTO{
 //        private Long id;
@@ -35,4 +35,15 @@
 //            this.fullName = user.getFullName();
 //        }
 //    }
-//}
+
+    @Getter
+    public static class LoginOutDTO {
+        private String refreshToken;
+        private String accessToken;
+
+        public LoginOutDTO(String refreshToken, String accessToken) {
+            this.refreshToken = refreshToken;
+            this.accessToken = accessToken;
+        }
+    }
+}

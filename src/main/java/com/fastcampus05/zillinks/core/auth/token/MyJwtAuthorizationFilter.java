@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.core.auth.jwt;
+package com.fastcampus05.zillinks.core.auth.token;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -14,9 +14,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 public class MyJwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -36,12 +39,13 @@ public class MyJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String jwt = prefixJwt.replace(MyJwtProvider.TOKEN_PREFIX, "");
         try {
-            System.out.println("디버그 : 토큰 있음");
+            log.info("디버그 : accessToken 있음");
             DecodedJWT decodedJWT = MyJwtProvider.verify(jwt);
             Long id = decodedJWT.getClaim("id").asLong();
             String role = decodedJWT.getClaim("role").asString();
+            String businessNum = decodedJWT.getClaim("businessNum").asString();
 
-            User user = User.builder().id(id).role(role).build();
+            User user = User.builder().id(id).role(role).businessNum(businessNum).build();
             MyUserDetails myUserDetails = new MyUserDetails(user);
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -50,11 +54,11 @@ public class MyJwtAuthorizationFilter extends BasicAuthenticationFilter {
                             myUserDetails.getAuthorities()
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("디버그 : 인증 객체 만들어짐");
+            log.info("디버그 : 인증 객체 만들어짐");
         } catch (SignatureVerificationException sve) {
-            log.error("토큰 검증 실패");
+            log.error("accessToken 검증 실패");
         } catch (TokenExpiredException tee) {
-            log.error("토큰 만료됨");
+            log.error("accessToken 만료됨");
         } finally {
             chain.doFilter(request, response);
         }
