@@ -11,6 +11,15 @@ import org.springframework.validation.Errors;
 @Aspect
 @Component
 public class MyValidAdvice {
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PatchMapping)")
+    public void patchMapping() {
+    }
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.DeleteMapping)")
+    public void deleteMapping() {
+    }
+
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
     public void postMapping() {
     }
@@ -19,7 +28,7 @@ public class MyValidAdvice {
     public void putMapping() {
     }
 
-    @Before("postMapping() || putMapping()")
+    @Before("postMapping() || putMapping() || patchMapping() || deleteMapping()")
     public void validationAdvice(JoinPoint jp) {
         Object[] args = jp.getArgs();
         for (Object arg : args) {

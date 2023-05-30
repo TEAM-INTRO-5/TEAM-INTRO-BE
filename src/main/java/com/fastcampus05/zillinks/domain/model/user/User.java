@@ -16,7 +16,6 @@ import java.util.List;
 @Getter
 @Table(name = "user_tb")
 @Entity
-@Setter
 public class User {
 
     @Id
@@ -31,6 +30,10 @@ public class User {
     @NotEmpty
     @Column(length = 60)
     private String password;
+
+    @OneToOne
+    @JoinColumn(name = "intro_page_id")
+    private IntroPage introPage;
 
     @Column(unique = true) // checkpoint
     private String businessNum;
@@ -47,5 +50,9 @@ public class User {
     public void addMargeting(Marketing marketing) {
         marketings.add(marketing);
         marketing.setUser(this);
+    }
+
+    public void mapIntroPage(IntroPage introPage) {
+        this.introPage = introPage;
     }
 }
