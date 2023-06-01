@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.controller;
 
+import com.fastcampus05.zillinks.core.auth.token.dto.TokenResponse;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
@@ -30,11 +31,7 @@ public class UserController {
 
     @Operation(summary = "login", description = "유저의 로그인과 함께 accessToken과 refreshToken을 반환해준다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
-            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
-            @ApiResponse(responseCode = "403", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "404", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.LoginOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "loginInDTO", description = "로그인 정보",
@@ -42,7 +39,6 @@ public class UserController {
                             "   \"email\":\"taeheoki@naver.com\"," +
                             "   \"password\":\"1234\"" +
                             "}"),
-            @Parameter(name = "request", description = "요청 정보", example="request")
     })
     @PostMapping("/loginUser")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO, HttpServletRequest request) {
@@ -51,8 +47,8 @@ public class UserController {
         validList.add(request.getHeader("user-agent"));
 
         UserResponse.LoginOutDTO loginOutDTO = userService.login(loginInDTO, validList);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(loginOutDTO);
-        return ResponseEntity.ok().body(responseDTO);
+        ResponseDTO responseBody = new ResponseDTO<>(loginOutDTO);
+        return ResponseEntity.ok().body(responseBody);
     }
 
     @GetMapping("/s/authorization-test")

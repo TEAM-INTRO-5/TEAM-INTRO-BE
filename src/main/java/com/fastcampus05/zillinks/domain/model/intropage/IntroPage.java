@@ -1,5 +1,7 @@
 package com.fastcampus05.zillinks.domain.model.intropage;
 
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import lombok.*;
 
@@ -11,74 +13,43 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
-//@Inheritance(strategy = InheritanceType.JOInNED)
-//@DiscriminatorColumn(name = "dtype")
-public abstract class IntroPage {
+@Builder
+public class IntroPage extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "intod_page_id")
     private Long id;
 
-    @OneToOne
-    private User user;
+    @Embedded
+    private ZillinkData zillinkData;
 
-//    private 1번영역 -> aType, bType, cType;
-    @NotEmpty
-    private String companyName;
-
-    @NotEmpty
+    @NotEmpty // default image
     private String logo; // S3 저장소의 경로, 코드 구현시에는 본인의 저장소를 적는다 ex) /upload/file
 
-    @Lob
-    private String description;
+    private String introFile;
 
-    @NotEmpty
-    private String subDomain;
+    private String mediaKitFile;
 
-    private String analyticsCode;
+    private String trackingCode;
 
     @Enumerated(EnumType.STRING)
     private SaveStatus status; // [TEMP_SAVED, SAVED, UPDATING]
 
-//    private List<Widget> wigets;
+    @OneToOne(mappedBy = "introPage")
+    private User user;
 
-    // 뭔지 더 알아봐야함, widget
-    private String mission;
+    public void mapTrackingCode(String trackingCode) {
+        this.trackingCode = trackingCode;
+    }
 
-//    private ContactWidget contactWidget;
-//    widget...
+    public void changeIntroPageInfo(IntroPageRequest.UpdateInDTO updateInDTO) {
+        this.zillinkData = new ZillinkData(updateInDTO.getName(), updateInDTO.getBizNum(), updateInDTO.getContactEmail(), updateInDTO.getTagline());
+        this.logo = updateInDTO.getLogo();
+        this.introFile = updateInDTO.getIntroFile();
+        this.mediaKitFile = updateInDTO.getMediaKitFile();
+    }
 
-
-//    private FirstSector firstSector;
-//    private SecondSector secondSector;
-//    private ThirdSector thirdSector;
-
-//    transaction.start
-//    introPage.setFirstSector(BType);
-//    transaction.end
-
-
-//    @Inheritance(strategy = InheritanceType.Singled)
-//    abstract class FirstSector {
-//    }
-//
-//    class AType extends FirstSector {
-//        private String blahblah;
-//        private String blahbla2;
-//    }
-//
-//    class BType extends FirstSector {
-//        private String blahblah3;
-//        private String blahbla4;
-//    }
-//
-//    class CType extends FirstSector {
-//        private String blahblah5;
-//        private String blahbla6;
-//    }
-
-//    FirstSector sector = new AType(); // 1, 2
-//    FirstSector sector = new BType();
+//    @OneToMany(mappedBy = "widget")
+//    private List<Widget> widgets;
 }

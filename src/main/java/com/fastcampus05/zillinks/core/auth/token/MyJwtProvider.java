@@ -15,9 +15,9 @@ import java.util.Date;
 public class MyJwtProvider {
 
     private static final String SUBJECT = "zillinks project";
-    private static final int ATK_EXP = 1000 * 60 * 20; // 20분
+    private static final Long ATK_EXP = 1000 * 60 * 20L; // 20분
 //    private static final int ATK_EXP = 1000 * 30; // 30초
-    private static final int RTK_EXP = 1000 * 60 * 60 * 24 * 20; // 20일
+    private static final Long RTK_EXP = 1000 * 60 * 60 * 24 * 30L; // 30일
     public static final String TOKEN_PREFIX = "Bearer "; // 스페이스 필요함
     public static final String HEADER = "Authorization";
     private static final String SECRET = "메타코딩"; // checkout, 환경변수 설정

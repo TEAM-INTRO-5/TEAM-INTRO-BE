@@ -1,9 +1,15 @@
 package com.fastcampus05.zillinks.core.advice;
 
 import com.fastcampus05.zillinks.core.annotation.MyErrorLog;
+import com.fastcampus05.zillinks.core.auth.token.dto.TokenResponse;
 import com.fastcampus05.zillinks.core.exception.*;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import io.sentry.Sentry;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

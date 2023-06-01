@@ -6,8 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
 import com.fastcampus05.zillinks.core.auth.token.dto.TokenResponse;
 import com.fastcampus05.zillinks.core.auth.token.service.RefreshTokenService;
-import com.fastcampus05.zillinks.core.exception.Exception400;
-import com.fastcampus05.zillinks.core.exception.Exception401;
+import com.fastcampus05.zillinks.core.exception.*;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,21 +40,17 @@ public class AuthController {
 
     @Operation(summary = "accessToken generate", description = "유저의 로그인과 함께 refreshToken과 accessToken을 반환해준다. refreshToken의 유효기간이 7일 이내일 경우 갱신해준다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseEntity.class))),
-            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
-            @ApiResponse(responseCode = "403", description = "NOT FOUND"),
-            @ApiResponse(responseCode = "404", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
-    })
-    @Parameters({
-            @Parameter(name = "request", description = "요청 정보", example="request")
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = TokenResponse.class))),
     })
     @PostMapping("/accessToken")
-    public ResponseEntity<?> generateAccessToken(HttpServletRequest request, @CookieValue("refreshToken") String refreshJwt) {
+    public ResponseEntity<?> generateAccessToken(HttpServletRequest request) {
+        String prefixJwt = request.getHeader(MyJwtProvider.HEADER);
 
-        if (refreshJwt.isEmpty() && refreshJwt.isBlank()) {
+        if (prefixJwt.isEmpty() && prefixJwt.isBlank()) {
             throw new Exception400("refreshToken", "refreshToken이 존재하지 않습니다.");
         }
+
+        String refreshJwt = prefixJwt.replace(MyJwtProvider.TOKEN_PREFIX, "");
         try {
             // refreshToken이 탈취당했는지 확인하는 자료
             DecodedJWT decodedJWT = MyJwtProvider.verify(refreshJwt);
@@ -69,6 +64,7 @@ public class AuthController {
             Instant exp = decodedJWT.getClaim("exp").asDate().toInstant();
             Instant now = Instant.now();
             Duration timeLeft = Duration.between(now, exp);
+            log.info("exp={}", exp);
             Boolean isWithInWeek = timeLeft.compareTo(Duration.ofDays(7)) < 0;
 
             TokenResponse tokenResponse = refreshTokenService.generateAccessToken(refreshToken, validList, isWithInWeek);
