@@ -1,11 +1,11 @@
-package com.fastcampus05.zillinks.core.auth.token.service;
+package com.fastcampus05.zillinks.core.util.service.token;
 
 import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
-import com.fastcampus05.zillinks.core.auth.token.dto.TokenResponse;
-import com.fastcampus05.zillinks.core.auth.token.model.RefreshToken;
-import com.fastcampus05.zillinks.core.auth.token.model.RefreshTokenRepository;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.dto.token.TokenResponse;
+import com.fastcampus05.zillinks.core.util.model.token.RefreshToken;
+import com.fastcampus05.zillinks.core.util.model.token.RefreshTokenRepository;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;

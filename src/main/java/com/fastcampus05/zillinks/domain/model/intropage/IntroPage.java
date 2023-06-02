@@ -21,8 +21,22 @@ public class IntroPage extends TimeBaseEntity {
     @Column(name = "intod_page_id")
     private Long id;
 
+    private String pavicon; // 경로
+
+    @NotEmpty
+    private String webPageName;
+
+    @NotEmpty
+    private String subDomain;
+
+    @NotEmpty
+    private String title;
+
+    @NotEmpty
+    private String description;
+
     @Embedded
-    private ZillinkData zillinkData;
+    private ZillinksData zillinksData;
 
     @NotEmpty // default image
     private String logo; // S3 저장소의 경로, 코드 구현시에는 본인의 저장소를 적는다 ex) /upload/file
@@ -44,7 +58,7 @@ public class IntroPage extends TimeBaseEntity {
     }
 
     public void changeIntroPageInfo(IntroPageRequest.UpdateInDTO updateInDTO) {
-        this.zillinkData = new ZillinkData(updateInDTO.getName(), updateInDTO.getBizNum(), updateInDTO.getContactEmail(), updateInDTO.getTagline());
+        this.zillinksData = new ZillinksData(updateInDTO.getName(), updateInDTO.getBizNum(), updateInDTO.getContactEmail(), updateInDTO.getTagline());
         this.logo = updateInDTO.getLogo();
         this.introFile = updateInDTO.getIntroFile();
         this.mediaKitFile = updateInDTO.getMediaKitFile();

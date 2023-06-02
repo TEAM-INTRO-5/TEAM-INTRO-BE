@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.model.intropage;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,9 @@ import javax.validation.constraints.NotEmpty;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class ZillinkData {
+@Builder
+@Getter
+public class ZillinksData {
 
     @NotEmpty
     private String name;

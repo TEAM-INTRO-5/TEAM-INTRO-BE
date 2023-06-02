@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.domain.dto.intropage;
+package com.fastcampus05.zillinks.core.util.dto.zillinksapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

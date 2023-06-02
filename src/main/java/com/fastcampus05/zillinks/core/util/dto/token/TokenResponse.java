@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.core.auth.token.dto;
+package com.fastcampus05.zillinks.core.util.dto.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -14,7 +14,7 @@ public class DataInit extends DummyEntity{
     CommandLineRunner init(UserRepository userRepository){
         return args -> {
             userRepository.save(newUser("taeheoki@naver.com", 1));
-            userRepository.save(newUser("ssar@nate.com", 2));
+//            userRepository.save(newUser("ssar@nate.com", 2));
         };
     }
 }

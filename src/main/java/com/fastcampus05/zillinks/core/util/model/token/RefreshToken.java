@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.core.auth.token.model;
+package com.fastcampus05.zillinks.core.util.model.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

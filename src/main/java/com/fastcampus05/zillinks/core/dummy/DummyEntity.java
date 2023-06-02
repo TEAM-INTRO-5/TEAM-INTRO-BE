@@ -11,7 +11,7 @@ public class DummyEntity {
         return User.builder()
                 .email(email)
                 .password(passwordEncoder.encode("1234"))
-                .businessNum("12345-123-123" + num)
+                .bizNum("2258701327123")
                 .role("USER")
                 .build();
     }

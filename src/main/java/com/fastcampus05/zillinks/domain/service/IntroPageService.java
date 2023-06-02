@@ -1,19 +1,23 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
+import com.fastcampus05.zillinks.domain.model.intropage.ZillinksData;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class IntroPageService {
 
     private final IntroPageRepository introPageRepository;
@@ -25,15 +29,23 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
 
-        // check-point 스프링에서 trackingCode 자동할당 구현
+        // checkpoint, RestTemplate로 zillinksData 받아오기
+        ZillinksData zillinksData = Common.zillinksApi(userPS.getBizNum()).toZillinksData();
+
+        // check-point 스프링에서 trackingCode 자동할당 구현 -> 실력 부족으로 구현 불가능
         String trackingCode = null;
-        IntroPage introPagePS = introPageRepository.save(saveInDTO.toEntity(userPS, trackingCode));
+        IntroPage introPagePS = introPageRepository.save(saveInDTO.toEntity(userPS, zillinksData, trackingCode));
         introPagePS.mapTrackingCode(trackingCode);
         userPS.mapIntroPage(introPagePS);
 
         return IntroPageResponse.SaveOutDTO.builder()
                 .id(introPagePS.getId())
-                .zillinkData(introPagePS.getZillinkData())
+                .pavicon(introPagePS.getPavicon())
+                .webPageName(introPagePS.getWebPageName())
+                .subDomain(introPagePS.getSubDomain())
+                .title(introPagePS.getTitle())
+                .description(introPagePS.getDescription())
+                .zillinksData(introPagePS.getZillinksData())
                 .logo(introPagePS.getLogo())
                 .introFile(introPagePS.getIntroFile())
                 .mediaKitFile(introPagePS.getMediaKitFile())
@@ -48,7 +60,7 @@ public class IntroPageService {
         IntroPage introPagePS = userPS.getIntroPage();
         return IntroPageResponse.FindOutDTO.builder()
                 .id(introPagePS.getId())
-                .zillinkData(introPagePS.getZillinkData())
+                .zillinksData(introPagePS.getZillinksData())
                 .logo(introPagePS.getLogo())
                 .introFile(introPagePS.getIntroFile())
                 .mediaKitFile(introPagePS.getMediaKitFile())
@@ -66,7 +78,7 @@ public class IntroPageService {
 
         return IntroPageResponse.UpdateOutDTO.builder()
                 .id(introPagePS.getId())
-                .zillinkData(introPagePS.getZillinkData())
+                .zillinksData(introPagePS.getZillinksData())
                 .logo(introPagePS.getLogo())
                 .introFile(introPagePS.getIntroFile())
                 .mediaKitFile(introPagePS.getMediaKitFile())

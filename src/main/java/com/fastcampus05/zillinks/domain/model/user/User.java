@@ -36,7 +36,7 @@ public class User {
     private IntroPage introPage;
 
     @Column(unique = true) // checkpoint
-    private String businessNum;
+    private String bizNum;
 
     private String role; // USER|ADMIN
 
