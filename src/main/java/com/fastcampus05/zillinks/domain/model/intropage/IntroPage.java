@@ -53,10 +53,6 @@ public class IntroPage extends TimeBaseEntity {
     @OneToOne(mappedBy = "introPage")
     private User user;
 
-    public void mapTrackingCode(String trackingCode) {
-        this.trackingCode = trackingCode;
-    }
-
     public void changeIntroPageInfo(IntroPageRequest.UpdateInDTO updateInDTO) {
         this.zillinksData = new ZillinksData(updateInDTO.getName(), updateInDTO.getBizNum(), updateInDTO.getContactEmail(), updateInDTO.getTagline());
         this.logo = updateInDTO.getLogo();

@@ -49,7 +49,6 @@ public class ZillinksApiResponse {
         @JsonProperty("contactEmail")
         private String contactEmail;                   // 담당자 이메일
         private Employment employment;                 // 고용 정보
-
     }
 
     @Getter

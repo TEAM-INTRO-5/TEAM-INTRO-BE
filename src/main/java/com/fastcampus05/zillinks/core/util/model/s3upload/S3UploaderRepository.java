@@ -5,17 +5,19 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.exception.ExtConvertException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
@@ -26,6 +28,9 @@ import java.util.UUID;
 @Component
 public class S3UploaderRepository {
 
+    public static final int WIDTH = 400;
+    public static final int HEIGHT = 400;
+    public static final String TARGET_FORMAT = "jpg";
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -35,12 +40,16 @@ public class S3UploaderRepository {
 
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) {
-        File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+        File file = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+
+        // uploadFile JPEG 파일로 변환후 resize 진행
+        File uploadFile = transform(file);
         return upload(uploadFile, dirName);
     }
 
     private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName().substring(uploadFile.getName().lastIndexOf("."));
+//        String fileName = "upload" + dirName + "/" + UUID.randomUUID() + uploadFile.getName().substring(uploadFile.getName().lastIndexOf("."));
+        String fileName = "upload" + dirName + "/" + UUID.randomUUID() + ".jpg";
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
         return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
@@ -70,6 +79,32 @@ public class S3UploaderRepository {
         } catch (AmazonClientException e) {
             log.error("버킷 내 객체 삭제 실패: {}", e.getMessage());
             throw new Exception500("버킷 내 객체 삭제 실패");
+        }
+    }
+
+    // file resize and jpg 변환
+    private File transform(File file) {
+        BufferedImage originalImage;
+        BufferedImage resizedImage;
+
+        String tempFileName = "temp_resized_" + file.getName();
+
+        try {
+            originalImage = ImageIO.read(new FileInputStream(file));
+            resizedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+            Graphics2D g = resizedImage.createGraphics();
+            g.drawImage(originalImage.getScaledInstance(WIDTH, HEIGHT, Image.SCALE_SMOOTH), 0, 0, null);
+            g.dispose();
+
+            File tempResizedFile = new File(tempFileName);
+            ImageIO.write(resizedImage, TARGET_FORMAT, tempResizedFile);
+
+            return tempResizedFile;
+        } catch (IOException e) {
+            throw new Exception500("이미지 변환 실패: " + e.getMessage());
+        } finally {
+            removeNewFile(file);
         }
     }
 

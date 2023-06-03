@@ -35,7 +35,6 @@ public class IntroPageService {
         // check-point 스프링에서 trackingCode 자동할당 구현 -> 실력 부족으로 구현 불가능
         String trackingCode = null;
         IntroPage introPagePS = introPageRepository.save(saveInDTO.toEntity(userPS, zillinksData, trackingCode));
-        introPagePS.mapTrackingCode(trackingCode);
         userPS.mapIntroPage(introPagePS);
 
         return IntroPageResponse.SaveOutDTO.builder()

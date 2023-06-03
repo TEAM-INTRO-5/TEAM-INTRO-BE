@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
+import com.fastcampus05.zillinks.core.util.service.s3upload.S3UploaderService;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
