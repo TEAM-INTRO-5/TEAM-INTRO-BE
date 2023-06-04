@@ -75,6 +75,9 @@ dependencies {
 
     // refresh-token을 저장하기 위한 redis 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.3.1.RELEASE'
+
+    // Java Mail을 활용하기 위한 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 // Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거

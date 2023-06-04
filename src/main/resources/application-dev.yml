@@ -16,6 +16,17 @@ server:
       force: true
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail_username}
+    password: ${app_password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   cache:
     type: redis
   redis:

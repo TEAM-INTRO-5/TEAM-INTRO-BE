@@ -50,10 +50,6 @@ public class UserController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @GetMapping("/s/authorization-test")
-    public String test() {
-        return "ok";
-    }
 
 //    @MyErrorLog
 //    @MyLog

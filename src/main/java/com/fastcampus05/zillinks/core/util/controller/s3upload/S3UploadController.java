@@ -55,7 +55,7 @@ public class S3UploadController {
         return new ResponseEntity(responseBody, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "이미지 업로드 경로 반환", description = "이미지 저장 후 저장 경로 반환")
+    @Operation(summary = "파일 업로드 경로 반환", description = "파일 저장 후 저장 경로 반환")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = S3UploadResponse.PathResponse.class))),
     })
