@@ -43,13 +43,25 @@ spring:
 
 # aws 설정
 # 사용할 S3 bucket region 입력
+#cloud:
+#  aws:
+#    credentials:
+#      access-key: ${s3_access_key}
+#      secret-key: ${s3_secret_key}
+#    s3:
+#      bucket: ${s3_bucket}
+#    region:
+#      static: ${s3_region_static} # 리전 정보(서울)
+#    stack:
+#      auto: false
 cloud:
   aws:
     credentials:
-      access-key: ${s3_access_key}
-      secret-key: ${s3_secret_key}
+      access-key: foobar
+      secret-key: foobar
     s3:
-      bucket: ${s3_bucket}
+      bucket: test-bucket
+      delete-dir: http://127.0.0.1:4566/test-bucket/
     region:
       static: ${s3_region_static} # 리전 정보(서울)
     stack:
