@@ -26,20 +26,10 @@ import javax.imageio.ImageIO;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/s/user")
 public class S3UploadController {
 
     private final S3UploaderService s3UploaderService;
-
-    @PostMapping("/upload-test")
-    public ResponseEntity<?> imageUpload(@RequestPart MultipartFile image) {
-        if (!isImageFile(image)) {
-            throw new Exception400("image", "image 파일이 아닙니다.");
-        }
-
-        String url = s3UploaderService.upload(image);
-        return ResponseEntity.ok(url);
-    }
 
     @PostMapping("/delete-test")
     public ResponseEntity<?> deleteImage(@RequestParam("url") String url) {
@@ -51,19 +41,34 @@ public class S3UploadController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = S3UploadResponse.PathResponse.class))),
     })
-    @PostMapping("/upload")
+    @PostMapping("/uploadImage")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadImage(
             @RequestPart MultipartFile image,
-            @Parameter(description = "이미지 이름", example = "example_image_name")
             @RequestParam String name,
-            @Parameter(description = "이미지 유형", example = "example_image_type")
             @RequestParam String type,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
         if (!isImageFile(image)) {
             throw new Exception400("image", "image 파일이 아닙니다.");
         }
-
         S3UploadResponse.PathResponse uploadPath = s3UploaderService.uploadImage(image, name, type, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.CREATED, "성공", uploadPath);
+        return new ResponseEntity(responseBody, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "이미지 업로드 경로 반환", description = "이미지 저장 후 저장 경로 반환")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = S3UploadResponse.PathResponse.class))),
+    })
+    @PostMapping("/uploadFile")
+    public ResponseEntity<S3UploadResponse.PathResponse> uploadFile(
+            @RequestPart MultipartFile file,
+            @RequestParam String name,
+            @RequestParam String type,
+            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (!isPdfFile(file)) {
+            throw new Exception400("pdf", "pdf가 아닙니다.");
+        }
+        S3UploadResponse.PathResponse uploadPath = s3UploaderService.uploadFile(file, name, type, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.CREATED, "성공", uploadPath);
         return new ResponseEntity(responseBody, HttpStatus.CREATED);
     }
@@ -78,5 +83,17 @@ public class S3UploadController {
         }
 
         return ImageIO.getImageReadersBySuffix(extension).hasNext();
+    }
+
+    private boolean isPdfFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String extension = "";
+
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            extension = fileName.substring(dotIndex + 1).toLowerCase();
+        }
+
+        return extension.equals("pdf");
     }
 }

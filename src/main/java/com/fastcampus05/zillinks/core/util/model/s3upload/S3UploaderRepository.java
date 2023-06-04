@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+@Repository
 public class S3UploaderRepository {
 
     public static final int WIDTH = 400;
@@ -37,19 +39,23 @@ public class S3UploaderRepository {
     private String bucket;
     @Value("${cloud.aws.region.static}")
     private String region;
+    @Value("${cloud.aws.s3.delete-dir}")
+    private String deleteDir;
 
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
-    public String upload(MultipartFile multipartFile, String dirName) {
+    public String upload(MultipartFile multipartFile, String fileName, String type) {
         File file = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
 
         // uploadFile JPEG 파일로 변환후 resize 진행
-        File uploadFile = transform(file);
-        return upload(uploadFile, dirName);
+        if (type.equals("image")) {
+            File uploadFile = transform(file);
+            return upload(uploadFile, fileName);
+        } else {
+            return upload(file, fileName);
+        }
     }
 
-    private String upload(File uploadFile, String dirName) {
-//        String fileName = "upload" + dirName + "/" + UUID.randomUUID() + uploadFile.getName().substring(uploadFile.getName().lastIndexOf("."));
-        String fileName = "upload" + dirName + "/" + UUID.randomUUID() + ".jpg";
+    private String upload(File uploadFile, String fileName) {
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
         return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
@@ -69,7 +75,6 @@ public class S3UploaderRepository {
     }
 
     public void delete(String fileUrl) {
-        String deleteDir = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
         String fileName = fileUrl.replaceFirst(deleteDir, "");
         try {
             DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);

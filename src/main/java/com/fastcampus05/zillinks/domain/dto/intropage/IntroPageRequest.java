@@ -7,8 +7,6 @@ import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
-import javax.validation.constraints.NotEmpty;
-
 public class IntroPageRequest {
 
     @Getter
@@ -48,8 +46,8 @@ public class IntroPageRequest {
                     .introFile(introFile)
                     .mediaKitFile(mediaKitFile)
                     .trackingCode(trackingCode)
-                    .status(status)
-                    .user(user)
+                    .saveStatus(status)
+//                    .user(user)
                     .build();
         }
     }

@@ -1,4 +1,4 @@
-package com.fastcampus03.calendarbe.model.log.login;
+package com.fastcampus05.zillinks.domain.model.log.login;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.fastcampus03.calendarbe.model.log.error;
+package com.fastcampus05.zillinks.domain.model.log.error;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

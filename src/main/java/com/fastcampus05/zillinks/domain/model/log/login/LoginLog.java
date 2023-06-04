@@ -1,6 +1,6 @@
-package com.fastcampus03.calendarbe.model.log.login;
+package com.fastcampus05.zillinks.domain.model.log.login;
 
-import com.fastcampus03.calendarbe.core.util.TimeBaseEntity;
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

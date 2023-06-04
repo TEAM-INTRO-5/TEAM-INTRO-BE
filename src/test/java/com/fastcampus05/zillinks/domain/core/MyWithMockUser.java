@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
 public @interface MyWithMockUser {
     long id() default 1L;
     String email() default "taeheoki@naver.com";
-
     String bizNum() default "2258701327";
     String role() default "USER";
 }

@@ -3,62 +3,34 @@ package com.fastcampus05.zillinks.core.util.service.s3upload;
 import com.fastcampus05.zillinks.core.dummy.DummyEntity;
 import com.fastcampus05.zillinks.core.util.dto.s3upload.S3UploadResponse;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
-import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
-import com.fastcampus05.zillinks.domain.service.IntroPageService;
-import com.fastcampus05.zillinks.domain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @ActiveProfiles("test")
-@ExtendWith(MockitoExtension.class)
-class S3UploaderServiceTest extends DummyEntity {
+@SpringBootTest
+class S3UploaderServiceSpringTest extends DummyEntity {
 
-    // 진짜 userService 객체를 만들고 Mock로 Load된 모든 객체를 userService에 주입
-    @InjectMocks
-    private UserService userService;
-
-    // 진짜 객체를 만들어서 Mockito 환경에 Load
-    @Mock
+    @Autowired
     private UserRepository userRepository;
-    @InjectMocks
-    private IntroPageService introPageService;
-
-    @Mock
+    @Autowired
     private IntroPageRepository introPageRepository;
-
-    @Mock
+    @Autowired
     private S3UploaderRepository s3UploaderRepository;
-
-    @InjectMocks
+    @Autowired
     private S3UploaderService s3UploaderService;
-
-    // 가짜 객체를 만들어서 Mockito 환경에 Load
-    @Mock
-    private AuthenticationManager authenticationManager;
-
-    // 진짜 객체를 만들어서 Mockito 환경에 Load
-    @Spy
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Test
     public void uploadImageTest() throws Exception {
@@ -70,17 +42,14 @@ class S3UploaderServiceTest extends DummyEntity {
         MultipartFile image = new MockMultipartFile("image", "default.jpeg", "image/jpeg", imageBytes);
 
         // stub
-        User taeheoki = newUser("taeheoki@naver.com", "2258701327");
-        IntroPage introPage = newIntroPage(taeheoki);
-
-        // userRepository.findById()가 taeheoki 객체를 반환하도록 설정
-        when(userRepository.findById(taeheoki.getId())).thenReturn(Optional.of(taeheoki));
+        User taeheoki = userRepository.findById(1L).get();
 
         // when
         S3UploadResponse.PathResponse pathResponse = s3UploaderService.uploadImage(image, "zillinks", "logo", taeheoki);
 
         // then
         log.info("getUploadPath={}", pathResponse.getUploadPath());
+        Assertions.assertThat(pathResponse.getUploadPath().substring(pathResponse.getUploadPath().lastIndexOf("."))).isEqualTo(".jpg");
     }
 
 
