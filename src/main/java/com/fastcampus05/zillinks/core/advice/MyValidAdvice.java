@@ -1,16 +1,25 @@
 package com.fastcampus05.zillinks.core.advice;
 
+import com.fastcampus05.zillinks.core.exception.Exception400;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import shop.mtcoding.restend.core.exception.Exception400;
 
 @Aspect
 @Component
 public class MyValidAdvice {
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PatchMapping)")
+    public void patchMapping() {
+    }
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.DeleteMapping)")
+    public void deleteMapping() {
+    }
+
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
     public void postMapping() {
     }
@@ -19,7 +28,7 @@ public class MyValidAdvice {
     public void putMapping() {
     }
 
-    @Before("postMapping() || putMapping()")
+    @Before("postMapping() || putMapping() || patchMapping() || deleteMapping()")
     public void validationAdvice(JoinPoint jp) {
         Object[] args = jp.getArgs();
         for (Object arg : args) {

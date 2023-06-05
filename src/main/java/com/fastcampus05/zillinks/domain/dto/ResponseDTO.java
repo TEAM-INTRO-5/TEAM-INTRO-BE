@@ -2,7 +2,6 @@ package com.fastcampus05.zillinks.domain.dto;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import shop.mtcoding.restend.dto.user.UserResponse;
 
 @Getter
 public class ResponseDTO<T> {

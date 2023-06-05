@@ -1,8 +1,8 @@
 package com.fastcampus05.zillinks.core.util;
 
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
-import shop.mtcoding.restend.dto.ResponseDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

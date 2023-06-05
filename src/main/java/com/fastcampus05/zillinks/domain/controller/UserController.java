@@ -1,54 +1,83 @@
 package com.fastcampus05.zillinks.domain.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
+import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
+import com.fastcampus05.zillinks.domain.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import shop.mtcoding.restend.core.annotation.MyErrorLog;
-import shop.mtcoding.restend.core.annotation.MyLog;
-import shop.mtcoding.restend.core.auth.jwt.MyJwtProvider;
-import shop.mtcoding.restend.core.auth.session.MyUserDetails;
-import shop.mtcoding.restend.core.exception.Exception403;
-import shop.mtcoding.restend.dto.ResponseDTO;
-import shop.mtcoding.restend.dto.user.UserRequest;
-import shop.mtcoding.restend.dto.user.UserResponse;
-import shop.mtcoding.restend.service.UserService;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
-@RequiredArgsConstructor
+@Slf4j
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
 
-    @MyErrorLog
-    @MyLog
-    @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody @Valid UserRequest.JoinInDTO joinInDTO, Errors errors) {
-        UserResponse.JoinOutDTO joinOutDTO = userService.회원가입(joinInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(joinOutDTO);
-        return ResponseEntity.ok(responseDTO);
-    }
-
+    @Operation(summary = "login", description = "유저의 로그인과 함께 accessToken과 refreshToken을 반환해준다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.LoginOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "loginInDTO", description = "로그인 정보",
+                    example="{" +
+                            "   \"email\":\"taeheoki@naver.com\"," +
+                            "   \"password\":\"1234\"" +
+                            "}"),
+    })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO){
-        String jwt = userService.로그인(loginInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>();
-        return ResponseEntity.ok().header(MyJwtProvider.HEADER, jwt).body(responseDTO);
+    public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO, HttpServletRequest request) {
+        List<String> validList = new ArrayList<>();
+        validList.add(request.getRemoteAddr());
+        validList.add(request.getHeader("user-agent"));
+
+        UserResponse.LoginOutDTO loginOutDTO = userService.login(loginInDTO, validList);
+        ResponseDTO responseBody = new ResponseDTO<>(loginOutDTO);
+        return ResponseEntity.ok().body(responseBody);
     }
 
-    @GetMapping("/s/user/{id}")
-    public ResponseEntity<?> detail(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) throws JsonProcessingException {
-        if(id.longValue() != myUserDetails.getUser().getId()){
-            throw new Exception403("권한이 없습니다");
-        }
-        UserResponse.DetailOutDTO detailOutDTO = userService.회원상세보기(id);
-        //System.out.println(new ObjectMapper().writeValueAsString(detailOutDTO));
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(detailOutDTO);
-        return ResponseEntity.ok(responseDTO);
-    }
+
+//    @MyErrorLog
+//    @MyLog
+//    @PostMapping("/api/joinUser")
+//    public ResponseEntity<?> join(@RequestBody @Valid UserRequest.JoinInDTO joinInDTO, Errors errors) {
+////        UserResponse.JoinOutDTO joinOutDTO = userService.회원가입(joinInDTO);
+////        ResponseDTO<?> responseDTO = new ResponseDTO<>(joinOutDTO);
+//        return ResponseEntity.ok(responseDTO);
+//    }
+//    @PostMapping("/api/user/saveItem")
+//    @PostMapping("/api/user/items")
+//    @PostMapping("/api/user/items/{itemId}")
+
+//    @GetMapping("/blog/api/user/...")
+//    @GetMapping("/{domain}/{인증}/{권한}/...")
+//    @Ge
+//    public ResponseEntity<?> detail(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+//        if(id.longValue() != myUserDetails.getUser().getId()){
+//            throw new Exception403("권한이 없습니다");
+//        }
+//        UserResponse.DetailOutDTO detailOutDTO = userService.회원상세보기(id);
+//        // System.out.println(new ObjectMapper().writeValueAsString(detailOutDTO));
+//        ResponseDTO<?> responseDTO = new ResponseDTO<>(detailOutDTO);
+//        return ResponseEntity.ok(responseDTO);
+//    }
+//
+//    @GetMapping("/s/error-test")
+//    public ResponseEntity<?> error() {
+//        throw new Exception500("Sentry io error test");
+//    }
 }

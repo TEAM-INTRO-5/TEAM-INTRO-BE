@@ -1,13 +1,13 @@
 package com.fastcampus05.zillinks.core.advice;
 
+import com.fastcampus05.zillinks.core.annotation.MyErrorLog;
+import com.fastcampus05.zillinks.core.exception.*;
+import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import shop.mtcoding.restend.core.annotation.MyErrorLog;
-import shop.mtcoding.restend.core.exception.*;
-import shop.mtcoding.restend.dto.ResponseDTO;
 
 @Slf4j
 @RestControllerAdvice
@@ -40,6 +40,7 @@ public class MyExceptionAdvice {
     @MyErrorLog
     @ExceptionHandler(Exception500.class)
     public ResponseEntity<?> serverError(Exception500 e){
+//        Sentry.captureException(e); checkpoint, 서버 배포전 해제
         return new ResponseEntity<>(e.body(), e.status());
     }
 

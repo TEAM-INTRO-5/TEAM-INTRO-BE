@@ -1,5 +1,9 @@
 package com.fastcampus05.zillinks.core.config;
 
+import com.fastcampus05.zillinks.core.auth.token.MyJwtAuthorizationFilter;
+import com.fastcampus05.zillinks.core.exception.Exception401;
+import com.fastcampus05.zillinks.core.exception.Exception403;
+import com.fastcampus05.zillinks.core.util.MyFilterResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import shop.mtcoding.restend.core.auth.jwt.MyJwtAuthorizationFilter;
-import shop.mtcoding.restend.core.exception.Exception401;
-import shop.mtcoding.restend.core.exception.Exception403;
-import shop.mtcoding.restend.core.util.MyFilterResponseUtil;
 
 @Slf4j
 @Configuration
@@ -68,21 +68,21 @@ public class MySecurityConfig {
 
         // 8. 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-            log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : "+authException.getMessage());
+            log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : " + authException.getMessage());
             MyFilterResponseUtil.unAuthorized(response, new Exception401("인증되지 않았습니다"));
         });
 
         // 10. 권한 실패 처리
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
-            log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : "+accessDeniedException.getMessage());
+            log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : " + accessDeniedException.getMessage());
             MyFilterResponseUtil.forbidden(response, new Exception403("권한이 없습니다"));
         });
 
         // 11. 인증, 권한 필터 설정
         http.authorizeRequests(
-                authorize -> authorize.antMatchers("/s/**").authenticated()
-                        .antMatchers("/manager/**")
-                        .access("hasRole('ADMIN') or hasRole('MANAGER')")
+                authorize -> authorize.antMatchers("/api/s/**").authenticated()
+                        .antMatchers("/user/**")
+                        .access("hasRole('USER') or hasRole('ADMIN')")
                         .antMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
         );
@@ -92,7 +92,6 @@ public class MySecurityConfig {
 
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE (Javascript 요청 허용)
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트 앤드 IP만 허용 react)
         configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
