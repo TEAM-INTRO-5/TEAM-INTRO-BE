@@ -43,7 +43,7 @@ jobs:
             docker stop $(docker ps -a -q) 
             docker rm $(docker ps -a -q)
             docker pull redis
-            docker run -d -p 6379:6379 redis
+            docker run -d -p 6379:6379 --network backend-network redis
 
       - name: WAS 인스턴스 접속 및 애플리케이션 실행 # (5)
         uses: appleboy/ssh-action@v0.1.10
@@ -54,5 +54,5 @@ jobs:
           port: ${{ secrets.WAS_PORT }}
           script: |
             docker pull taeheoki/backend_cicd
-            docker run -d -p 8080:8080 --name container_taeheoki taeheoki/backend_cicd
+            docker run --env-file env_variables.list -d -p 8080:8080 --network backend-network --name container_taeheoki taeheoki/backend_cicd
 
