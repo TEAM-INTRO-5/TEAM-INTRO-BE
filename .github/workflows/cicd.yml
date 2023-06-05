@@ -23,7 +23,6 @@ jobs:
       - name: 도커 이미지 빌드 # (2)
         run: docker build -t taeheoki/backend_cicd .
 
-
       - name: Docker Hub 로그인 # (3)
         uses: docker/login-action@v2
         with:
@@ -56,3 +55,4 @@ jobs:
           script: |
             docker pull taeheoki/backend_cicd
             docker run -d -p 8080:8080 --name container_taeheoki taeheoki/backend_cicd
+
