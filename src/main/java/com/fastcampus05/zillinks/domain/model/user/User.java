@@ -36,21 +36,21 @@ public class User {
     private IntroPage introPage;
 
     @Column(unique = true) // checkpoint
-    private String businessNum;
+    private String bizNum;
 
     private String role; // USER|ADMIN
 
     // /{intropageId}/작업
     // -> Intropage -> user_id /JWT - id => 접근권한있다.
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Marketing> marketings = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    List<Marketing> marketings = new ArrayList<>();
 
     //== 연관관계 메서드==//
-    public void addMargeting(Marketing marketing) {
-        marketings.add(marketing);
-        marketing.setUser(this);
-    }
+//    public void addMargeting(Marketing marketing) {
+//        marketings.add(marketing);
+//        marketing.setUser(this);
+//    }
 
     public void mapIntroPage(IntroPage introPage) {
         this.introPage = introPage;

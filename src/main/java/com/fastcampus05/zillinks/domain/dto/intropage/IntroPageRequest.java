@@ -2,7 +2,7 @@ package com.fastcampus05.zillinks.domain.dto.intropage;
 
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.SaveStatus;
-import com.fastcampus05.zillinks.domain.model.intropage.ZillinkData;
+import com.fastcampus05.zillinks.domain.model.intropage.ZillinksData;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -12,15 +12,17 @@ public class IntroPageRequest {
     @Getter
     public static class SaveInDTO {
 
-        private String name;
+        private String pavicon; // 경로
 
-        @JsonProperty("biz_num")
-        private String bizNum;
+        @JsonProperty("web_page_name")
+        private String webPageName;
 
-        @JsonProperty("contact_email")
-        private String contactEmail;
+        @JsonProperty("sub_domain")
+        private String subDomain;
 
-        private String tagline;
+        private String title;
+
+        private String description;
 
         private String logo;
 
@@ -32,15 +34,20 @@ public class IntroPageRequest {
 
         private SaveStatus status;
 
-        public IntroPage toEntity(User user, String trackingCode) {
+        public IntroPage toEntity(User user, ZillinksData zillinksData, String trackingCode) {
             return IntroPage.builder()
-                    .zillinkData(new ZillinkData(name, bizNum, contactEmail, tagline))
+                    .pavicon(pavicon)
+                    .webPageName(webPageName)
+                    .subDomain(subDomain)
+                    .title(title)
+                    .description(description)
+                    .zillinksData(zillinksData)
                     .logo(logo)
                     .introFile(introFile)
                     .mediaKitFile(mediaKitFile)
                     .trackingCode(trackingCode)
-                    .status(status)
-                    .user(user)
+                    .saveStatus(status)
+//                    .user(user)
                     .build();
         }
     }

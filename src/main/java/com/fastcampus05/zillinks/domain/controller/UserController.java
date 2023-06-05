@@ -1,6 +1,5 @@
 package com.fastcampus05.zillinks.domain.controller;
 
-import com.fastcampus05.zillinks.core.auth.token.dto.TokenResponse;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
@@ -40,7 +39,7 @@ public class UserController {
                             "   \"password\":\"1234\"" +
                             "}"),
     })
-    @PostMapping("/loginUser")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO, HttpServletRequest request) {
         List<String> validList = new ArrayList<>();
         validList.add(request.getRemoteAddr());
@@ -51,10 +50,6 @@ public class UserController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @GetMapping("/s/authorization-test")
-    public String test() {
-        return "ok";
-    }
 
 //    @MyErrorLog
 //    @MyLog

@@ -14,12 +14,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 
 @Slf4j
 public class MyJwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -43,9 +40,9 @@ public class MyJwtAuthorizationFilter extends BasicAuthenticationFilter {
             DecodedJWT decodedJWT = MyJwtProvider.verify(jwt);
             Long id = decodedJWT.getClaim("id").asLong();
             String role = decodedJWT.getClaim("role").asString();
-            String businessNum = decodedJWT.getClaim("businessNum").asString();
+            String bizNum = decodedJWT.getClaim("bizNum").asString();
 
-            User user = User.builder().id(id).role(role).businessNum(businessNum).build();
+            User user = User.builder().id(id).role(role).bizNum(bizNum).build();
             MyUserDetails myUserDetails = new MyUserDetails(user);
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(

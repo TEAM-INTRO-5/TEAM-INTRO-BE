@@ -66,12 +66,18 @@ dependencies {
     // https://mavenlibs.com/maven/dependency/commons-fileupload/commons-fileupload
     implementation 'commons-fileupload:commons-fileupload:1.4'
 
+    // 테스트를 위한 Localstack 의존성 추가
+    implementation "org.testcontainers:localstack:1.16.3"
+
     // swagger dependency
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
     implementation("com.google.guava:guava:29.0-jre")
 
     // refresh-token을 저장하기 위한 redis 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.3.1.RELEASE'
+
+    // Java Mail을 활용하기 위한 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 // Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
