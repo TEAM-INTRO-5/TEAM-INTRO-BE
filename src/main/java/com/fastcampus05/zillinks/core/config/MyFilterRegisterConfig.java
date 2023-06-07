@@ -13,6 +13,7 @@ public class MyFilterRegisterConfig {
         registration.setFilter(new MyTempFilter()); // 서블릿 필터 객체 담기
         registration.addUrlPatterns("/*");
         registration.setOrder(1); // 순서
+
         return registration;
     }
 }
