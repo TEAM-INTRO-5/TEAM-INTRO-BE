@@ -6,6 +6,8 @@ import com.fastcampus05.zillinks.core.util.dto.mail.MailRequest;
 import com.fastcampus05.zillinks.core.util.dto.mail.MailResponse;
 import com.fastcampus05.zillinks.core.util.model.mail.MailValid;
 import com.fastcampus05.zillinks.core.util.model.mail.MailValidRepository;
+import com.fastcampus05.zillinks.domain.model.user.User;
+import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,12 +26,18 @@ public class MailService {
     private static final String FROM_ADDRESS = "test@test.com";
     private final JavaMailSender javaMailSender;
     private final MailValidRepository mailValidRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public MailResponse.MailOutDTO mailSend(MailRequest.MailInDTO mailInDTO){
+    public MailResponse.MailOutDTO mailSend(MailRequest.MailInDTO mailInDTO) {
+        if (mailInDTO.getType().equals("duplicateCheck")) {
+            if (userRepository.findByEmail(mailInDTO.getEmail()).isPresent())
+                throw new Exception400("email", "이미 존재하는 이메일입니다.");
+        }
+
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             sb.append((char) (random.nextInt(26) + 'A'));
         }
         String verificationCode = sb.toString();
@@ -69,8 +77,7 @@ public class MailService {
             // redis에 저장하여 유효시간 10분 부여하여야 한다.
             MailValid mailValid = new MailValid(verificationCode);
             mailValidRepository.save(mailValid);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return MailResponse.MailOutDTO.builder()
