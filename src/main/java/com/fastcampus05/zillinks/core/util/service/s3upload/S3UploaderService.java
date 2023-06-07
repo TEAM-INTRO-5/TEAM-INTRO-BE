@@ -7,6 +7,7 @@ import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,8 +30,9 @@ public class S3UploaderService {
 
     public static final String DEFAULT_IMAGE = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg";
     private final S3UploaderRepository s3UploaderRepository;
-    private final UserRepository userRepository;
     private final S3UploaderFileRepository s3UploaderFileRepository;
+    private final UserRepository userRepository;
+    private final IntroPageRepository introPageRepository;
 
     @Transactional
     public void delete(String url) {
@@ -42,7 +45,10 @@ public class S3UploaderService {
     public S3UploadResponse.PathResponse uploadImage(MultipartFile image, String name, String type, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
-        delete(getUrlByName(userPS.getIntroPage(), type));
+        Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
+
+
+        delete(getUrlByName(introPageOP, type));
 
         String dir = name + "/" + type;
         String uploadPath = DEFAULT_IMAGE;
@@ -59,7 +65,10 @@ public class S3UploaderService {
     public S3UploadResponse.PathResponse uploadFile(MultipartFile file, String name, String type, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
-        delete(getUrlByName(userPS.getIntroPage(), type));
+        Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
+
+
+        delete(getUrlByName(introPageOP, type));
 
         String dir = name + "/" + type;
         String uploadPath = DEFAULT_IMAGE;
@@ -82,10 +91,11 @@ public class S3UploaderService {
         return fileName;
     }
 
-    private String getUrlByName(IntroPage introPage, String type) {
-        if (introPage == null)
+    private String getUrlByName(Optional<IntroPage> introPageOP, String type) {
+        if (introPageOP.isEmpty())
             return null;
-        Class<? extends IntroPage> introPageClass = introPage.getClass();
+        IntroPage introPagePS = introPageOP.get();
+        Class<? extends IntroPage> introPageClass = introPagePS.getClass();
 
         Field[] fields = introPageClass.getDeclaredFields();
 
@@ -94,7 +104,7 @@ public class S3UploaderService {
                 if (type.equals(field.getName())) {
                     String getterName = fieldNameToGetterName(type);
                     Method getter = introPageClass.getMethod(getterName);
-                    return (String) getter.invoke(introPage);
+                    return (String) getter.invoke(introPagePS);
                 }
             }
             throw new NoSuchMethodException("type과 일치하는 변수가 없습니다.");

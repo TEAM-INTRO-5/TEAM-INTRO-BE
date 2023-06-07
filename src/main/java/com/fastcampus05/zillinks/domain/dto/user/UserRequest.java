@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,9 +13,10 @@ public class UserRequest {
     @Getter
     public static class LoginInDTO {
 
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
+        @Pattern(regexp = "^[a-zA-Z0-9]{4,14}$", message = "영문/숫자 4~14자 이내로 작성해주세요")
         @NotEmpty
-        private String email;
+        @JsonProperty("login_id")
+        private String loginId;
 
         @NotEmpty
         @Size(min = 4, max = 20)

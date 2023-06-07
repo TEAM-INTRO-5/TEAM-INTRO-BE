@@ -7,10 +7,11 @@ import com.fastcampus05.zillinks.domain.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class DummyEntity {
-    public User newUser(String email, String bizNum){
+    public User newUser(String loginId, String bizNum){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
-                .email(email)
+                .loginId(loginId)
+                .email(loginId + "@naver.com")
                 .password(passwordEncoder.encode("1234"))
                 .bizNum(bizNum)
                 .role("USER")

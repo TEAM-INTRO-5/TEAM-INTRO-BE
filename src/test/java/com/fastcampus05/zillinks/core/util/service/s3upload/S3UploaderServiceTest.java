@@ -1,11 +1,8 @@
 package com.fastcampus05.zillinks.core.util.service.s3upload;
 
 import com.fastcampus05.zillinks.core.dummy.DummyEntity;
-import com.fastcampus05.zillinks.core.util.dto.s3upload.S3UploadResponse;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
-import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
-import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fastcampus05.zillinks.domain.service.IntroPageService;
 import com.fastcampus05.zillinks.domain.service.UserService;
@@ -16,17 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @ActiveProfiles("test")

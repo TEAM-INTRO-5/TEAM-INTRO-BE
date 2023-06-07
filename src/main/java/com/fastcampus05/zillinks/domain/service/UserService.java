@@ -12,6 +12,7 @@ import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserService {
 
     private final AuthenticationManager authenticationManager;
@@ -59,11 +61,11 @@ public class UserService {
         MyUserDetails myUserDetails;
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                    = new UsernamePasswordAuthenticationToken(loginInDTO.getEmail(), loginInDTO.getPassword());
+                    = new UsernamePasswordAuthenticationToken(loginInDTO.getLoginId(), loginInDTO.getPassword());
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             myUserDetails = (MyUserDetails) authentication.getPrincipal();
         } catch (Exception e) {
-            throw new Exception401("인증되지 않았습니다");
+            throw new Exception401("인증되지 않았습니다.");
         }
         User user = myUserDetails.getUser();
         RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), user.getId(), validList);
