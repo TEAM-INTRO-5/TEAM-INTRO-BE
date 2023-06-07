@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.model.user;
 
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.*;
 
@@ -16,12 +17,16 @@ import java.util.List;
 @Getter
 @Table(name = "user_tb")
 @Entity
-public class User {
+public class User extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column(unique = true)
+    @NotEmpty
+    private String loginId;
 
     @Column(unique = true)
     @NotEmpty
@@ -31,14 +36,12 @@ public class User {
     @Column(length = 60)
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "intro_page_id")
-    private IntroPage introPage;
-
     @Column(unique = true) // checkpoint
     private String bizNum;
 
     private String role; // USER|ADMIN
+
+    private String googleId; // 구글 연동 유무 체크
 
     // /{intropageId}/작업
     // -> Intropage -> user_id /JWT - id => 접근권한있다.
@@ -51,8 +54,4 @@ public class User {
 //        marketings.add(marketing);
 //        marketing.setUser(this);
 //    }
-
-    public void mapIntroPage(IntroPage introPage) {
-        this.introPage = introPage;
-    }
 }

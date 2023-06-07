@@ -35,7 +35,7 @@ public class IntroPageService {
         // check-point 스프링에서 trackingCode 자동할당 구현 -> 실력 부족으로 구현 불가능
         String trackingCode = null;
         IntroPage introPagePS = introPageRepository.save(saveInDTO.toEntity(userPS, zillinksData, trackingCode));
-        userPS.mapIntroPage(introPagePS);
+        introPagePS.setUser(userPS);
 
         return IntroPageResponse.SaveOutDTO.builder()
                 .id(introPagePS.getId())
@@ -56,7 +56,9 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = userPS.getIntroPage();
+        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
         return IntroPageResponse.FindOutDTO.builder()
                 .id(introPagePS.getId())
                 .zillinksData(introPagePS.getZillinksData())
@@ -72,7 +74,8 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = userPS.getIntroPage();
+        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         introPagePS.changeIntroPageInfo(updateInDTO);
 
         return IntroPageResponse.UpdateOutDTO.builder()
