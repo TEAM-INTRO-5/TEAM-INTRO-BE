@@ -61,7 +61,7 @@ public class S3UploadController {
     })
     @PostMapping("/uploadFile")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadFile(
-            @RequestPart MultipartFile file,
+            @RequestPart("file") MultipartFile file,
             @RequestParam String name,
             @RequestParam String type,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
