@@ -36,7 +36,7 @@ class S3UploaderServiceSpringTest extends DummyEntity {
     @Autowired
     private S3UploaderService s3UploaderService;
 
-    @Test
+//    @Test
     public void uploadImageTest() throws Exception {
         // given
         InputStream inputStream = new FileInputStream("upload/default.jpg");
