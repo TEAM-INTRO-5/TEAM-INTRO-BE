@@ -88,7 +88,6 @@ class S3UploaderServiceTest extends DummyEntity {
 
         // then
         Assertions.assertThat(pathResponse.getUploadPath()).isEqualTo("test.jpg");
-        log.info("getUploadPath={}", pathResponse.getUploadPath());
     }
 
 

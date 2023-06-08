@@ -9,5 +9,4 @@ public class GoogleAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "google_account_id")
     private Long id;
-
 }
