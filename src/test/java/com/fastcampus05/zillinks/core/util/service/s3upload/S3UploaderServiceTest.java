@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.core.util.service.s3upload;
 
 import com.fastcampus05.zillinks.core.dummy.DummyEntity;
 import com.fastcampus05.zillinks.core.util.dto.s3upload.S3UploadResponse;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
@@ -10,6 +11,7 @@ import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fastcampus05.zillinks.domain.service.IntroPageService;
 import com.fastcampus05.zillinks.domain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -45,6 +48,9 @@ class S3UploaderServiceTest extends DummyEntity {
 
     @Mock
     private IntroPageRepository introPageRepository;
+
+    @Mock
+    private S3UploaderFileRepository s3UploaderFileRepository;
 
     @Mock
     private S3UploaderRepository s3UploaderRepository;
@@ -75,12 +81,13 @@ class S3UploaderServiceTest extends DummyEntity {
 
         // userRepository.findById()가 taeheoki 객체를 반환하도록 설정
         when(userRepository.findById(taeheoki.getId())).thenReturn(Optional.of(taeheoki));
+        when(s3UploaderRepository.upload(any(), any(), any())).thenReturn("test.jpg");
 
         // when
         S3UploadResponse.PathResponse pathResponse = s3UploaderService.uploadImage(image, "zillinks", "logo", taeheoki);
 
         // then
-        log.info("getUploadPath={}", pathResponse.getUploadPath());
+        Assertions.assertThat(pathResponse.getUploadPath()).isEqualTo("test.jpg");
     }
 
 
