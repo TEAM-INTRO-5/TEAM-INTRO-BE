@@ -67,7 +67,7 @@ public class AuthController {
 
             TokenResponse tokenResponse = refreshTokenService.generateAccessToken(refreshToken, validList, isWithInWeek);
             if (!StringUtils.hasText(tokenResponse.getRefreshToken())) {
-                tokenResponse.setRefreshToken(refreshJwt);
+                tokenResponse.setRefreshToken(MyJwtProvider.TOKEN_PREFIX + refreshJwt);
             }
             ResponseDTO responseBody = new ResponseDTO(tokenResponse);
             return ResponseEntity.ok(responseBody);

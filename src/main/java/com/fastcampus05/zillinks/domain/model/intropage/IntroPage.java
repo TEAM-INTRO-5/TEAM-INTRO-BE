@@ -23,6 +23,10 @@ public class IntroPage extends TimeBaseEntity {
     @Column(name = "intod_page_id")
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String pavicon; // 경로
 
     @NotEmpty
@@ -51,6 +55,10 @@ public class IntroPage extends TimeBaseEntity {
 
     @Enumerated(EnumType.STRING)
     private SaveStatus saveStatus; // [TEMP_SAVED, SAVED, UPDATING]
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public void changeIntroPageInfo(IntroPageRequest.UpdateInDTO updateInDTO) {
         this.zillinksData = new ZillinksData(updateInDTO.getName(), updateInDTO.getBizNum(), updateInDTO.getContactEmail(), updateInDTO.getTagline());

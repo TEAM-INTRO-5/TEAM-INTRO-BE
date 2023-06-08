@@ -6,6 +6,17 @@ server:
   port: 8080
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail_username}
+    password: ${app_password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   main:
     allow-bean-definition-overriding: true
   datasource:
@@ -45,7 +56,7 @@ cloud:
       bucket: test-bucket
       delete-dir: http://127.0.0.1:4566/test-bucket/
     region:
-      static: ap-northeast-2 # 리전 정보(서울)
+      static: ${s3_region_static} # 리전 정보(서울)
     stack:
       auto: false
 

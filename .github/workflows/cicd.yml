@@ -8,7 +8,7 @@
 name: Backend CICD
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev, release-test ]
 
 jobs:
   deploy:
@@ -42,6 +42,7 @@ jobs:
           script: |
             docker stop $(docker ps -a -q) 
             docker rm $(docker ps -a -q)
+            docker rmi $(docker images -a -q)
             docker pull redis
             docker run -d -p 6379:6379 --network backend-network redis
 

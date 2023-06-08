@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/user/introPage")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class IntroPageController {
 
@@ -32,13 +32,14 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.SaveOutDTO.class))),
     })
-    @PostMapping("")
+    @PostMapping("/user/introPage")
     public ResponseEntity<IntroPageResponse.SaveOutDTO> saveIntroPage(
             @RequestBody @Valid IntroPageRequest.SaveInDTO saveInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
         IntroPageResponse.SaveOutDTO saveOutDTO = introPageService.createIntroPage(saveInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.CREATED, "성공", saveOutDTO);
+//        return new ResponseEntity(responseBody, HttpStatus.CREATED);
         return new ResponseEntity(responseBody, HttpStatus.CREATED);
     }
 
@@ -49,7 +50,7 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.FindOutDTO.class))),
     })
-    @GetMapping("")
+    @GetMapping("/user/introPage")
     public ResponseEntity<IntroPageResponse.FindOutDTO> findIntroPage(
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
         IntroPageResponse.FindOutDTO findOutDTO = introPageService.findIntroPage(myUserDetails.getUser());
@@ -61,7 +62,7 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.UpdateOutDTO.class))),
     })
-    @PatchMapping("")
+    @PatchMapping("/user/introPage")
     public ResponseEntity<IntroPageResponse.UpdateOutDTO> updateIntroPage(
             @RequestBody @Valid IntroPageRequest.UpdateInDTO updateInDTO,
             Errors errors,

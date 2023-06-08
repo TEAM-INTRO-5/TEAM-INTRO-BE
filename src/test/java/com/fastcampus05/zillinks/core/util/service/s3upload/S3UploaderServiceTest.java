@@ -62,25 +62,25 @@ class S3UploaderServiceTest extends DummyEntity {
 
     @Test
     public void uploadImageTest() throws Exception {
-//        // given
-//        InputStream inputStream = new FileInputStream("upload/default.jpg");
-//        byte[] imageBytes = inputStream.readAllBytes();
-//
-//        // 이미지 파일을 테스트 코드에서 읽은 후 MockMultipartFile 객체로 변환
-//        MultipartFile image = new MockMultipartFile("image", "default.jpeg", "image/jpeg", imageBytes);
-//
-//        // stub
-//        IntroPage introPage = newIntroPage();
-//        User taeheoki = newUser("taeheoki@naver.com", "2258701327", introPage);
-//
-//        // userRepository.findById()가 taeheoki 객체를 반환하도록 설정
-//        when(userRepository.findById(taeheoki.getId())).thenReturn(Optional.of(taeheoki));
-//
-//        // when
-//        S3UploadResponse.PathResponse pathResponse = s3UploaderService.uploadImage(image, "zillinks", "logo", taeheoki);
-//
-//        // then
-//        log.info("getUploadPath={}", pathResponse.getUploadPath());
+        // given
+        InputStream inputStream = new FileInputStream("upload/default.jpg");
+        byte[] imageBytes = inputStream.readAllBytes();
+
+        // 이미지 파일을 테스트 코드에서 읽은 후 MockMultipartFile 객체로 변환
+        MultipartFile image = new MockMultipartFile("image", "default.jpeg", "image/jpeg", imageBytes);
+
+        // stub
+        IntroPage introPage = newIntroPage();
+        User taeheoki = newUser("taeheoki", "2258701327");
+
+        // userRepository.findById()가 taeheoki 객체를 반환하도록 설정
+        when(userRepository.findById(taeheoki.getId())).thenReturn(Optional.of(taeheoki));
+
+        // when
+        S3UploadResponse.PathResponse pathResponse = s3UploaderService.uploadImage(image, "zillinks", "logo", taeheoki);
+
+        // then
+        log.info("getUploadPath={}", pathResponse.getUploadPath());
     }
 
 
