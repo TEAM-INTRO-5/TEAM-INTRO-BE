@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.controller;
 
+import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,7 @@ public class UserController {
                             "   \"password\":\"1234\"" +
                             "}"),
     })
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO, HttpServletRequest request) {
         List<String> validList = new ArrayList<>();
@@ -50,7 +53,14 @@ public class UserController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @GetMapping("/callback")
+    public ResponseEntity<?> callback(String code) {
+        // 1. code 값 존재 유무 확인
+        if (code == null || code.isEmpty())
+            throw new Exception400("code", "code값이 존재하지 않습니다.");
 
+        return userService.oauthLogin(code);
+    }
 //    @MyErrorLog
 //    @MyLog
 //    @PostMapping("/api/joinUser")
