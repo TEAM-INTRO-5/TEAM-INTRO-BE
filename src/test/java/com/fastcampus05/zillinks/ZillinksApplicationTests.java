@@ -6,7 +6,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 @ActiveProfiles("test")
-@SpringBootTest(properties = {"s3_region_static=us-west-1"})
+@SpringBootTest
 @TestPropertySource(locations="classpath:application-test.yml")
 class ZillinksApplicationTests {
 

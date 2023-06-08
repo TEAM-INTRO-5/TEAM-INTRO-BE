@@ -44,7 +44,7 @@ jobs:
             docker rm $(docker ps -a -q)
             docker rmi $(docker images -a -q)
             docker pull redis
-            docker run -d -p 6379:6379 --network backend-network redis
+            docker run -d -p 6379:6379 --network backend-network --name redis redis
 
       - name: WAS 인스턴스 접속 및 애플리케이션 실행 # (5)
         uses: appleboy/ssh-action@v0.1.10

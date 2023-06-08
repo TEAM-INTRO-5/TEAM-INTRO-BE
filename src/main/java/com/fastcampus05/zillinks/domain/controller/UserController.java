@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +40,6 @@ public class UserController {
                             "   \"password\":\"1234\"" +
                             "}"),
     })
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginInDTO loginInDTO, HttpServletRequest request) {
         List<String> validList = new ArrayList<>();
@@ -53,13 +51,30 @@ public class UserController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @Operation(summary = "google_login", description = "구글 로그인으로 유저의 로그인과 함께 accessToken과 refreshToken을 반환해준다. 만일 연동되어 있는 계정이 없는 경우 토큰은 반환되지 않는다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.OAuthLoginOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "loginInDTO", description = "로그인 정보",
+                    example="{" +
+                            "   \"email\":\"taeheoki@naver.com\"," +
+                            "   \"password\":\"1234\"" +
+                            "}"),
+    })
     @GetMapping("/callback")
-    public ResponseEntity<?> callback(String code) {
+    public ResponseEntity<?> callback(String code, HttpServletRequest request) {
+        List<String> validList = new ArrayList<>();
+        validList.add(request.getRemoteAddr());
+        validList.add(request.getHeader("user-agent"));
+        log.info("test");
         // 1. code 값 존재 유무 확인
         if (code == null || code.isEmpty())
             throw new Exception400("code", "code값이 존재하지 않습니다.");
 
-        return userService.oauthLogin(code);
+        UserResponse.OAuthLoginOutDTO oAuthLoginOutDTO = userService.oauthLogin(code, validList);
+        ResponseDTO responseBody = new ResponseDTO<>(oAuthLoginOutDTO);
+        return ResponseEntity.ok().body(responseBody);
     }
 //    @MyErrorLog
 //    @MyLog
