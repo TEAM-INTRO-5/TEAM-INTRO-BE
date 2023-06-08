@@ -1,6 +1,10 @@
 package com.fastcampus05.zillinks.domain.dto.user;
 
-import com.fastcampus05.zillinks.domain.model.user.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +41,7 @@ public class UserResponse {
 //    }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class LoginOutDTO {
         private String refreshToken;
         private String accessToken;
@@ -44,6 +49,30 @@ public class UserResponse {
         public LoginOutDTO(String refreshToken, String accessToken) {
             this.refreshToken = refreshToken;
             this.accessToken = accessToken;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class OAuthLoginOutDTO {
+        private String accessToken;
+        private String refreshToken;
+        private GoogleProfile googleProfile;
+
+        @Getter
+        public static class GoogleProfile {
+            private String oAuthId;
+            private String email;
+            private String name;
+
+            public GoogleProfile(String oAuthId, String email, String name) {
+                this.oAuthId = oAuthId;
+                this.email = email;
+                this.name = name;
+            }
         }
     }
 }

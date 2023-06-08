@@ -22,7 +22,7 @@
 //
 //@Slf4j
 //@ActiveProfiles("test")
-//@SpringBootTest(properties = {"s3_region_static=us-west-1"})
+//@SpringBootTest
 //@TestPropertySource(locations="classpath:application-test.yml")
 //@Transactional
 //class S3UploaderServiceSpringTest extends DummyEntity {

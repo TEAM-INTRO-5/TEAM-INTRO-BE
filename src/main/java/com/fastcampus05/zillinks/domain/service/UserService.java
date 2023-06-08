@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.annotation.MyLog;
 import com.fastcampus05.zillinks.core.auth.oauth.Fetch;
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
+import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.dto.oauth.GoogleToken;
@@ -12,6 +13,10 @@ import com.fastcampus05.zillinks.core.util.model.token.RefreshToken;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshTokenRepository;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
+import com.fastcampus05.zillinks.domain.dto.user.UserResponse.OAuthLoginOutDTO;
+import com.fastcampus05.zillinks.domain.dto.user.UserResponse.OAuthLoginOutDTO.GoogleProfile;
+import com.fastcampus05.zillinks.domain.model.user.GoogleAccount;
+import com.fastcampus05.zillinks.domain.model.user.GoogleAccountRepository;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,6 +37,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional(readOnly = true)
@@ -40,19 +46,20 @@ import java.util.UUID;
 @Slf4j
 public class UserService {
 
-//    @Value("${google-oauth.client-id}")
-//    private String clientId;
-//
-//    @Value("${google-oauth.client-secret}")
-//    private String clientSecret;
-//
-//    @Value("${google-oauth.redirect-uri}")
-//    private String redirectUri;
+    @Value("${google-oauth.client-id}")
+    private String clientId;
+
+    @Value("${google-oauth.client-secret}")
+    private String clientSecret;
+
+    @Value("${google-oauth.redirect-uri}")
+    private String redirectUri;
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final GoogleAccountRepository googleAccountRepository;
 
 
 //    @MyLog
@@ -101,11 +108,12 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> oauthLogin(String code) {
+    public OAuthLoginOutDTO oauthLogin(String code, List<String> validList) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", code); // 핵심
-        body.add("client_id", "609700950942-lmjhqofit9h1mt8g76dokj7734mtja00.apps.googleusercontent.com");
-        body.add("redirect_uri", "http://localhost:8080/callback");
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
+        body.add("redirect_uri", redirectUri);
         body.add("grant_type", "authorization_code");
 
         ResponseEntity<String> codeEntity = Fetch.google("https://oauth2.googleapis.com/token", HttpMethod.POST, body);
@@ -119,11 +127,39 @@ public class UserService {
 
             ResponseEntity<String> tokenEntity = Fetch.google("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + googleToken.getAccessToken(), HttpMethod.GET);
             oAuthProfile = om.readValue(tokenEntity.getBody(), OAuthProfile.class);
-            return tokenEntity;
+
+            String oAuthId = "google_" + oAuthProfile.getId();
+
+            Optional<GoogleAccount> googleAccountOP  = googleAccountRepository.findByOAuthId(oAuthId);
+            // google 정보가 없을 경우 회원가입 진행, 토큰발행 X
+            if (googleAccountOP.isEmpty()) {
+                Optional<User> userOP = userRepository.findByLoginId(oAuthId);
+                if (userOP.isPresent())
+                    throw new Exception400("login_id", "이미 가입된 아이디가 존재합니다.");
+                return OAuthLoginOutDTO.builder()
+                        .googleProfile(new GoogleProfile(oAuthId, oAuthProfile.getEmail(), oAuthProfile.getName()))
+                        .build();
+            }
+
+            // google 정보가 존재, 로그인 진행
+            GoogleAccount googleAccountPS = googleAccountOP.get();
+            User userPS = googleAccountPS.getUser();
+            RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userPS.getId(), validList);
+            try {
+                refreshTokenRepository.save(refreshToken);
+            } catch (Exception e) {
+                throw new Exception500("Token 생성에 실패하였습니다.");
+            }
+            String rtk = MyJwtProvider.createRefreshToken(refreshToken);
+            String atk = MyJwtProvider.createAccessToken(userPS);
+            return OAuthLoginOutDTO.builder()
+                    .refreshToken(rtk)
+                    .accessToken(atk)
+                    .googleProfile(new GoogleProfile(oAuthId, oAuthProfile.getEmail(), oAuthProfile.getName()))
+                    .build();
         } catch (JsonProcessingException e) {
             throw new Exception500(e.getMessage());
         }
-
     }
 
 //    @MyLog

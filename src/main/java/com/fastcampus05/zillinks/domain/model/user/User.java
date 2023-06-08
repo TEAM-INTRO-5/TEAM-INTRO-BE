@@ -41,10 +41,6 @@ public class User extends TimeBaseEntity {
 
     private String role; // USER|ADMIN
 
-    @OneToOne
-    @JoinColumn(name = "google_id")
-    private GoogleAccount googleAccount; // 구글 연동 유무 체크
-
     // /{intropageId}/작업
     // -> Intropage -> user_id /JWT - id => 접근권한있다.
 
