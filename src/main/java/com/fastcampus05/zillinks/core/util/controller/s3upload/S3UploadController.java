@@ -9,6 +9,7 @@ import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.validation.constraints.Pattern;
 
 @RestController
 @Slf4j
@@ -41,6 +43,11 @@ public class S3UploadController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = S3UploadResponse.PathResponse.class))),
     })
+    @Parameters({
+            @Parameter(name = "image", description = "이미지 파일"),
+            @Parameter(name = "name", description = "회사명", example = "zillinks"),
+            @Parameter(name = "type", description = "이미지 종류", example = "logo")
+    })
     @PostMapping("/uploadImage")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadImage(
             @RequestPart("image") MultipartFile image,
@@ -58,6 +65,11 @@ public class S3UploadController {
     @Operation(summary = "파일 업로드 경로 반환", description = "파일 저장 후 저장 경로 반환")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = S3UploadResponse.PathResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "file", description = "pdf 파일"),
+            @Parameter(name = "name", description = "회사명", example = "zillinks"),
+            @Parameter(name = "type", description = "이미지 종류", example = "logo")
     })
     @PostMapping("/uploadFile")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadFile(

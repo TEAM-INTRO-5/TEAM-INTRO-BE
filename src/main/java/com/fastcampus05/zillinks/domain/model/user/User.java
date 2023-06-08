@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +41,4 @@ public class User extends TimeBaseEntity {
     private String bizNum;
 
     private String role; // USER|ADMIN
-
-    // /{intropageId}/작업
-    // -> Intropage -> user_id /JWT - id => 접근권한있다.
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    List<Marketing> marketings = new ArrayList<>();
-
-    //== 연관관계 메서드==//
-//    public void addMargeting(Marketing marketing) {
-//        marketings.add(marketing);
-//        marketing.setUser(this);
-//    }
 }

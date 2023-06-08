@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.fastcampus05.zillinks.domain.dto.user.UserResponse.*;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -86,7 +88,7 @@ public class UserService {
 
     @MyLog
     @Transactional
-    public UserResponse.LoginOutDTO login(UserRequest.LoginInDTO loginInDTO, List<String> validList) {
+    public LoginOutDTO login(UserRequest.LoginInDTO loginInDTO, List<String> validList) {
         MyUserDetails myUserDetails;
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
@@ -105,7 +107,7 @@ public class UserService {
         }
         String rtk = MyJwtProvider.createRefreshToken(refreshToken);
         String atk = MyJwtProvider.createAccessToken(user);
-        return new UserResponse.LoginOutDTO(rtk, atk);
+        return new LoginOutDTO(rtk, atk);
     }
 
     @Transactional
@@ -171,12 +173,28 @@ public class UserService {
         return "인증되었습니다.";
     }
 
-//    @MyLog
-//    public UserResponse.DetailOutDTO 회원상세보기(Long id) {
-//        User userPS = userRepository.findById(id).orElseThrow(
-//                ()-> new Exception404("해당 유저를 찾을 수 없습니다")
-//
-//        );
-//        return new UserResponse.DetailOutDTO(userPS);
-//    }
+    public void checkLoginId(String loginId) {
+        Optional<User> userOP = userRepository.findByLoginId(loginId);
+        if (userOP.isPresent()) {
+            throw new Exception400("loginId", "존재하는 ID 입니다.");
+        }
+    }
+
+    public FindIdByEmailOutDTO findIdByEmail(String email) {
+        User userOP = userRepository.findByEmail(email).orElseThrow(
+                () -> new Exception400("email", "user가 존재하지 않습니다.")
+        );
+        return FindIdByEmailOutDTO.builder()
+                .loginId(userOP.getLoginId())
+                .build();
+    }
+
+    public FindIdByBizNumOutDTO findIdByBizNum(String bizNum) {
+        User userOP = userRepository.findByBizNum(bizNum).orElseThrow(
+                () -> new Exception400("email", "user가 존재하지 않습니다.")
+        );
+        return FindIdByBizNumOutDTO.builder()
+                .loginId(userOP.getLoginId())
+                .build();
+    }
 }
