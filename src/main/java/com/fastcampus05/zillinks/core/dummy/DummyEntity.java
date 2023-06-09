@@ -3,6 +3,7 @@ package com.fastcampus05.zillinks.core.dummy;
 import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.SaveStatus;
+import com.fastcampus05.zillinks.domain.model.intropage.WebPageInfo;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -34,16 +35,24 @@ public class DummyEntity {
 
     public IntroPage newIntroPage() {
         IntroPage introPage = IntroPage.builder()
-                .pavicon("pavicon_path")
-                .webPageName("webpage_name")
-                .subDomain("sub_domain")
-                .title("title")
-                .description("description")
+                .webPageInfo(new WebPageInfo("pavicon_path", "webpage_name", "sub_domain", "title", "description"))
                 .zillinksData(Common.zillinksApi("2258701327").toZillinksData())
                 .logo("logo_path")
                 .introFile("intro_file_path")
                 .mediaKitFile("media_kit_file_path")
-                .trackingCode("tracking_code")
+                .saveStatus(SaveStatus.valueOf("SAVED"))
+                .build();
+        return introPage;
+    }
+
+    public IntroPage newIntroPage(User user) {
+        IntroPage introPage = IntroPage.builder()
+                .user(user)
+                .webPageInfo(new WebPageInfo("pavicon_path", "webpage_name", "sub_domain", "title", "description"))
+                .zillinksData(Common.zillinksApi("2258701327").toZillinksData())
+                .logo("logo_path")
+                .introFile("intro_file_path")
+                .mediaKitFile("media_kit_file_path")
                 .saveStatus(SaveStatus.valueOf("SAVED"))
                 .build();
         return introPage;
@@ -51,16 +60,11 @@ public class DummyEntity {
 
     public IntroPage newMockIntroPage(Long id) {
         IntroPage introPage = IntroPage.builder()
-                .pavicon("pavicon_path" + id)
-                .webPageName("webpage_name" + id)
-                .subDomain("sub_domain" + id)
-                .title("title" + id)
-                .description("description" + id)
+                .webPageInfo(new WebPageInfo("pavicon_path" + id, "webpage_name" + id, "sub_domain" + id, "title" + id, "description" + id))
                 .zillinksData(Common.zillinksApi("2258701327").toZillinksData())
                 .logo("logo_path" + id)
                 .introFile("intro_file_path" + id)
                 .mediaKitFile("media_kit_file_path" + id)
-                .trackingCode("tracking_code" + id)
                 .saveStatus(SaveStatus.valueOf("SAVED"))
                 .build();
         return introPage;

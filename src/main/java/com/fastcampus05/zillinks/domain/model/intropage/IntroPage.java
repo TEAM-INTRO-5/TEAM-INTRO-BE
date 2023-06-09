@@ -27,19 +27,10 @@ public class IntroPage extends TimeBaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String pavicon; // 경로
+    private String color;
 
-    @NotEmpty
-    private String webPageName;
-
-    @NotEmpty
-    private String subDomain;
-
-    @NotEmpty
-    private String title;
-
-    @NotEmpty
-    private String description;
+    @Embedded
+    private WebPageInfo webPageInfo;
 
     @Embedded
     private ZillinksData zillinksData;
@@ -51,22 +42,29 @@ public class IntroPage extends TimeBaseEntity {
 
     private String mediaKitFile;
 
-    private String trackingCode;
-
     @Enumerated(EnumType.STRING)
-    private SaveStatus saveStatus; // [TEMP_SAVED, SAVED]
+    private SaveStatus saveStatus; // [UPDATING, SAVED]
+
+//    @OneToMany(mappedBy = "widget")
+//    private List<Widget> widgets;
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public void changeIntroPageInfo(IntroPageRequest.UpdateInDTO updateInDTO) {
-        this.zillinksData = new ZillinksData(updateInDTO.getName(), updateInDTO.getBizNum(), updateInDTO.getContactEmail(), updateInDTO.getTagline());
-        this.logo = updateInDTO.getLogo();
-        this.introFile = updateInDTO.getIntroFile();
-        this.mediaKitFile = updateInDTO.getMediaKitFile();
+    public void changeIntroPage(IntroPageRequest.UpdateInDTO updateInDTO) {
+
+        this.color = updateInDTO.getColor();
+
+        // check-point
+        // Widget 부분 추가
     }
 
-//    @OneToMany(mappedBy = "widget")
-//    private List<Widget> widgets;
+    public void changeIntroPageInfo(IntroPageRequest.UpdateInfoInDTO updateInfoInDTO) {
+        this.webPageInfo = new WebPageInfo(updateInfoInDTO.getWebPageInfo());
+
+        // check-point
+        // Widget 부분 추가
+    }
+
 }
