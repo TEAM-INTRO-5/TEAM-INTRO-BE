@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -23,68 +26,59 @@ public class IntroPageService {
     private final IntroPageRepository introPageRepository;
     private final UserRepository userRepository;
 
-    // check-point AutoSave일 때 어떻게 동작할지 생각해봐야 할 듯
-    @Transactional
-    public IntroPageResponse.SaveOutDTO createIntroPage(IntroPageRequest.SaveInDTO saveInDTO, User user) {
+    public IntroPageOutDTO findIntroPage(User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
-
-        // checkpoint, RestTemplate로 zillinksData 받아오기
-        ZillinksData zillinksData = Common.zillinksApi(userPS.getBizNum()).toZillinksData();
-
-        // check-point 스프링에서 trackingCode 자동할당 구현 -> 실력 부족으로 구현 불가능
-        String trackingCode = null;
-        IntroPage introPagePS = introPageRepository.save(saveInDTO.toEntity(userPS, zillinksData, trackingCode));
-        introPagePS.setUser(userPS);
-
-        return IntroPageResponse.SaveOutDTO.builder()
-                .id(introPagePS.getId())
-                .pavicon(introPagePS.getPavicon())
-                .webPageName(introPagePS.getWebPageName())
-                .subDomain(introPagePS.getSubDomain())
-                .title(introPagePS.getTitle())
-                .description(introPagePS.getDescription())
-                .zillinksData(introPagePS.getZillinksData())
-                .logo(introPagePS.getLogo())
-                .introFile(introPagePS.getIntroFile())
-                .mediaKitFile(introPagePS.getMediaKitFile())
-                .trackingCode(introPagePS.getTrackingCode())
-                .build();
-    }
-
-    public IntroPageResponse.FindOutDTO findIntroPage(User user) {
-        User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        return IntroPageResponse.FindOutDTO.builder()
-                .id(introPagePS.getId())
-                .zillinksData(introPagePS.getZillinksData())
-                .logo(introPagePS.getLogo())
-                .introFile(introPagePS.getIntroFile())
-                .mediaKitFile(introPagePS.getMediaKitFile())
-                .trackingCode(introPagePS.getTrackingCode())
+        return IntroPageOutDTO.builder()
+                .introPageId(introPagePS.getId())
+                .color(introPagePS.getColor())
                 .build();
     }
 
     @Transactional
-    public IntroPageResponse.UpdateOutDTO updateIntroPage(IntroPageRequest.UpdateInDTO updateInDTO, User user) {
+    public UpdateIntroPageOutDTO updateIntroPage(IntroPageRequest.UpdateInDTO updateInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-        introPagePS.changeIntroPageInfo(updateInDTO);
 
-        return IntroPageResponse.UpdateOutDTO.builder()
-                .id(introPagePS.getId())
-                .zillinksData(introPagePS.getZillinksData())
-                .logo(introPagePS.getLogo())
-                .introFile(introPagePS.getIntroFile())
-                .mediaKitFile(introPagePS.getMediaKitFile())
-                .trackingCode(introPagePS.getTrackingCode())
+        introPagePS.changeIntroPage(updateInDTO);
+        return UpdateIntroPageOutDTO.builder()
+                .introPageId(introPagePS.getId())
+                .color(introPagePS.getColor())
+                .build();
+    }
+
+    public InfoOutDTO findInfo(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        return InfoOutDTO.builder()
+                .introPageId(introPagePS.getId())
+                .webPageInfo(introPagePS.getWebPageInfo())
+                .build();
+    }
+
+    @Transactional
+    public UpdateInfoOutDTO updateInfo(IntroPageRequest.UpdateInfoInDTO updateInfoInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        introPagePS.changeIntroPageInfo(updateInfoInDTO);
+        return UpdateInfoOutDTO.builder()
+                .introPageId(introPagePS.getId())
+                .webPageInfo(updateInfoInDTO.getWebPageInfo())
                 .build();
     }
 }
