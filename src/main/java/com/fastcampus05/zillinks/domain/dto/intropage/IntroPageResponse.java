@@ -15,6 +15,15 @@ public class IntroPageResponse {
     @Builder
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveIntroPageOutDTO {
+        private Long introPageId;
+        private String color;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class IntroPageOutDTO {
         private Long introPageId;
         private String color;

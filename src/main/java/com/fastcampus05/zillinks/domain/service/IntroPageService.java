@@ -1,13 +1,9 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
-import com.fastcampus05.zillinks.core.exception.Exception403;
-import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
-import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
-import com.fastcampus05.zillinks.domain.model.intropage.ZillinksData;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +21,18 @@ public class IntroPageService {
 
     private final IntroPageRepository introPageRepository;
     private final UserRepository userRepository;
+
+    @Transactional
+    public SaveIntroPageOutDTO saveIntroPage(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
+        return SaveIntroPageOutDTO.builder()
+                .introPageId(introPagePS.getId())
+                .color(introPagePS.getColor())
+                .build();
+    }
 
     public IntroPageOutDTO findIntroPage(User user) {
         User userPS = userRepository.findById(user.getId())
