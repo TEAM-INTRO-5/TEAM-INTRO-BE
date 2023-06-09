@@ -71,7 +71,14 @@ public class IntroPageService {
 
         return InfoOutDTO.builder()
                 .introPageId(introPagePS.getId())
-                .webPageInfo(introPagePS.getWebPageInfo())
+                .webPageInfoOutDTO(InfoOutDTO.WebPageInfoOutDTO.builder()
+                        .pavicon(introPagePS.getWebPageInfo().getPavicon())
+                        .webPageName(introPagePS.getWebPageInfo().getWebPageName())
+                        .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                        .title(introPagePS.getWebPageInfo().getTitle())
+                        .description(introPagePS.getWebPageInfo().getDescription())
+                        .build()
+                )
                 .build();
     }
 
@@ -86,7 +93,13 @@ public class IntroPageService {
         introPagePS.changeIntroPageInfo(updateInfoInDTO);
         return UpdateInfoOutDTO.builder()
                 .introPageId(introPagePS.getId())
-                .webPageInfo(updateInfoInDTO.getWebPageInfo())
+                .webPageInfoOutDTO(UpdateInfoOutDTO.WebPageInfoOutDTO.builder()
+                        .pavicon(introPagePS.getWebPageInfo().getPavicon())
+                        .webPageName(introPagePS.getWebPageInfo().getWebPageName())
+                        .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                        .title(introPagePS.getWebPageInfo().getTitle())
+                        .description(introPagePS.getWebPageInfo().getDescription())
+                        .build())
                 .build();
     }
 }
