@@ -1,6 +1,8 @@
 package com.fastcampus05.zillinks.core.util.service.mail;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.RandomStringGenerator;
 import com.fastcampus05.zillinks.core.util.dto.mail.MailHandler;
 import com.fastcampus05.zillinks.core.util.dto.mail.MailRequest;
 import com.fastcampus05.zillinks.core.util.dto.mail.MailResponse;
@@ -78,7 +80,7 @@ public class MailService {
             MailValid mailValid = new MailValid(verificationCode);
             mailValidRepository.save(mailValid);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception500("이메일 전송에 실패하였습니다.");
         }
         return MailResponse.MailOutDTO.builder()
                 .code(verificationCode)
@@ -92,5 +94,47 @@ public class MailService {
                 () -> new Exception400("code", "만료되었거나 유효하지않은 code입니다.")
         );
         mailValidRepository.delete(mailValidPS);
+    }
+
+    public String updatePassword(String email) {
+
+        String newPassword = RandomStringGenerator.generateRandomString();
+
+        // chaeck-point type에 따라 메일의 발송 문구가 달라진다.
+        try {
+            MailHandler mailHandler = new MailHandler(javaMailSender);
+            mailHandler.setTo(email);
+            mailHandler.setSubject("비밀번호 변경 메일입니다.");
+            String htmlContent = "<html>"
+                    + "<head>"
+                    + "<title>비밀번호 변경 메일</title>"
+                    + "<style>"
+                    + "h2 {"
+                    + "color: #2c3e50;"
+                    + "}"
+                    + "p {"
+                    + "color: #7f8c8d;"
+                    + "}"
+                    + ".verification-code {"
+                    + "background-color: #f5f5f5;"
+                    + "color: #595959;"
+                    + "border-radius: 10px;"
+                    + "padding: 20px;"
+                    + "margin-top: 20px;"
+                    + "}"
+                    + "</style>"
+                    + "</head>"
+                    + "<body>"
+                    + "<h2>새로운 비밀번호</h2>"
+                    + "<p>기존 아이디의 변경된 비밀번호를 알려드립니다.</p>"
+                    + "<div class=\"verification-code\"><h2>" + newPassword + "</h2></div>"
+                    + "</body>"
+                    + "</html>";
+            mailHandler.setText(htmlContent, true);
+            mailHandler.send();
+        } catch (Exception e) {
+            throw new Exception500("이메일 전송에 실패하였습니다.");
+        }
+        return newPassword;
     }
 }
