@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
@@ -52,8 +53,11 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
-                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        IntroPage introPagePS = introPageRepository.findById(updateInDTO.getId())
+                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        if (!introPagePS.getUser().equals(userPS))
+            throw new Exception403("권한이 없습니다.");
 
         introPagePS.changeIntroPage(updateInDTO);
         return UpdateIntroPageOutDTO.builder()
@@ -87,8 +91,11 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
-                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        IntroPage introPagePS = introPageRepository.findById(updateInfoInDTO.getId())
+                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        if (!introPagePS.getUser().equals(userPS))
+            throw new Exception403("권한이 없습니다.");
 
         introPagePS.changeIntroPageInfo(updateInfoInDTO);
         return UpdateInfoOutDTO.builder()
