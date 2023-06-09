@@ -49,6 +49,24 @@ public class DummyEntity {
         return introPage;
     }
 
+    public IntroPage newIntroPage(User user) {
+        IntroPage introPage = IntroPage.builder()
+                .user(user)
+                .pavicon("pavicon_path")
+                .webPageName("webpage_name")
+                .subDomain("sub_domain")
+                .title("title")
+                .description("description")
+                .zillinksData(Common.zillinksApi("2258701327").toZillinksData())
+                .logo("logo_path")
+                .introFile("intro_file_path")
+                .mediaKitFile("media_kit_file_path")
+                .trackingCode("tracking_code")
+                .saveStatus(SaveStatus.valueOf("SAVED"))
+                .build();
+        return introPage;
+    }
+
     public IntroPage newMockIntroPage(Long id) {
         IntroPage introPage = IntroPage.builder()
                 .pavicon("pavicon_path" + id)

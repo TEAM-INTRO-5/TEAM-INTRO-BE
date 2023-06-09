@@ -1,6 +1,8 @@
 package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
+import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.core.util.service.s3upload.S3UploaderService;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
@@ -28,6 +30,24 @@ public class IntroPageController {
 
     private final IntroPageService introPageService;
 
+    @Operation(summary = "회사 소개 페이지 조회", description = "회사 소개 페이지 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.FindOutDTO.class))),
+    })
+    @GetMapping("/s/user/{user_id}/introPage")
+    public ResponseEntity<IntroPageResponse.FindOutDTO> findIntroPage(
+            @PathVariable("user_id") Long user_id,
+            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        if (user_id != myUserDetails.getUser().getId())
+            throw new Exception403("권한이 없습니다");
+
+        IntroPageResponse.FindOutDTO findOutDTO = introPageService.findIntroPage(myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+
     @Operation(summary = "create IntroPage", description = "회사 소개 페이지 정보 저장")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.SaveOutDTO.class))),
@@ -46,17 +66,6 @@ public class IntroPageController {
     // check-point, logo 처음 생성시 default 연결, 이후 수정시 default가 아니라면 삭제 후 새롭게 연결
     // check-point, mediaKitFile, trackingCode 저장시 기존 데이터 삭제 후 연결
 
-    @Operation(summary = "Make an inquery IntroPage", description = "회사 소개 페이지 정보 조회")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.FindOutDTO.class))),
-    })
-    @GetMapping("/user/introPage")
-    public ResponseEntity<IntroPageResponse.FindOutDTO> findIntroPage(
-            @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        IntroPageResponse.FindOutDTO findOutDTO = introPageService.findIntroPage(myUserDetails.getUser());
-        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findOutDTO);
-        return new ResponseEntity(responseBody, HttpStatus.OK);
-    }
 
     @Operation(summary = "Update IntroPage", description = "회사 소개 페이지 정보 수정")
     @ApiResponses({

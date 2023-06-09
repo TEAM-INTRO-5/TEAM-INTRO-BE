@@ -27,19 +27,10 @@ public class IntroPage extends TimeBaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String pavicon; // 경로
+    private String color;
 
-    @NotEmpty
-    private String webPageName;
-
-    @NotEmpty
-    private String subDomain;
-
-    @NotEmpty
-    private String title;
-
-    @NotEmpty
-    private String description;
+    @Embedded
+    private WebPageInfo webPageInfo;
 
     @Embedded
     private ZillinksData zillinksData;
