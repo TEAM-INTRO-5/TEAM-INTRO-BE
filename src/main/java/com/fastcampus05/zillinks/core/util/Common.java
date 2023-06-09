@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.core.util;
 
+import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.dto.zillinksapi.ZillinksApiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,12 +25,17 @@ public class Common {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("rest-api-key", "fastcampus-team-5");
-
         URI endUri = UriComponentsBuilder.fromHttpUrl(URL)
                 .queryParam("bizNum", bizNum).build().encode().toUri();
 
         HttpEntity<?> httpEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> addressEntity = rt.exchange(endUri, HttpMethod.GET, httpEntity, String.class);
+
+        ResponseEntity<String> addressEntity;
+        try {
+            addressEntity = rt.exchange(endUri, HttpMethod.GET, httpEntity, String.class);
+        } catch (Exception e) {
+            throw new Exception400("bizNum", "등록되지 않은 번호입니다.");
+        }
 
         ZillinksApiResponse zillinksApiResponse;
         try {
@@ -37,7 +43,7 @@ public class Common {
             log.info("addressEntity={}", addressEntity.getBody());
             zillinksApiResponse = om.readValue(addressEntity.getBody(), ZillinksApiResponse.class);
         } catch (JsonProcessingException e) {
-            throw new Exception500(e.getMessage());
+            throw new Exception500("ZillinksApiResponse 값이 변경되었습니다.");
         }
         return zillinksApiResponse;
     }

@@ -7,6 +7,7 @@ import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.core.util.dto.oauth.GoogleToken;
 import com.fastcampus05.zillinks.core.util.dto.oauth.OAuthProfile;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshToken;
@@ -160,6 +161,14 @@ public class UserService {
         } catch (JsonProcessingException e) {
             throw new Exception500(e.getMessage());
         }
+    }
+    public String validBizNum(String bizNum) {
+        if (userRepository.findByBizNum(bizNum).isPresent()) {
+            throw new Exception400("bizNum", "이미 존재하는 사업자등록번호입니다.");
+        }
+
+        Common.zillinksApi(bizNum);
+        return "인증되었습니다.";
     }
 
 //    @MyLog

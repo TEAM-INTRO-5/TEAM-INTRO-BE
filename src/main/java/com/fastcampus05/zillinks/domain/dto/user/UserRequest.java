@@ -23,6 +23,13 @@ public class UserRequest {
         private String password;
     }
 
+    @Getter
+    @Setter
+    public static class BizNumInDTO{
+        @Pattern(regexp = "^[0-9]{10}$", message = "숫자 10자리로 입력해 주세요.")
+        private String bizNum;
+    }
+
 //    @Setter
 //    @Getter
 //    public static class JoinInDTO {

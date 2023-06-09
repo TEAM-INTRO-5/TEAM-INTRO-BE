@@ -1,27 +1,19 @@
 //package com.fastcampus05.zillinks.domain.service;
 //
-//import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 //import com.fastcampus05.zillinks.core.dummy.DummyEntity;
-//import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
-//import com.fastcampus05.zillinks.domain.model.user.User;
+//import com.fastcampus05.zillinks.core.exception.Exception400;
 //import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 //import org.assertj.core.api.Assertions;
+//import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
-//import org.mockito.Mockito;
 //import org.mockito.Spy;
 //import org.mockito.junit.jupiter.MockitoExtension;
 //import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.test.context.ActiveProfiles;
-//
-//import java.util.Optional;
-//
-//import static org.mockito.ArgumentMatchers.any;
 //
 //@ActiveProfiles("test")
 //@ExtendWith(MockitoExtension.class)
@@ -43,6 +35,35 @@
 //    @Spy
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
 //
+//
+//    @DisplayName("사업자등록번호 인증 테스트")
+//    @Test
+//    public void validBizNum_Success_test() throws Exception {
+//        // given
+//        String bizNum = "2258701327";
+//
+//        // when
+//        String result = userService.validBizNum(bizNum);
+//
+//        // then
+//
+//        Assertions.assertThat(result).isEqualTo("인증되었습니다.");
+//    }
+//
+//
+//    @DisplayName("사업자등록번호 인증 테스트")
+//    @Test
+//    public void validBizNum_Failed_test() throws Exception {
+//        // given
+//        String bizNum = "2258701327999";
+//
+//        // when
+//        // then
+//        Assertions.assertThatThrownBy(() -> userService.validBizNum(bizNum))
+//            .isInstanceOf(Exception400.class);
+//    }
+//
+
 //    @Test
 //    public void hello_test(){
 //        String pw = "1234";
