@@ -69,19 +69,18 @@ public class UserController {
 
         // check-point
         // remember_me가 true일 경우 refresh-token을 설정한 뒤 넘겨준다.
-        if (loginInDTO.getRememberMe()) {
-            try {
-                String rtk = URLEncoder.encode(loginOutDTO.getRefreshToken(), "utf-8");
-            Cookie cookie = new Cookie("refreshToken", rtk);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/api/accessToken"); // accessToken 재발급시에만 사용가능하도록 설정
+        try {
+            String rtk = URLEncoder.encode(loginOutDTO.getRefreshToken(), "utf-8");
+        Cookie cookie = new Cookie("refresh_token", rtk);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/api/accessToken"); // accessToken 재발급시에만 사용가능하도록 설정
+        if (loginInDTO.getRememberMe())
             cookie.setMaxAge(60 * 60 * 24 * 30);
-            // HTTPS를 사용할 경우 true로 설정
-            cookie.setSecure(false);
-            response.addCookie(cookie);
-            } catch (UnsupportedEncodingException e) {
-                throw new Exception500(e.getMessage());
-            }
+        // HTTPS를 사용할 경우 true로 설정
+        cookie.setSecure(false);
+        response.addCookie(cookie);
+        } catch (UnsupportedEncodingException e) {
+            throw new Exception500(e.getMessage());
         }
         return ResponseEntity.ok().body(responseBody);
     }

@@ -30,7 +30,8 @@ public class ScheduledTask {
     private final S3UploaderFileRepository s3UploaderFileRepository;
     private final AmazonS3Client amazonS3Client;
 
-    @Scheduled(cron = "0 0 0 */3 * *") // 3일에 한번꼴로 작업
+    @Scheduled(cron = "0 0 0 */3 * *") // 3 일에 한번꼴로 작업
+//    @Scheduled(cron = "*/30 * * * * *") // 30 초에 한번꼴로 작업
     public void manageS3File() {
         List<S3UploaderFile> s3UploaderFiles = s3UploaderFileRepository.findAll();
         List<String> filePaths = s3UploaderFiles.stream().map(o -> o.getEncodingPath()).collect(Collectors.toList());
@@ -44,8 +45,10 @@ public class ScheduledTask {
                 DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
                 amazonS3Client.deleteObject(deleteObjectRequest);
             }
+            throw new Exception500("강제에러");
         } catch (AmazonServiceException e) {
             throw new Exception500(e.getMessage());
+
         }
     }
 }
