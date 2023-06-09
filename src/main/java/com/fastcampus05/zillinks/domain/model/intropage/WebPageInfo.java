@@ -19,16 +19,12 @@ import javax.validation.constraints.NotEmpty;
 public class WebPageInfo {
     private String pavicon; // 경로
 
-    @NotEmpty
     private String webPageName;
 
-    @NotEmpty
     private String subDomain;
 
-    @NotEmpty
     private String title;
 
-    @NotEmpty
     private String description;
 
     public WebPageInfo(WebPageInfo webPageInfo) {

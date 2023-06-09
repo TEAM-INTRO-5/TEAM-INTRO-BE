@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
+import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.service.IntroPageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +28,24 @@ import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*
 public class IntroPageController {
 
     private final IntroPageService introPageService;
+
+    // check-point, 초기값 세팅에 대한 논의
+    @Operation(summary = "회사 소개 페이지 만들기", description = "회사 소개 페이지 정보 만들기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @PostMapping("/s/user/{user_id}/introPage")
+    public ResponseEntity<ResponseDTO<SaveIntroPageOutDTO>> saveIntroPage(
+            @PathVariable("user_id") Long user_id,
+            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        if (user_id != myUserDetails.getUser().getId())
+            throw new Exception403("권한이 없습니다");
+
+        IntroPageResponse.SaveIntroPageOutDTO saveIntroPageOutDTO = introPageService.saveIntroPage(myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(saveIntroPageOutDTO);
+        return ResponseEntity.ok(responseBody);
+    }
 
     @Operation(summary = "회사 소개 페이지 조회", description = "회사 소개 페이지 정보 조회")
     @ApiResponses({

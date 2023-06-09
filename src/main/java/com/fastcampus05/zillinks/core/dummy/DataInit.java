@@ -18,6 +18,7 @@ public class DataInit extends DummyEntity{
         return args -> {
             User taeheoki = userRepository.save(newUser("taeheoki", "2258701327"));
             IntroPage introPage = introPageRepository.save(newIntroPage(taeheoki));
+            User ssar = userRepository.save(newUser("ssar", "7058700940"));
 //            userRepository.save(newUser("ssar@nate.com", 2));
         };
     }
