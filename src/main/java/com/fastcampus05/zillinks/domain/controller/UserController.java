@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
+import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
 import com.fastcampus05.zillinks.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -175,6 +176,20 @@ public class UserController {
             String bizNum) {
         FindIdByBizNumOutDTO findIdByBizNumOutDTO = userService.findIdByBizNum(bizNum);
         ResponseDTO responseBody = new ResponseDTO<>(findIdByBizNumOutDTO);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @Operation(summary = "비밀번호 찾기", description = "잃어버린 비밀번호를 찾기 위한 과정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @PutMapping("/password")
+    public ResponseEntity<ResponseDTO> findPassword(
+            @RequestBody @Valid UserRequest.FindPasswordInDTO findPasswordInDTO,
+            Errors errors
+    ) {
+        userService.findPassword(findPasswordInDTO);
+        ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
 

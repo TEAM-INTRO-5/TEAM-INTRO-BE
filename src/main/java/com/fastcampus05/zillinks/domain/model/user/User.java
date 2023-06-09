@@ -41,4 +41,9 @@ public class User extends TimeBaseEntity {
     private String bizNum;
 
     private String role; // USER|ADMIN
+
+    // 비밀번호 찾기, 재설정 과정
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

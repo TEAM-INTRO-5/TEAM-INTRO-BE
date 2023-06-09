@@ -12,6 +12,7 @@ import com.fastcampus05.zillinks.core.util.dto.oauth.GoogleToken;
 import com.fastcampus05.zillinks.core.util.dto.oauth.OAuthProfile;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshToken;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshTokenRepository;
+import com.fastcampus05.zillinks.core.util.service.mail.MailService;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse.OAuthLoginOutDTO;
@@ -60,6 +61,7 @@ public class UserService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final MailService mailService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final GoogleAccountRepository googleAccountRepository;
@@ -196,5 +198,13 @@ public class UserService {
         return FindIdByBizNumOutDTO.builder()
                 .loginId(userOP.getLoginId())
                 .build();
+    }
+
+    @Transactional
+    public void findPassword(UserRequest.FindPasswordInDTO findPasswordInDTO) {
+        User userPS = userRepository.findByLoginIdAndEmail(findPasswordInDTO.getLoginId(), findPasswordInDTO.getEmail())
+                .orElseThrow(() -> new Exception400("login_id_and_email", "가입된 아이디/이메일 정보가 없습니다."));
+        String newPassword = mailService.updatePassword(userPS.getEmail());
+        userPS.updatePassword(passwordEncoder.encode(newPassword));
     }
 }
