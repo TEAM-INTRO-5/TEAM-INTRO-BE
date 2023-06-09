@@ -1,10 +1,5 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
-import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
-import com.fastcampus05.zillinks.domain.model.intropage.SaveStatus;
-import com.fastcampus05.zillinks.domain.model.intropage.WebPageInfo;
-import com.fastcampus05.zillinks.domain.model.intropage.ZillinksData;
-import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
@@ -29,7 +24,20 @@ public class IntroPageRequest {
         private Long id;
 
         @JsonProperty("web_page_info")
-        private WebPageInfo webPageInfo;
+        private WebPageInfoInDTO webPageInfoInDTO;
+
+        @Getter
+        public static class WebPageInfoInDTO {
+            private String pavicon; // 경로
+
+            private String webPageName;
+
+            private String subDomain;
+
+            private String title;
+
+            private String description;
+        }
     }
 
 }

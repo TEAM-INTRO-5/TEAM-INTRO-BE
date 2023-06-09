@@ -1,8 +1,5 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
-import com.fastcampus05.zillinks.domain.model.intropage.WebPageInfo;
-import com.fastcampus05.zillinks.domain.model.intropage.ZillinksData;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -50,7 +47,23 @@ public class IntroPageResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class InfoOutDTO {
         private Long introPageId;
-        private WebPageInfo webPageInfo;
+        private WebPageInfoOutDTO webPageInfoOutDTO;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        public static class WebPageInfoOutDTO {
+            private String pavicon; // 경로
+
+            private String webPageName;
+
+            private String subDomain;
+
+            private String title;
+
+            private String description;
+        }
     }
 
     @Getter
@@ -59,6 +72,22 @@ public class IntroPageResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateInfoOutDTO {
         private Long introPageId;
-        private WebPageInfo webPageInfo;
+        private WebPageInfoOutDTO webPageInfoOutDTO;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        public static class WebPageInfoOutDTO {
+            private String pavicon; // 경로
+
+            private String webPageName;
+
+            private String subDomain;
+
+            private String title;
+
+            private String description;
+        }
     }
 }
