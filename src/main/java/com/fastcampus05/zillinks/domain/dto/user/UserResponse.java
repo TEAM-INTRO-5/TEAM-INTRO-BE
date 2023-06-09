@@ -1,6 +1,5 @@
 package com.fastcampus05.zillinks.domain.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -9,37 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class UserResponse {
-//    @Getter @Setter
-//    public static class DetailOutDTO{
-//        private Long id;
-//        private String username;
-//        private String email;
-//        private String fullName;
-//        private String role;
-//
-//        public DetailOutDTO(User user) {
-//            this.id = user.getId();
-//            this.username = user.getUsername();
-//            this.email = user.getEmail();
-//            this.fullName = user.getFullName();
-//            this.role = user.getRole();
-//        }
-//    }
-//
-//    @Setter
-//    @Getter
-//    public static class JoinOutDTO {
-//        private Long id;
-//        private String username;
-//        private String fullName;
-//
-//        public JoinOutDTO(User user) {
-//            this.id = user.getId();
-//            this.username = user.getUsername();
-//            this.fullName = user.getFullName();
-//        }
-//    }
-
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class LoginOutDTO {
@@ -63,6 +31,7 @@ public class UserResponse {
         private GoogleProfile googleProfile;
 
         @Getter
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class GoogleProfile {
             private String oAuthId;
             private String email;
@@ -74,5 +43,23 @@ public class UserResponse {
                 this.name = name;
             }
         }
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindIdByEmailOutDTO {
+        private String loginId;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindIdByBizNumOutDTO {
+        private String loginId;
     }
 }

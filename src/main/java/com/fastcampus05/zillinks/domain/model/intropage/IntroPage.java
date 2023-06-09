@@ -54,7 +54,7 @@ public class IntroPage extends TimeBaseEntity {
     private String trackingCode;
 
     @Enumerated(EnumType.STRING)
-    private SaveStatus saveStatus; // [TEMP_SAVED, SAVED, UPDATING]
+    private SaveStatus saveStatus; // [TEMP_SAVED, SAVED]
 
     public void setUser(User user) {
         this.user = user;

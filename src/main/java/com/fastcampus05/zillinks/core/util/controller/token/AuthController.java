@@ -6,10 +6,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
+import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.dto.token.TokenResponse;
 import com.fastcampus05.zillinks.core.util.service.token.RefreshTokenService;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,9 +23,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -40,8 +48,14 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = TokenResponse.class))),
     })
+    @Parameters({
+            @Parameter(name = "rememberMe", description = "자동 로그인 체크 유무", example="true"),
+    })
     @PostMapping("/accessToken")
-    public ResponseEntity<?> generateAccessToken(HttpServletRequest request) {
+    public ResponseEntity<?> generateAccessToken(
+            @RequestParam(name = "remember_me",defaultValue = "false") Boolean rememberMe,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         String prefixJwt = request.getHeader(MyJwtProvider.HEADER);
 
         if (prefixJwt.isEmpty() && prefixJwt.isBlank()) {
@@ -68,6 +82,22 @@ public class AuthController {
             TokenResponse tokenResponse = refreshTokenService.generateAccessToken(refreshToken, validList, isWithInWeek);
             if (!StringUtils.hasText(tokenResponse.getRefreshToken())) {
                 tokenResponse.setRefreshToken(MyJwtProvider.TOKEN_PREFIX + refreshJwt);
+            } else {
+                // check-point
+                // remember_me가 true일 경우 refresh-token을 설정한 뒤 넘겨준다.
+                try {
+                    String rtk = URLEncoder.encode(tokenResponse.getRefreshToken(), "utf-8");
+                    Cookie cookie = new Cookie("refresh_token", rtk);
+                    cookie.setHttpOnly(true);
+                    cookie.setPath("/api/accessToken"); // accessToken 재발급시에만 사용가능하도록 설정
+                    if (rememberMe)
+                        cookie.setMaxAge(60 * 60 * 24 * 30);
+                    // HTTPS를 사용할 경우 true로 설정
+                    cookie.setSecure(false);
+                    response.addCookie(cookie);
+                } catch (UnsupportedEncodingException e) {
+                    throw new Exception500(e.getMessage());
+                }
             }
             ResponseDTO responseBody = new ResponseDTO(tokenResponse);
             return ResponseEntity.ok(responseBody);
