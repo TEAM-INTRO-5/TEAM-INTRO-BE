@@ -14,10 +14,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +80,23 @@ public class UserController {
         ResponseDTO responseBody = new ResponseDTO<>(oAuthLoginOutDTO);
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @Operation(summary = "사업자등록번호 인증 요청", description = "사업자등록번호를 입력하면 질링스 api에 요청을 해서 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증되었습니다.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "숫자 10자리로 입력해 주세요.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "등록되지 않은 번호입니다.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "bizNum", description = "사업자등록번호", example = "2258701327", required = true)
+    })
+    @PostMapping("/validBizNum")
+    public ResponseEntity<?> validBizNum(@RequestBody @Valid UserRequest.BizNumInDTO bizNum, Errors errors) {
+        String result = userService.validBizNum(bizNum.getBizNum());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", result);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
 //    @MyErrorLog
 //    @MyLog
 //    @PostMapping("/api/joinUser")

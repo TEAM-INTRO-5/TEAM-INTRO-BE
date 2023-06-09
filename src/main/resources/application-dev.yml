@@ -88,6 +88,7 @@ cloud:
       delete-dir: http://127.0.0.1:4566/test-bucket/
     region:
       static: ${s3_region_static} # 리전 정보(서울)
+#        static: ap-northeast-2 # 리전 정보(서울)
     stack:
       auto: false
 

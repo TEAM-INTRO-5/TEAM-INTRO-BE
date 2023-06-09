@@ -7,10 +7,12 @@
 //import com.fastcampus05.zillinks.core.config.MySecurityConfig;
 //import com.fastcampus05.zillinks.core.dummy.DummyEntity;
 //import com.fastcampus05.zillinks.domain.core.MyWithMockUser;
+//import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 //import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 //import com.fastcampus05.zillinks.domain.service.UserService;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import org.assertj.core.api.Assertions;
+//import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.Mockito;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,12 @@
 //import org.springframework.boot.test.mock.mockito.MockBean;
 //import org.springframework.context.annotation.EnableAspectJAutoProxy;
 //import org.springframework.context.annotation.Import;
+//import org.springframework.http.HttpStatus;
 //import org.springframework.http.MediaType;
 //import org.springframework.test.context.ActiveProfiles;
 //import org.springframework.test.web.servlet.MockMvc;
 //import org.springframework.test.web.servlet.ResultActions;
+//import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 //
 //import static org.mockito.ArgumentMatchers.any;
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,6 +56,98 @@
 //    private ObjectMapper om;
 //    @MockBean
 //    private UserService userService;
+//
+//
+//    @DisplayName("사업자등록번호 인증 테스트")
+//    @Test
+//    public void validBizNum_성공_test() throws Exception {
+//        // given
+//        UserRequest.BizNumInDTO bizNumInDTO = new UserRequest.BizNumInDTO();
+//        bizNumInDTO.setBizNum("2258701327");
+//
+//        // when
+//        ResultActions resultActions = mvc.perform(
+//                post("/api/validBizNum")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(om.writeValueAsString(bizNumInDTO))
+//        );
+//
+//        // then
+//        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+//    }
+//
+//    @DisplayName("사업자등록번호 인증 테스트")
+//    @Test
+//    public void validBizNum_유효성검사_실패1_test() throws Exception {
+//        // given
+//        UserRequest.BizNumInDTO bizNumInDTO = new UserRequest.BizNumInDTO();
+//        bizNumInDTO.setBizNum("2258701327999");
+////        bizNumInDTO.setBizNum("2258701327");
+//
+//        // when
+//        ResultActions resultActions = mvc.perform(
+//                post("/api/validBizNum")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(om.writeValueAsString(bizNumInDTO))
+//        );
+//
+//        // then
+//        resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest());
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("badRequest"));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.key").value("bizNum"));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.value").value("숫자 10자리로 입력해 주세요."));
+//    }
+//
+//    @DisplayName("사업자등록번호 인증 테스트")
+//    @Test
+//    public void validBizNum_유효성검사_실패2_test() throws Exception {
+//        // given
+//        UserRequest.BizNumInDTO bizNumInDTO = new UserRequest.BizNumInDTO();
+//        bizNumInDTO.setBizNum("225-87-01327");
+////        bizNumInDTO.setBizNum("2258701327");
+//
+//        // when
+//        ResultActions resultActions = mvc.perform(
+//                post("/api/validBizNum")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(om.writeValueAsString(bizNumInDTO))
+//        );
+//
+//        // then
+//        resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest());
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("badRequest"));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.key").value("bizNum"));
+//        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.value").value("숫자 10자리로 입력해 주세요."));
+//    }
+////
+////    @DisplayName("사업자등록번호 인증 테스트")
+////    @Test
+////    public void validBizNum_데이터없을때_실패_test() throws Exception {
+////        // given
+////        UserRequest.BizNumInDTO bizNumInDTO = new UserRequest.BizNumInDTO();
+////        bizNumInDTO.setBizNum("1111111111");
+//////        bizNumInDTO.setBizNum("2258701327");
+////
+////        Mockito.when(userService.validBizNum(bizNumInDTO.getBizNum()))
+////                .thenReturn(String.valueOf(new ResponseDTO(HttpStatus.BAD_REQUEST, "badRequest", "등록되지 않은 번호입니다.")));
+////
+////        // when
+////        ResultActions resultActions = mvc.perform(
+////                post("/api/validBizNum")
+////                        .contentType(MediaType.APPLICATION_JSON)
+////                        .content(om.writeValueAsString(bizNumInDTO))
+////        );
+////
+////        // then
+////        resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest());
+////        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400));
+////        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("badRequest"));
+////    }
 //
 //    @Test
 //    public void join_test() throws Exception {
