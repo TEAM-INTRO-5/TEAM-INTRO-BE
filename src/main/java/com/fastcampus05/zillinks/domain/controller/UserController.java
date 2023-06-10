@@ -1,6 +1,8 @@
 package com.fastcampus05.zillinks.domain.controller;
 
+import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -188,6 +192,24 @@ public class UserController {
             Errors errors
     ) {
         userService.findPassword(findPasswordInDTO);
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @Operation(summary = "비밀번호 재설정", description = "비밀번호 변경을 위한 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @PostMapping("/s/user/{user_id}/password")
+    public ResponseEntity<ResponseDTO> updatePassword(
+            @PathVariable("user_id") Long userId,
+            @RequestParam("password") @Size(min = 4, max = 20) String password,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        if (userId != myUserDetails.getUser().getId())
+            throw new Exception403("권한이 없습니다");
+
+        userService.updatePassword(password, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }

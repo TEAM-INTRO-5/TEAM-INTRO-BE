@@ -13,5 +13,5 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Builder
 public class Marketing {
-    private String marketingEmail;
+    private Boolean marketingEmail;
 }
