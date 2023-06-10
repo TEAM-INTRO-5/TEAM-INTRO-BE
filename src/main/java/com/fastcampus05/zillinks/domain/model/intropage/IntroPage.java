@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Getter
 @Builder
+@Slf4j
 public class IntroPage extends TimeBaseEntity {
 
     public static final String DEFAULT_IMAGE = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg";
@@ -69,22 +71,16 @@ public class IntroPage extends TimeBaseEntity {
         this.user = user;
     }
 
-    public void changeIntroPage(IntroPageRequest.UpdateInDTO updateInDTO) {
+    public void changeIntroPage(String color) {
 
-        this.color = updateInDTO.getColor();
+        this.color = color;
         this.saveStatus = SaveStatus.SAVED;
         // check-point
         // Widget 부분 추가
     }
 
-    public void changeIntroPageInfo(IntroPageRequest.UpdateInfoInDTO updateInfoInDTO) {
-        this.webPageInfo = WebPageInfo.builder()
-                .pavicon(updateInfoInDTO.getWebPageInfoInDTO().getPavicon())
-                .webPageName(updateInfoInDTO.getWebPageInfoInDTO().getWebPageName())
-                .subDomain(updateInfoInDTO.getWebPageInfoInDTO().getSubDomain())
-                .title(updateInfoInDTO.getWebPageInfoInDTO().getTitle())
-                .description(updateInfoInDTO.getWebPageInfoInDTO().getDescription())
-                .build();
+    public void changeIntroPageInfo(String pavicon, String webPageName, String subDomain, String title, String description) {
+        this.webPageInfo = new WebPageInfo(pavicon, webPageName, subDomain, title, description);
 
         // check-point
         // Widget 부분 추가

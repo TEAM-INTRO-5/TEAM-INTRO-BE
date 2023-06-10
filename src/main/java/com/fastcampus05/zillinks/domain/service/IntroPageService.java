@@ -30,7 +30,6 @@ public class IntroPageService {
 
         IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
         return SaveIntroPageOutDTO.builder()
-                .introPageId(introPagePS.getId())
                 .color(introPagePS.getColor())
                 .build();
     }
@@ -43,7 +42,6 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         return IntroPageOutDTO.builder()
-                .introPageId(introPagePS.getId())
                 .color(introPagePS.getColor())
                 .build();
     }
@@ -53,15 +51,11 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findById(updateInDTO.getId())
+        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        if (!introPagePS.getUser().equals(userPS))
-            throw new Exception403("권한이 없습니다.");
-
-        introPagePS.changeIntroPage(updateInDTO);
+        introPagePS.changeIntroPage(updateInDTO.getColor());
         return UpdateIntroPageOutDTO.builder()
-                .introPageId(introPagePS.getId())
                 .color(introPagePS.getColor())
                 .build();
     }
@@ -74,15 +68,11 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         return InfoOutDTO.builder()
-                .introPageId(introPagePS.getId())
-                .webPageInfoOutDTO(InfoOutDTO.WebPageInfoOutDTO.builder()
-                        .pavicon(introPagePS.getWebPageInfo().getPavicon())
-                        .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-                        .subDomain(introPagePS.getWebPageInfo().getSubDomain())
-                        .title(introPagePS.getWebPageInfo().getTitle())
-                        .description(introPagePS.getWebPageInfo().getDescription())
-                        .build()
-                )
+                .pavicon(introPagePS.getWebPageInfo().getPavicon())
+                .webPageName(introPagePS.getWebPageInfo().getWebPageName())
+                .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                .title(introPagePS.getWebPageInfo().getTitle())
+                .description(introPagePS.getWebPageInfo().getDescription())
                 .build();
     }
 
@@ -91,22 +81,22 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findById(updateInfoInDTO.getId())
+        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        if (!introPagePS.getUser().equals(userPS))
-            throw new Exception403("권한이 없습니다.");
-
-        introPagePS.changeIntroPageInfo(updateInfoInDTO);
+        introPagePS.changeIntroPageInfo(
+                updateInfoInDTO.getPavicon(),
+                updateInfoInDTO.getWebPageName(),
+                updateInfoInDTO.getSubDomain(),
+                updateInfoInDTO.getTitle(),
+                updateInfoInDTO.getDescription()
+        );
         return UpdateInfoOutDTO.builder()
-                .introPageId(introPagePS.getId())
-                .webPageInfoOutDTO(UpdateInfoOutDTO.WebPageInfoOutDTO.builder()
-                        .pavicon(introPagePS.getWebPageInfo().getPavicon())
-                        .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-                        .subDomain(introPagePS.getWebPageInfo().getSubDomain())
-                        .title(introPagePS.getWebPageInfo().getTitle())
-                        .description(introPagePS.getWebPageInfo().getDescription())
-                        .build())
+                .pavicon(introPagePS.getWebPageInfo().getPavicon())
+                .webPageName(introPagePS.getWebPageInfo().getWebPageName())
+                .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                .title(introPagePS.getWebPageInfo().getTitle())
+                .description(introPagePS.getWebPageInfo().getDescription())
                 .build();
     }
 }

@@ -14,12 +14,8 @@ import javax.persistence.Embeddable;
 @Builder
 public class WebPageInfo {
     private String pavicon; // 경로
-
     private String webPageName;
-
     private String subDomain;
-
     private String title;
-
     private String description;
 }
