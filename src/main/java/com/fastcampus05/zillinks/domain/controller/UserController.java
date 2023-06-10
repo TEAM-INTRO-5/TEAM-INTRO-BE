@@ -191,5 +191,4 @@ public class UserController {
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
-
 }
