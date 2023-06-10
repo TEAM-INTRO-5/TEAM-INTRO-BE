@@ -81,7 +81,7 @@ public class IntroPageService {
         return InfoOutDTO.builder()
                 .pavicon(introPagePS.getWebPageInfo().getPavicon())
                 .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-                .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                .subDomain(introPagePS.getWebPageInfo().getDomain())
                 .title(introPagePS.getWebPageInfo().getTitle())
                 .description(introPagePS.getWebPageInfo().getDescription())
                 .build();
@@ -95,6 +95,7 @@ public class IntroPageService {
         IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
+        // pavicon 저장된 경로 변경이 없을 경우 기존 데이터 사용으로 간주 - 삭제X
         if (!introPagePS.getWebPageInfo().getPavicon().equals(updateInfoInDTO.getPavicon())) {
             Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
             s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
@@ -109,7 +110,7 @@ public class IntroPageService {
         return UpdateInfoOutDTO.builder()
                 .pavicon(introPagePS.getWebPageInfo().getPavicon())
                 .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-                .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                .subDomain(introPagePS.getWebPageInfo().getDomain())
                 .title(introPagePS.getWebPageInfo().getTitle())
                 .description(introPagePS.getWebPageInfo().getDescription())
                 .build();
