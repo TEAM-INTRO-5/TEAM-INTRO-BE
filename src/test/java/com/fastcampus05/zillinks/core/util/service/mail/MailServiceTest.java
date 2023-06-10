@@ -33,7 +33,7 @@ class MailServiceTest extends DummyEntity {
     @Test
     public void mail_send_exception_test() throws Exception {
         // given
-        MailRequest.MailInDTO mailInDTO = new MailRequest.MailInDTO("taeheoki@naver.com", "duplicateCheck");
+        MailRequest.MailInDTO mailInDTO = new MailRequest.MailInDTO("taeheoki@naver.com", true);
         User taeheoki = newUser("taeheoki", "2258701327");
 
         // stub
