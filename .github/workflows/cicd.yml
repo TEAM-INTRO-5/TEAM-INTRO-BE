@@ -8,9 +8,7 @@
 name: Backend CICD
 on:
   push:
-    branches: [ release-test ]
-  pull_request:
-    branches: [ main, dev ]
+    branches: [ main, dev, release-test ]
 
 jobs:
   deploy:
