@@ -2,7 +2,6 @@ package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.core.exception.Exception400;
-import com.fastcampus05.zillinks.core.exception.Exception403;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
@@ -28,9 +27,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -52,11 +48,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = LoginOutDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "loginInDTO", description = "로그인 정보",
-                    example="{" +
-                            "   \"email\":\"taeheoki@naver.com\"," +
-                            "   \"password\":\"1234\"" +
-                            "}"),
+            @Parameter(name = "loginInDTO")
     })
     @PostMapping("/login")
     public ResponseEntity<?> login(
@@ -94,11 +86,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = OAuthLoginOutDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "loginInDTO", description = "로그인 정보",
-                    example="{" +
-                            "   \"email\":\"taeheoki@naver.com\"," +
-                            "   \"password\":\"1234\"" +
-                            "}"),
+            @Parameter(name = "code"),
     })
     @GetMapping("/callback")
     public ResponseEntity<?> callback(String code, HttpServletRequest request) {
@@ -136,7 +124,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "loginId", description = "로그인 ID", example = "taeheoki")
+            @Parameter(name = "checkLoginIdInDTO"),
     })
     @PostMapping("/checkLoginId")
     public ResponseEntity<?> checkLoginId(
@@ -153,13 +141,13 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "email", description = "email", example="taeheoki@naver.com")
+            @Parameter(name = "findIdByEmailInDTO"),
     })
     @PostMapping("/findIdByEmail")
     public ResponseEntity<?> findIdByEmail(
             @RequestBody @Valid UserRequest.FindIdByEmailInDTO findIdByEmailInDTO,
             Errors errors
-            ) {
+    ) {
         FindIdByEmailOutDTO findIdByEmailOutDTO = userService.findIdByEmail(findIdByEmailInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(findIdByEmailOutDTO);
         return ResponseEntity.ok().body(responseBody);
@@ -170,7 +158,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "bizNum", description = "입력값이 10자리 숫자여야 합니다.", example="2258701327")
+            @Parameter(name = "findIdByBizNumInDTO"),
     })
     @PostMapping("/findIdByBizNum")
     public ResponseEntity<?> findIdByBizNum(
@@ -186,6 +174,9 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
+    @Parameters({
+            @Parameter(name = "findPasswordInDTO"),
+    })
     @PutMapping("/password")
     public ResponseEntity<ResponseDTO> findPassword(
             @RequestBody @Valid UserRequest.FindPasswordInDTO findPasswordInDTO,
@@ -199,6 +190,10 @@ public class UserController {
     @Operation(summary = "비밀번호 재설정", description = "비밀번호 변경을 위한 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updatePasswordInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true),
     })
     @PostMapping("/s/user/password")
     public ResponseEntity<ResponseDTO> updatePassword(

@@ -9,10 +9,6 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
-import static org.hibernate.validator.internal.util.CollectionHelper.newArrayList;
-
 @Configuration
 public class SwaggerConfig {
 
@@ -21,15 +17,6 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("그룹1")
                 .pathsToMatch("/api/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi group2() {
-        return GroupedOpenApi.builder()
-                .group("그룹2")
-                .pathsToMatch("/api/**")
-                // .packagesToScan("com.example.swagger") // package 필터 설정
                 .build();
     }
 

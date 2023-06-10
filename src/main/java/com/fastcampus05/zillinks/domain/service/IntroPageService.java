@@ -102,7 +102,7 @@ public class IntroPageService {
         introPagePS.changeIntroPageInfo(
                 updateInfoInDTO.getPavicon(),
                 updateInfoInDTO.getWebPageName(),
-                updateInfoInDTO.getSubDomain(),
+                updateInfoInDTO.getDomain(),
                 updateInfoInDTO.getTitle(),
                 updateInfoInDTO.getDescription()
         );
