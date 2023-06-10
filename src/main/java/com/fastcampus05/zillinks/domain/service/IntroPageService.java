@@ -59,6 +59,13 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         introPagePS.changeIntroPage(updateInDTO.getColor());
+        /**
+         * if (!introPagePS.getWebPageInfo().getPavicon().equals(updateInfoInDTO.getPavicon())) {
+         *             Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
+         *             s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
+         *         }
+         *         이와 같이 S3UploaderFile을 관리하는 로직이 추가되어야 한다.
+         */
         return UpdateIntroPageOutDTO.builder()
                 .color(introPagePS.getColor())
                 .build();
@@ -88,8 +95,10 @@ public class IntroPageService {
         IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
-        s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
+        if (!introPagePS.getWebPageInfo().getPavicon().equals(updateInfoInDTO.getPavicon())) {
+            Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
+            s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
+        }
         introPagePS.changeIntroPageInfo(
                 updateInfoInDTO.getPavicon(),
                 updateInfoInDTO.getWebPageName(),

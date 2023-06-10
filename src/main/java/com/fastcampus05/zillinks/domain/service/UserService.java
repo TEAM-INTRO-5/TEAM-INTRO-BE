@@ -207,4 +207,11 @@ public class UserService {
         String newPassword = mailService.updatePassword(userPS.getEmail());
         userPS.updatePassword(passwordEncoder.encode(newPassword));
     }
+
+    @Transactional
+    public void updatePassword(String password, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        userPS.updatePassword(passwordEncoder.encode(password));
+    }
 }
