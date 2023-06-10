@@ -200,16 +200,12 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
-    @PostMapping("/s/user/{user_id}/password")
+    @PostMapping("/s/user/password")
     public ResponseEntity<ResponseDTO> updatePassword(
-            @PathVariable("user_id") Long userId,
             @RequestBody @Valid UserRequest.UpdatePasswordInDTO updatePasswordInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        if (userId != myUserDetails.getUser().getId())
-            throw new Exception403("권한이 없습니다");
-
         userService.updatePassword(updatePasswordInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);

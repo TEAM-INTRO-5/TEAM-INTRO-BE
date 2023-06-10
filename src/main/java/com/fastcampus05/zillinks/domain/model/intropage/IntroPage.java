@@ -29,7 +29,7 @@ public class IntroPage extends TimeBaseEntity {
     @Column(name = "intod_page_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
