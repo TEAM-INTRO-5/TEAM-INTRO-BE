@@ -19,6 +19,6 @@ public class S3UploaderFile extends TimeBaseEntity {
 
     @Column(name = "original_path")
     private String originalPath;
-    @Column(name = "encoding_path")
+    @Column(name = "encoding_path", unique = true)
     private String encodingPath;
 }

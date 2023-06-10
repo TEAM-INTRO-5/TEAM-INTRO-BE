@@ -1,7 +1,8 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
-import com.fastcampus05.zillinks.core.exception.Exception403;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
 
@@ -22,6 +25,7 @@ public class IntroPageService {
 
     private final IntroPageRepository introPageRepository;
     private final UserRepository userRepository;
+    private final S3UploaderFileRepository s3UploaderFileRepository;
 
     @Transactional
     public SaveIntroPageOutDTO saveIntroPage(User user) {
@@ -84,6 +88,8 @@ public class IntroPageService {
         IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
+        Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
+        s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
         introPagePS.changeIntroPageInfo(
                 updateInfoInDTO.getPavicon(),
                 updateInfoInDTO.getWebPageName(),
