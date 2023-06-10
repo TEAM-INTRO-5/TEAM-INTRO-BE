@@ -136,14 +136,14 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "loginId", description = "로그인 ID", example="taeheoki")
+            @Parameter(name = "loginId", description = "로그인 ID", example = "taeheoki")
     })
-    @GetMapping("/checkLoginId")
+    @PostMapping("/checkLoginId")
     public ResponseEntity<?> checkLoginId(
-            @RequestParam
-            @Pattern(regexp = "^[a-zA-Z0-9]{4,14}$", message = "영문/숫자 4~14자 이내로 작성해주세요")
-            String loginId) {
-        userService.checkLoginId(loginId);
+            @RequestBody @Valid UserRequest.CheckLoginIdInDTO checkLoginIdInDTO,
+            Errors errors
+    ) {
+        userService.checkLoginId(checkLoginIdInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
@@ -155,12 +155,12 @@ public class UserController {
     @Parameters({
             @Parameter(name = "email", description = "email", example="taeheoki@naver.com")
     })
-    @GetMapping("/findIdByEmail")
+    @PostMapping("/findIdByEmail")
     public ResponseEntity<?> findIdByEmail(
-            @RequestParam
-            @Email(message = "이메일 형식이 올바르지 않습니다.")
-            String email) {
-        FindIdByEmailOutDTO findIdByEmailOutDTO = userService.findIdByEmail(email);
+            @RequestBody @Valid UserRequest.FindIdByEmailInDTO findIdByEmailInDTO,
+            Errors errors
+            ) {
+        FindIdByEmailOutDTO findIdByEmailOutDTO = userService.findIdByEmail(findIdByEmailInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(findIdByEmailOutDTO);
         return ResponseEntity.ok().body(responseBody);
     }
@@ -172,12 +172,12 @@ public class UserController {
     @Parameters({
             @Parameter(name = "bizNum", description = "입력값이 10자리 숫자여야 합니다.", example="2258701327")
     })
-    @GetMapping("/findIdByBizNum")
+    @PostMapping("/findIdByBizNum")
     public ResponseEntity<?> findIdByBizNum(
-            @RequestParam
-            @Pattern(regexp = "\\d{10}", message = "입력값이 10자리 숫자여야 합니다.")
-            String bizNum) {
-        FindIdByBizNumOutDTO findIdByBizNumOutDTO = userService.findIdByBizNum(bizNum);
+            @RequestBody @Valid UserRequest.FindIdByBizNumInDTO findIdByBizNumInDTO,
+            Errors errors
+    ) {
+        FindIdByBizNumOutDTO findIdByBizNumOutDTO = userService.findIdByBizNum(findIdByBizNumInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(findIdByBizNumOutDTO);
         return ResponseEntity.ok().body(responseBody);
     }
@@ -203,13 +203,14 @@ public class UserController {
     @PostMapping("/s/user/{user_id}/password")
     public ResponseEntity<ResponseDTO> updatePassword(
             @PathVariable("user_id") Long userId,
-            @RequestParam("password") @Size(min = 4, max = 20) String password,
+            @RequestBody @Valid UserRequest.UpdatePasswordInDTO updatePasswordInDTO,
+            Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         if (userId != myUserDetails.getUser().getId())
             throw new Exception403("권한이 없습니다");
 
-        userService.updatePassword(password, myUserDetails.getUser());
+        userService.updatePassword(updatePasswordInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }

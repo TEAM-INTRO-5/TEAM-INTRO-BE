@@ -175,15 +175,15 @@ public class UserService {
         return "인증되었습니다.";
     }
 
-    public void checkLoginId(String loginId) {
-        Optional<User> userOP = userRepository.findByLoginId(loginId);
+    public void checkLoginId(UserRequest.CheckLoginIdInDTO checkLoginIdInDTO) {
+        Optional<User> userOP = userRepository.findByLoginId(checkLoginIdInDTO.getLoginId());
         if (userOP.isPresent()) {
             throw new Exception400("loginId", "존재하는 ID 입니다.");
         }
     }
 
-    public FindIdByEmailOutDTO findIdByEmail(String email) {
-        User userOP = userRepository.findByEmail(email).orElseThrow(
+    public FindIdByEmailOutDTO findIdByEmail(UserRequest.FindIdByEmailInDTO findIdByEmailInDTO) {
+        User userOP = userRepository.findByEmail(findIdByEmailInDTO.getEmail()).orElseThrow(
                 () -> new Exception400("email", "user가 존재하지 않습니다.")
         );
         return FindIdByEmailOutDTO.builder()
@@ -191,8 +191,8 @@ public class UserService {
                 .build();
     }
 
-    public FindIdByBizNumOutDTO findIdByBizNum(String bizNum) {
-        User userOP = userRepository.findByBizNum(bizNum).orElseThrow(
+    public FindIdByBizNumOutDTO findIdByBizNum(UserRequest.FindIdByBizNumInDTO findIdByBizNumInDTO) {
+        User userOP = userRepository.findByBizNum(findIdByBizNumInDTO.getBizNum()).orElseThrow(
                 () -> new Exception400("email", "user가 존재하지 않습니다.")
         );
         return FindIdByBizNumOutDTO.builder()
@@ -209,9 +209,9 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(String password, User user) {
+    public void updatePassword(UserRequest.UpdatePasswordInDTO updatePasswordInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-        userPS.updatePassword(passwordEncoder.encode(password));
+        userPS.updatePassword(passwordEncoder.encode(updatePasswordInDTO.getPassword()));
     }
 }
