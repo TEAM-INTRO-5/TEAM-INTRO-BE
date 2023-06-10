@@ -7,6 +7,7 @@ import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.dto.token.AuthRequest;
 import com.fastcampus05.zillinks.core.util.dto.token.TokenResponse;
 import com.fastcampus05.zillinks.core.util.service.token.RefreshTokenService;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
@@ -21,14 +22,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -49,11 +49,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = TokenResponse.class))),
     })
     @Parameters({
-            @Parameter(name = "rememberMe", description = "자동 로그인 체크 유무", example="true"),
+            @Parameter(name = "rememberMe", description = "자동 로그인 체크 유무", example = "true"),
     })
     @PostMapping("/accessToken")
     public ResponseEntity<?> generateAccessToken(
-            @RequestParam(name = "remember_me",defaultValue = "false") Boolean rememberMe,
+            @RequestBody @Valid AuthRequest.GenerateAccessTokenInDTO generateAccessTokenInDTO,
+            Errors errors,
             HttpServletRequest request,
             HttpServletResponse response) {
         String prefixJwt = request.getHeader(MyJwtProvider.HEADER);
@@ -90,7 +91,7 @@ public class AuthController {
                     Cookie cookie = new Cookie("refresh_token", rtk);
                     cookie.setHttpOnly(true);
                     cookie.setPath("/"); // accessToken 재발급시에만 사용가능하도록 설정
-                    if (rememberMe)
+                    if (generateAccessTokenInDTO.getRememberMe())
                         cookie.setMaxAge(60 * 60 * 24 * 30);
                     // HTTPS를 사용할 경우 true로 설정
                     cookie.setSecure(false);
