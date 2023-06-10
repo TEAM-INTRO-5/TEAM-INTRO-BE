@@ -8,7 +8,6 @@ import com.fastcampus05.zillinks.core.util.dto.mail.MailRequest;
 import com.fastcampus05.zillinks.core.util.dto.mail.MailResponse;
 import com.fastcampus05.zillinks.core.util.model.mail.MailValid;
 import com.fastcampus05.zillinks.core.util.model.mail.MailValidRepository;
-import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -32,7 +30,7 @@ public class MailService {
 
     @Transactional
     public MailResponse.MailOutDTO mailSend(MailRequest.MailInDTO mailInDTO) {
-        if (mailInDTO.getType().equals("duplicateCheck")) {
+        if (mailInDTO.getDupCheck()) {
             if (userRepository.findByEmail(mailInDTO.getEmail()).isPresent())
                 throw new Exception400("email", "이미 존재하는 이메일입니다.");
         }
@@ -84,7 +82,7 @@ public class MailService {
         }
         return MailResponse.MailOutDTO.builder()
                 .code(verificationCode)
-                .type(mailInDTO.getType())
+                .dupCheck(mailInDTO.getDupCheck())
                 .build();
     }
 
