@@ -34,14 +34,9 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
-    @PostMapping("/s/user/{user_id}/introPage")
+    @PostMapping("/s/user/introPage")
     public ResponseEntity<ResponseDTO<SaveIntroPageOutDTO>> saveIntroPage(
-            @PathVariable("user_id") Long userId,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
-
-        if (userId != myUserDetails.getUser().getId())
-            throw new Exception403("권한이 없습니다");
-
         IntroPageResponse.SaveIntroPageOutDTO saveIntroPageOutDTO = introPageService.saveIntroPage(myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(saveIntroPageOutDTO);
         return ResponseEntity.ok(responseBody);
@@ -51,14 +46,10 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageOutDTO.class))),
     })
-    @GetMapping("/s/user/{user_id}/introPage")
+    @GetMapping("/s/user/introPage")
     public ResponseEntity<IntroPageOutDTO> findIntroPage(
-            @PathVariable("user_id") Long userId,
-            @AuthenticationPrincipal MyUserDetails myUserDetails) {
-
-        if (userId != myUserDetails.getUser().getId())
-            throw new Exception403("권한이 없습니다");
-
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
         IntroPageOutDTO findOutDTO = introPageService.findIntroPage(myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
@@ -70,16 +61,12 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UpdateIntroPageOutDTO.class))),
     })
-    @PutMapping("/s/user/{user_id}/introPage")
+    @PutMapping("/s/user/introPage")
     public ResponseEntity<ResponseDTO<UpdateIntroPageOutDTO>> updateIntroPage(
-            @PathVariable("user_id") Long userId,
             @RequestBody @Valid IntroPageRequest.UpdateInDTO updateInDTO,
             Errors errors,
-            @AuthenticationPrincipal MyUserDetails myUserDetails) {
-
-        if (userId != myUserDetails.getUser().getId())
-            throw new Exception403("권한이 없습니다");
-
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
         UpdateIntroPageOutDTO updateIntroPageOutDTO = introPageService.updateIntroPage(updateInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(updateIntroPageOutDTO);
         return ResponseEntity.ok(responseBody);
@@ -89,14 +76,10 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = InfoOutDTO.class))),
     })
-    @GetMapping("/s/user/{user_id}/introPage/info")
+    @GetMapping("/s/user/introPage/info")
     public ResponseEntity<InfoOutDTO> findInfo(
-            @PathVariable("user_id") Long userId,
-            @AuthenticationPrincipal MyUserDetails myUserDetails) {
-
-        if (userId != myUserDetails.getUser().getId())
-            throw new Exception403("권한이 없습니다");
-
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
         InfoOutDTO infoOutDTO = introPageService.findInfo(myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", infoOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
@@ -106,16 +89,12 @@ public class IntroPageController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UpdateInfoOutDTO.class))),
     })
-    @PutMapping("/s/user/{user_id}/introPage/info")
+    @PutMapping("/s/user/introPage/info")
     public ResponseEntity<ResponseDTO<UpdateInfoOutDTO>> updateIntroPage(
-            @PathVariable("user_id") Long userId,
             @RequestBody @Valid IntroPageRequest.UpdateInfoInDTO updateInfoInDTO,
             Errors errors,
-            @AuthenticationPrincipal MyUserDetails myUserDetails) {
-
-        if (userId != myUserDetails.getUser().getId())
-            throw new Exception403("권한이 없습니다");
-
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
         UpdateInfoOutDTO updateIntroPageOutDTO = introPageService.updateInfo(updateInfoInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(updateIntroPageOutDTO);
         return ResponseEntity.ok(responseBody);

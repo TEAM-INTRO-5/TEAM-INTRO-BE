@@ -15,8 +15,7 @@ public class UserRequest {
         @JsonProperty("login_id")
         private String loginId;
 
-        @NotBlank(message = "password는 비어있을 수 없습니다.")
-        @Size(min = 4, max = 20)
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=(.*\\d)|(.*\\W)).{10,}$", message = "10자 이상 입력, 영문/숫자/특수문자(공백 제외) 2개 이상 조합해야합니다.")
         private String password;
 
         @NotBlank(message = "true 나 false 값이 할당 되어야합니다.")
@@ -45,8 +44,7 @@ public class UserRequest {
 
     @Getter
     public static class UpdatePasswordInDTO {
-        @Size(min = 4, max = 20)
-        @NotBlank(message = "password는 비어있을 수 없습니다.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=(.*\\d)|(.*\\W)).{10,}$", message = "10자 이상 입력, 영문/숫자/특수문자(공백 제외) 2개 이상 조합해야합니다.")
         private String password;
     }
 
