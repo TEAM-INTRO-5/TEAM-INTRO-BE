@@ -1,6 +1,8 @@
 package com.fastcampus05.zillinks.domain.model.user;
 
 import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import com.fastcampus05.zillinks.domain.model.intropage.CompanyInfo;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,6 +40,13 @@ public class User extends TimeBaseEntity {
 
     @Embedded
     private Marketing marketing;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private IntroPage introPage;
+
+    public void setIntroPage(IntroPage introPage) {
+        this.introPage = introPage;
+    }
 
     // 비밀번호 찾기, 재설정 과정
     public void updatePassword(String password) {

@@ -40,6 +40,14 @@ public class IntroPage extends TimeBaseEntity {
     @Enumerated(EnumType.STRING)
     private SaveStatus saveStatus; // [UPDATING, SAVED]
 
+    @OneToOne(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CompanyInfo companyInfo;
+
+    // == 연관관계 메서드 == //
+    public void setUser(User user) {
+        this.user = user;
+        user.setIntroPage(this);
+    }
 
     public static IntroPage saveIntroPage(User user) {
         return IntroPage.builder()
@@ -50,8 +58,8 @@ public class IntroPage extends TimeBaseEntity {
                 .build();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCompanyInfo(CompanyInfo companyInfo) {
+        this.companyInfo = companyInfo;
     }
 
     public void changeIntroPage(String color) {

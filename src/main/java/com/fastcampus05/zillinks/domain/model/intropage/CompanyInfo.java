@@ -47,6 +47,12 @@ public class CompanyInfo {
 
     private String mediaKitFile;
 
+    // == 연관관계 메서드 == //
+    public void setIntroPage(IntroPage introPage) {
+        this.introPage = introPage;
+        introPage.setCompanyInfo(this);
+    }
+
     public static CompanyInfo saveCompanyInfo(IntroPage introPage) {
         ZillinksData zillinksData = Common.zillinksApi(introPage.getUser().getBizNum()).toZillinksData();
         return CompanyInfo.builder()
