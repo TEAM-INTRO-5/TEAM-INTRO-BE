@@ -140,6 +140,7 @@ public class IntroPageController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UpdateCompanyInfoOutDTO.class))),
     })
     @Parameters({
+            @Parameter(name = "updateCompanyInfoInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PatchMapping("/s/user/companyInfo")
@@ -150,6 +151,41 @@ public class IntroPageController {
     ) {
         UpdateCompanyInfoOutDTO updateCompanyInfoOutDTO = introPageService.updateCompanyInfo(updateCompanyInfoInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateCompanyInfoOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    // check-point 와이어 프레임 정리가 되어 있지 않음, 이후 정리가 필요한 내용
+    @Operation(summary = "Contact-us 요청", description = "Contact-us 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "contactUsInDTO")
+    })
+    @PostMapping("/contactUs")
+    public ResponseEntity<ResponseDTO> saveContactUs(
+            @RequestBody @Valid IntroPageRequest.ContactUsInDTO contactUsInDTO,
+            Errors errors
+    ) {
+        introPageService.saveContactUs(contactUsInDTO);
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "회사소개서/미디어킷 다운로드 요청", description = "회사소개서/미디어킷 다운로드 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "downloadFileInDTO")
+    })
+    @PostMapping("/downloadFile")
+    public ResponseEntity<ResponseDTO> downloadFile(
+            @RequestBody @Valid IntroPageRequest.DownloadFileInDTO downloadFileInDTO,
+            Errors errors
+    ) {
+        introPageService.downloadFile(downloadFileInDTO);
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }
