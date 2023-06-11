@@ -211,6 +211,10 @@ public class UserService {
     public void updatePassword(UserRequest.UpdatePasswordInDTO updatePasswordInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-        userPS.updatePassword(passwordEncoder.encode(updatePasswordInDTO.getPassword()));
+        if (!passwordEncoder.matches(updatePasswordInDTO.getPassword(), userPS.getPassword()))
+            throw new Exception400("password", "비밀번호가 일치하지 않습니다.");
+        else if (updatePasswordInDTO.getPassword().equals(updatePasswordInDTO.getNewPassword()))
+            throw new Exception400("new_password", "이전 비밀번호와 같은 것으로 변경할 수 없습니다.");
+        userPS.updatePassword(passwordEncoder.encode(updatePasswordInDTO.getNewPassword()));
     }
 }
