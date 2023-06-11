@@ -195,7 +195,7 @@ public class UserController {
             @Parameter(name = "updatePasswordInDTO"),
             @Parameter(name = "myUserDetails", hidden = true),
     })
-    @PostMapping("/s/user/password")
+    @PutMapping("/s/user/password")
     public ResponseEntity<ResponseDTO> updatePassword(
             @RequestBody @Valid UserRequest.UpdatePasswordInDTO updatePasswordInDTO,
             Errors errors,

@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.util.List;
 
-@RedisHash(value = "mailValid", timeToLive = 60 * 10)
+@RedisHash(value = "mailValid", timeToLive = 60 * 30)
 @AllArgsConstructor
 @Getter
 public class MailValid {
