@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.core.dummy;
 
 import com.fastcampus05.zillinks.core.util.Common;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.domain.model.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,7 +36,7 @@ public class DummyEntity {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
                 .color("#ffffff")
-                .webPageInfo(new WebPageInfo("pavicon_path", "web_page_name", "domain", "title", "description"))
+                .webPageInfo(new WebPageInfo(null, "web_page_name", "domain", "title", "description"))
                 .saveStatus(SaveStatus.valueOf("SAVED"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
@@ -43,9 +44,9 @@ public class DummyEntity {
                 .bizNum(zillinksData.getBizNum())
                 .contactEmail(zillinksData.getContactEmail())
                 .tagline(zillinksData.getTagline())
-                .logo("logo_path")
-                .introFile("intro_file_path")
-                .mediaKitFile("media_kit_file_path")
+                .logo(null)
+                .introFile(null)
+                .mediaKitFile(null)
                 .build();
         companyInfo.setIntroPage(introPage);
         return introPage;
@@ -56,7 +57,7 @@ public class DummyEntity {
         IntroPage introPage = IntroPage.builder()
                 .user(user)
                 .color("#ffffff")
-                .webPageInfo(new WebPageInfo("pavicon_path", "web_page_name", "domain", "title", "description"))
+                .webPageInfo(new WebPageInfo(null, "zillinks", "zillinks", "title", "description"))
                 .saveStatus(SaveStatus.valueOf("SAVED"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
@@ -64,9 +65,9 @@ public class DummyEntity {
                 .bizNum(zillinksData.getBizNum())
                 .contactEmail(zillinksData.getContactEmail())
                 .tagline(zillinksData.getTagline())
-                .logo("logo_path")
-                .introFile("intro_file_path")
-                .mediaKitFile("media_kit_file_path")
+                .logo(null)
+                .introFile(null)
+                .mediaKitFile(null)
                 .build();
         companyInfo.setIntroPage(introPage);
         return introPage;
@@ -90,5 +91,12 @@ public class DummyEntity {
                 .build();
         companyInfo.setIntroPage(introPage);
         return introPage;
+    }
+
+    public S3UploaderFile newS3UploaderFile() {
+        return S3UploaderFile.builder()
+                .originalPath("default.jpg")
+                .encodingPath("https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
+                .build();
     }
 }

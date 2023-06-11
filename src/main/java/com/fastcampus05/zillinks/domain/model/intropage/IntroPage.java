@@ -53,7 +53,7 @@ public class IntroPage extends TimeBaseEntity {
         return IntroPage.builder()
                 .user(user)
                 .color("#ffffff")
-                .webPageInfo(new WebPageInfo(DEFAULT_IMAGE, null, null, null, null))
+                .webPageInfo(new WebPageInfo(null, null, null, null, null))
                 .saveStatus(SaveStatus.UPDATING)
                 .build();
     }

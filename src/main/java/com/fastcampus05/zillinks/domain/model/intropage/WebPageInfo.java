@@ -17,9 +17,11 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class WebPageInfo {
     @NotEmpty
+    @Column(unique = true)
     private String pavicon; // 경로
     @Column(name = "web_page_name")
     private String webPageName;
+    @Column(unique = true)
     private String domain;
     private String title;
     @Lob

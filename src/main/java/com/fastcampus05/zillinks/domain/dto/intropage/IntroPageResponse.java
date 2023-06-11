@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.Lob;
+import javax.validation.constraints.NotEmpty;
+
 public class IntroPageResponse {
 
     @Getter
@@ -45,7 +48,7 @@ public class IntroPageResponse {
     public static class InfoOutDTO {
         private String pavicon; // 경로
         private String webPageName;
-        private String subDomain;
+        private String domain;
         private String title;
         private String description;
     }
@@ -57,8 +60,36 @@ public class IntroPageResponse {
     public static class UpdateInfoOutDTO {
         private String pavicon; // 경로
         private String webPageName;
-        private String subDomain;
+        private String domain;
         private String title;
         private String description;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class CompanyInfoOutDTO {
+        private String companyName;
+        private String bizNum;
+        private String contactEmail;
+        private String tagline;
+        private String logo;
+        private String introFile;
+        private String mediaKitFile;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateCompanyInfoOutDTO {
+        private String companyName;
+        private String bizNum;
+        private String contactEmail;
+        private String tagline;
+        private String logo;
+        private String introFile;
+        private String mediaKitFile;
     }
 }

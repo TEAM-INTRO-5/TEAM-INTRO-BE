@@ -36,4 +36,17 @@ public class IntroPageRequest {
         private String description;
     }
 
+    @Getter
+    public static class UpdateCompanyInfoInDTO {
+        @Schema(description = "회사 로고", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
+        private String logo;
+
+        @Schema(description = "회사 소개서")
+        @JsonProperty("intro_file")
+        private String introFile;
+
+        @Schema(description = "미디어 킷")
+        @JsonProperty("media_kit_file")
+        private String mediaKitFile;
+    }
 }

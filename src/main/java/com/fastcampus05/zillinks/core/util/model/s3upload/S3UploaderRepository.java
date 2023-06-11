@@ -30,6 +30,8 @@ import java.util.UUID;
 @Repository
 public class S3UploaderRepository {
 
+    public static final String DEFAULT_IMAGE = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg";
+
     public static final int WIDTH = 400;
     public static final int HEIGHT = 400;
     public static final String TARGET_FORMAT = "jpg";
@@ -48,8 +50,8 @@ public class S3UploaderRepository {
 
         // uploadFile JPEG 파일로 변환후 resize 진행
         if (type.equals("image")) {
-            File uploadFile = transform(file);
-            return upload(uploadFile, fileName);
+            File image = transform(file);
+            return upload(image, fileName);
         } else {
             return upload(file, fileName);
         }
@@ -75,6 +77,11 @@ public class S3UploaderRepository {
     }
 
     public void delete(String fileUrl) {
+        // check-point
+        // Default Image 일 경우 삭제하지 않는다.
+        if (fileUrl.equals(DEFAULT_IMAGE))
+            return;
+
         String fileName = fileUrl.replaceFirst(deleteDir, "");
         try {
             DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
