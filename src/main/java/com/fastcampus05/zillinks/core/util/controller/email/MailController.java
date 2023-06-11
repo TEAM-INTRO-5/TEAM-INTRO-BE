@@ -4,7 +4,6 @@ import com.fastcampus05.zillinks.core.util.dto.mail.MailRequest;
 import com.fastcampus05.zillinks.core.util.dto.mail.MailResponse;
 import com.fastcampus05.zillinks.core.util.service.mail.MailService;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
-import com.fastcampus05.zillinks.domain.dto.user.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -39,7 +38,7 @@ public class MailController {
             Errors errors
     ) {
         // 발급 후 redis에 넣는다. 10분의 유효시간
-        MailResponse.MailOutDTO mailOutDTO = mailService.mailSend(mailInDTO);
+        MailResponse.MailOutDTO mailOutDTO = mailService.sendMail(mailInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(mailOutDTO);
         return ResponseEntity.ok().body(responseBody);
     }
@@ -56,7 +55,7 @@ public class MailController {
             @RequestBody MailRequest.MailCheckInDTO mailCheckInDTO,
             Errors errors
     ) {
-        mailService.mailValidCheck(mailCheckInDTO);
+        mailService.checkMailValid(mailCheckInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }

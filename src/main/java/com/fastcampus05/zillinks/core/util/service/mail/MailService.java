@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Random;
 
@@ -29,7 +30,7 @@ public class MailService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MailResponse.MailOutDTO mailSend(MailRequest.MailInDTO mailInDTO) {
+    public MailResponse.MailOutDTO sendMail(MailRequest.MailInDTO mailInDTO) {
         if (mailInDTO.getDupCheck()) {
             if (userRepository.findByEmail(mailInDTO.getEmail()).isPresent())
                 throw new Exception400("email", "이미 존재하는 이메일입니다.");
@@ -87,7 +88,7 @@ public class MailService {
     }
 
     @Transactional
-    public void mailValidCheck(MailRequest.MailCheckInDTO mailCheckInDTO) {
+    public void checkMailValid(MailRequest.MailCheckInDTO mailCheckInDTO) {
         MailValid mailValidPS = mailValidRepository.findById(mailCheckInDTO.getCode()).orElseThrow(
                 () -> new Exception400("code", "만료되었거나 유효하지않은 code입니다.")
         );
@@ -134,5 +135,36 @@ public class MailService {
             throw new Exception500("이메일 전송에 실패하였습니다.");
         }
         return newPassword;
+    }
+
+    public void sendFile(String email, String companyName, String type, MultipartFile file) {
+        try {
+            MailHandler mailHandler = new MailHandler(javaMailSender);
+            mailHandler.setTo(email);
+            mailHandler.setSubject("요청하신 " + companyName + (type.equals("intro_file") ? " 회사 소개서": " 미디어 킷") +  " 자료입니다.");
+            String htmlContent = "<html>"
+                    + "<head>"
+                    + "<title>요청 자료</title>"
+                    + "<style>"
+                    + "h2 {"
+                    + "color: #2c3e50;"
+                    + "}"
+                    + "p {"
+                    + "color: #7f8c8d;"
+                    + "}"
+                    + "</style>"
+                    + "</head>"
+                    + "<body>"
+                    + "<h2>" + (type.equals("intro_file") ? "회사 소개서": "미디어 킷") + " 자료 요청</h2>"
+                    + "<p>요청하신 자료입니다.</p>"
+                    + "</body>"
+                    + "</html>";
+            mailHandler.setText(htmlContent, true);
+            mailHandler.setAttach(file.getOriginalFilename(), file);
+//            mailHandler.setAttach(file.getName(), file);
+            mailHandler.send();
+        } catch (Exception e) {
+            throw new Exception500("이메일 전송에 실패하였습니다.");
+        }
     }
 }
