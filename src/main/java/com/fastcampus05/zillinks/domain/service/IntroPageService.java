@@ -1,9 +1,12 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
+import com.fastcampus05.zillinks.domain.model.intropage.CompanyInfo;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
 import com.fastcampus05.zillinks.domain.model.user.User;
@@ -13,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
@@ -23,9 +28,12 @@ import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*
 @Slf4j
 public class IntroPageService {
 
+    public static final String DEFAULT_IMAGE = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg";
+
     private final IntroPageRepository introPageRepository;
     private final UserRepository userRepository;
     private final S3UploaderFileRepository s3UploaderFileRepository;
+    private final S3UploaderRepository s3UploaderRepository;
 
     @Transactional
     public SaveIntroPageOutDTO saveIntroPage(User user) {
@@ -33,6 +41,8 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
+        CompanyInfo companyInfo = CompanyInfo.saveCompanyInfo(introPagePS);
+        companyInfo.setIntroPage(introPagePS);
         return SaveIntroPageOutDTO.builder()
                 .color(introPagePS.getColor())
                 .build();
@@ -42,7 +52,7 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         return IntroPageOutDTO.builder()
@@ -55,16 +65,19 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
-                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        introPagePS.changeIntroPage(updateInDTO.getColor());
+        userPS.getIntroPage().changeIntroPage(updateInDTO.getColor());
         /**
+         * check-point
          * if (!introPagePS.getWebPageInfo().getPavicon().equals(updateInfoInDTO.getPavicon())) {
          *             Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
          *             s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
          *         }
          *         이와 같이 S3UploaderFile을 관리하는 로직이 추가되어야 한다.
+         *
+         *         이후 EncodingPath를 List로 받아 where encodingPath in (List) 이런식으로 처리하자.
          */
         return UpdateIntroPageOutDTO.builder()
                 .color(introPagePS.getColor())
@@ -75,13 +88,13 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         return InfoOutDTO.builder()
                 .pavicon(introPagePS.getWebPageInfo().getPavicon())
                 .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-                .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                .domain(introPagePS.getWebPageInfo().getDomain())
                 .title(introPagePS.getWebPageInfo().getTitle())
                 .description(introPagePS.getWebPageInfo().getDescription())
                 .build();
@@ -92,13 +105,23 @@ public class IntroPageService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
-        IntroPage introPagePS = introPageRepository.findByUserId(userPS.getId())
-                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        if (!introPagePS.getWebPageInfo().getPavicon().equals(updateInfoInDTO.getPavicon())) {
-            Optional<S3UploaderFile> s3UploaderFileOP = s3UploaderFileRepository.findByEncodingPath(introPagePS.getWebPageInfo().getPavicon());
-            s3UploaderFileOP.ifPresent(s3UploaderFileRepository::delete);
-        }
+        Optional<IntroPage> checkDomain = introPageRepository.findByDomain(updateInfoInDTO.getDomain());
+        if (checkDomain.isPresent())
+            throw new Exception400("domain", "이미 사용중인 도메인입니다.");
+
+        // pavicon 저장된 경로 변경이 없을 경우 기존 데이터 사용으로 간주 - 삭제X
+        // check-point 원하는대로 동작하는지 테스트 필요
+        List<String> pathOrginList = new ArrayList<>();
+        pathOrginList.add(introPagePS.getWebPageInfo().getPavicon());
+
+        List<String> pathList = new ArrayList<>();
+        pathList.add(updateInfoInDTO.getPavicon());
+
+        manageS3Uploader(pathOrginList, pathList);
+
         introPagePS.changeIntroPageInfo(
                 updateInfoInDTO.getPavicon(),
                 updateInfoInDTO.getWebPageName(),
@@ -109,9 +132,93 @@ public class IntroPageService {
         return UpdateInfoOutDTO.builder()
                 .pavicon(introPagePS.getWebPageInfo().getPavicon())
                 .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-                .subDomain(introPagePS.getWebPageInfo().getSubDomain())
+                .domain(introPagePS.getWebPageInfo().getDomain())
                 .title(introPagePS.getWebPageInfo().getTitle())
                 .description(introPagePS.getWebPageInfo().getDescription())
                 .build();
+    }
+
+    public CompanyInfoOutDTO findCompanyInfo(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        CompanyInfo companyInfoPS = Optional.ofNullable(introPagePS.getCompanyInfo())
+                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
+
+
+        // check-point 이후 바뀔 수도 있는 내용
+//        CompanyInfo companyInfoPS = Optional.ofNullable(userPS.getCompanyInfo())
+//                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
+
+        return CompanyInfoOutDTO.builder()
+                .companyName(companyInfoPS.getCompanyName())
+                .bizNum(companyInfoPS.getBizNum())
+                .contactEmail(companyInfoPS.getContactEmail())
+                .tagline(companyInfoPS.getTagline())
+                .logo(companyInfoPS.getLogo())
+                .introFile(companyInfoPS.getIntroFile())
+                .mediaKitFile(companyInfoPS.getMediaKitFile())
+                .build();
+    }
+
+    @Transactional
+    public UpdateCompanyInfoOutDTO updateCompanyInfo(IntroPageRequest.UpdateCompanyInfoInDTO updateCompanyInfoInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        CompanyInfo companyInfoPS = Optional.ofNullable(introPagePS.getCompanyInfo())
+                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
+
+        // check-point 이후 바뀔 수도 있는 내용
+//        CompanyInfo companyInfoPS = Optional.ofNullable(userPS.getCompanyInfo())
+//                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
+
+        // pavicon 저장된 경로 변경이 없을 경우 기존 데이터 사용으로 간주 - 삭제X
+        // check-point 원하는대로 동작하는지 테스트 필요
+        List<String> pathOrginList = new ArrayList<>();
+        pathOrginList.add(companyInfoPS.getLogo());
+        pathOrginList.add(companyInfoPS.getIntroFile());
+        pathOrginList.add(companyInfoPS.getMediaKitFile());
+
+        List<String> pathList = new ArrayList<>();
+        pathList.add(updateCompanyInfoInDTO.getLogo());
+        pathList.add(updateCompanyInfoInDTO.getIntroFile());
+        pathList.add(updateCompanyInfoInDTO.getMediaKitFile());
+
+        manageS3Uploader(pathOrginList, pathList);
+
+        companyInfoPS.changeCompanyInfo(
+                updateCompanyInfoInDTO.getLogo(),
+                updateCompanyInfoInDTO.getIntroFile(),
+                updateCompanyInfoInDTO.getMediaKitFile()
+        );
+        return UpdateCompanyInfoOutDTO.builder()
+                .companyName(companyInfoPS.getCompanyName())
+                .bizNum(companyInfoPS.getBizNum())
+                .contactEmail(companyInfoPS.getContactEmail())
+                .tagline(companyInfoPS.getTagline())
+                .logo(companyInfoPS.getLogo())
+                .introFile(companyInfoPS.getIntroFile())
+                .mediaKitFile(companyInfoPS.getMediaKitFile())
+                .build();
+    }
+
+    private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
+        List<S3UploaderFile> s3UploaderFileListPS = s3UploaderFileRepository.findByEncodingPaths(pathOrginList).orElse(null);
+        log.info("ss3UploaderFileListPS={}", s3UploaderFileListPS);
+        for (String pathOrigin : pathOrginList) {
+            if (!pathList.contains(pathOrigin)) {
+                s3UploaderFileRepository.delete(s3UploaderFileListPS.stream().filter(s -> s.getEncodingPath().equals(pathOrigin)).findAny().orElseThrow(
+                        () -> new Exception500("파일 관리에 문제가 생겼습니다.")
+                ));
+                s3UploaderRepository.delete(pathOrigin);
+            }
+        }
     }
 }

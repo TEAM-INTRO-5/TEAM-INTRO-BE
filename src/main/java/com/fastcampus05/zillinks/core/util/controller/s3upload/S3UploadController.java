@@ -69,7 +69,7 @@ public class S3UploadController {
     @Parameters({
             @Parameter(name = "file", description = "pdf 파일"),
             @Parameter(name = "name", description = "회사명", example = "zillinks"),
-            @Parameter(name = "type", description = "이미지 종류", example = "logo")
+            @Parameter(name = "type", description = "파일 종류", example = "회사 소개서")
     })
     @PostMapping("/uploadFile")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadFile(

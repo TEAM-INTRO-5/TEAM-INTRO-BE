@@ -55,7 +55,7 @@ public class IntroPageController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @GetMapping("/s/user/introPage")
-    public ResponseEntity<IntroPageOutDTO> findIntroPage(
+    public ResponseEntity<ResponseDTO<IntroPageOutDTO>> findIntroPage(
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         IntroPageOutDTO findOutDTO = introPageService.findIntroPage(myUserDetails.getUser());
@@ -92,7 +92,7 @@ public class IntroPageController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @GetMapping("/s/user/introPage/info")
-    public ResponseEntity<InfoOutDTO> findInfo(
+    public ResponseEntity<ResponseDTO<InfoOutDTO>> findInfo(
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         InfoOutDTO infoOutDTO = introPageService.findInfo(myUserDetails.getUser());
@@ -117,5 +117,39 @@ public class IntroPageController {
         UpdateInfoOutDTO updateIntroPageOutDTO = introPageService.updateInfo(updateInfoInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(updateIntroPageOutDTO);
         return ResponseEntity.ok(responseBody);
+    }
+
+    @Operation(summary = "회사 기본 정보 조회", description = "회사 기본 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = CompanyInfoOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user/companyInfo")
+    public ResponseEntity<ResponseDTO<CompanyInfoOutDTO>> findCompanyInfo(
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        CompanyInfoOutDTO companyInfoOutDTO = introPageService.findCompanyInfo(myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", companyInfoOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "회사 기본 정보 수정", description = "회사 기본 정보 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UpdateCompanyInfoOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/s/user/companyInfo")
+    public ResponseEntity<ResponseDTO<UpdateCompanyInfoOutDTO>> updateCompanyInfo(
+            @RequestBody @Valid IntroPageRequest.UpdateCompanyInfoInDTO updateCompanyInfoInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        UpdateCompanyInfoOutDTO updateCompanyInfoOutDTO = introPageService.updateCompanyInfo(updateCompanyInfoInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateCompanyInfoOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }

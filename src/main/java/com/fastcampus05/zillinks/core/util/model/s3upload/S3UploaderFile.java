@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 public class S3UploaderFile extends TimeBaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "s3_uploader_file_id")
     private Long id;
 

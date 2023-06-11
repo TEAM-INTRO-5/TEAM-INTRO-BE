@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
+import javax.validation.constraints.NotEmpty;
 
 @Embeddable
 @Getter
@@ -13,9 +16,14 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Builder
 public class WebPageInfo {
+    @NotEmpty
+    @Column(unique = true)
     private String pavicon; // 경로
+    @Column(name = "web_page_name")
     private String webPageName;
-    private String subDomain;
+    @Column(unique = true)
+    private String domain;
     private String title;
+    @Lob
     private String description;
 }
