@@ -25,20 +25,20 @@ public class ContactUsLogQueryRepository {
         this.query = new JPAQueryFactory(em);
     }
 
-    public Page<ContactUsLog> findAllByStatus(ContactUsStatus status, Long intro_page_id, Integer page) {
+    public Page<ContactUsLog> findAllByStatus(ContactUsStatus status, Long introPageId, Integer page) {
         int startPosition = page * SIZE;
 
         List<ContactUsLog> contactUsLogListPS = query
                 .selectFrom(contactUsLog)
-                .where(getBooleanExpression(status, intro_page_id))
-                .orderBy(contactUsLog.createdAt.asc())
+                .where(getBooleanExpression(status, introPageId))
+                .orderBy(contactUsLog.createdAt.desc())
                 .offset(startPosition)
                 .limit(SIZE)
                 .fetch();
 
         Long totalCount = query
                 .selectFrom(contactUsLog)
-                .where(getBooleanExpression(status, intro_page_id))
+                .where(getBooleanExpression(status, introPageId))
                 .stream().count();
         return new PageImpl<>(contactUsLogListPS, PageRequest.of(page, SIZE), totalCount);
     }

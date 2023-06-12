@@ -13,11 +13,11 @@ import javax.validation.constraints.NotNull;
 @DiscriminatorValue("download_log")
 public class DownloadLog extends IntroPageLog {
     @NotNull
-    private String keyword;
+    private String type;
 
     @Builder
-    public DownloadLog(IntroPage introPage, String email, String keyword) {
+    public DownloadLog(IntroPage introPage, String email, String type) {
         super(introPage, email);
-        this.keyword = keyword;
+        this.type = type;
     }
 }

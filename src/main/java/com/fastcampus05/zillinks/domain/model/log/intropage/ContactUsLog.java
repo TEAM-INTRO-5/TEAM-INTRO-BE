@@ -19,14 +19,18 @@ public class ContactUsLog extends IntroPageLog {
     @NotNull
     private String type;
 
+    @NotNull
+    private String name;
+
     @Enumerated(EnumType.STRING)
     private ContactUsStatus contactUsStatus; // CANCEL, CONFIRM
 
     @Builder
-    public ContactUsLog(IntroPage introPage, String email, String content, String type, ContactUsStatus contactUsStatus) {
+    public ContactUsLog(IntroPage introPage, String email, String content, String type, String name, ContactUsStatus contactUsStatus) {
         super(introPage, email);
         this.content = content;
         this.type = type;
+        this.name = name;
         this.contactUsStatus = contactUsStatus;
     }
 }

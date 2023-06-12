@@ -45,6 +45,7 @@ public class IntroPageService {
     private final ContactUsLogRepository contactUsLogRepository;
     private final ContactUsLogQueryRepository contactUsLogQueryRepository;
     private final DownloadLogRepository downloadLogRepository;
+    private final DownloadLogQueryRepository downloadLogQueryRepository;
     private final MailService mailService;
 
     @Transactional
@@ -227,6 +228,7 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("intro_page_id", "존재하지 않는 회사 소개 페이지입니다."));
         contactUsLogRepository.save(ContactUsLog.builder()
                 .introPage(introPagePS)
+                .name(contactUsInDTO.getName())
                 .email(contactUsInDTO.getEmail())
                 .content(contactUsInDTO.getContent())
                 .type(contactUsInDTO.getType())
@@ -253,11 +255,12 @@ public class IntroPageService {
         } catch (IOException e) {
             throw new Exception500("파일 변환에 실패하였습니다.\n" + e.getMessage());
         }
-        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
+        // check-point 테스트 진행동안 잠시 막아둠
+//        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .email(downloadFileInDTO.getEmail())
-                .keyword(downloadFileInDTO.getKeyword())
+                .type(downloadFileInDTO.getType())
                 .build());
     }
 
@@ -270,6 +273,8 @@ public class IntroPageService {
         Page<ContactUsLog> contactUsLogPG = contactUsLogQueryRepository.findAllByStatus(status, introPagePS.getId(), page);
         List<ContactUsOutDTO> contactUsOutDTOList = contactUsLogPG.stream()
                 .map(s -> ContactUsOutDTO.builder()
+                        .contactUsLogId(s.getId())
+                        .name(s.getName())
                         .email(s.getEmail())
                         .content(s.getContent())
                         .type(s.getType())
@@ -288,6 +293,27 @@ public class IntroPageService {
                 .hasNext(contactUsLogPG.hasNext())
                 .isFirst(contactUsLogPG.isFirst())
                 .isLast(contactUsLogPG.isLast())
+                .build();
+    }
+
+    public FindContactUsDetailOutDTO findContactUsDetail(Long contactUsId, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        ContactUsLog contactUsLogPS = contactUsLogRepository.findById(contactUsId)
+                .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
+        return FindContactUsDetailOutDTO.builder()
+                .contactUsLogId(contactUsLogPS.getId())
+                .email(contactUsLogPS.getEmail())
+                .name(contactUsLogPS.getName())
+                .type(contactUsLogPS.getType())
+                .date(contactUsLogPS.getCreatedAt())
+                .status((contactUsLogPS.getContactUsStatus().equals(ContactUsStatus.UNCONFIRMED)) ?
+                        // check-point 변경 요망
+                        "-": "확인됨")
+                .content(contactUsLogPS.getContent())
                 .build();
     }
 

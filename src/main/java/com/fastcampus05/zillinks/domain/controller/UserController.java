@@ -132,7 +132,6 @@ public class UserController {
         List<String> validList = new ArrayList<>();
         validList.add(request.getRemoteAddr());
         validList.add(request.getHeader("user-agent"));
-        log.info("test");
         // 1. code 값 존재 유무 확인
         if (code == null || code.isEmpty())
             throw new Exception400("code", "code값이 존재하지 않습니다.");
@@ -177,7 +176,7 @@ public class UserController {
 
     @Operation(summary = "이메일을 통한 아이디 찾기", description = "이메일을 통해 DB내에 매핑되어 있는 ID를 탐색한다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = FindIdByEmailOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "findIdByEmailInDTO"),
@@ -194,7 +193,7 @@ public class UserController {
 
     @Operation(summary = "사업자등록번호를 통한 아이디 찾기", description = "사업자등록번호를 통해 DB내에 매핑되어 있는 ID를 탐색한다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = FindIdByBizNumOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "findIdByBizNumInDTO"),

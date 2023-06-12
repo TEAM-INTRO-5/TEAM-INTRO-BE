@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -146,9 +147,6 @@ public class UserService {
             Optional<GoogleAccount> googleAccountOP  = googleAccountRepository.findByOAuthId(oAuthId);
             // google 정보가 없을 경우 회원가입 진행, 토큰발행 X
             if (googleAccountOP.isEmpty()) {
-                Optional<User> userOP = userRepository.findByLoginId(oAuthId);
-                if (userOP.isPresent())
-                    throw new Exception400("login_id", "이미 가입된 아이디가 존재합니다.");
                 return OAuthLoginOutDTO.builder()
                         .googleProfile(new GoogleProfile(oAuthId, oAuthProfile.getEmail(), oAuthProfile.getName()))
                         .build();
@@ -156,6 +154,9 @@ public class UserService {
 
             // google 정보가 존재, 로그인 진행
             GoogleAccount googleAccountPS = googleAccountOP.get();
+            // check-point 로그인 로그를 남길 때 일반 로그인과 소셜 로그인을 관리하는건 어떨까?
+            // 로그인 정보 저장
+            googleAccountPS.updateLoginedAt(LocalDateTime.now());
             User userPS = googleAccountPS.getUser();
             RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userPS.getId(), validList);
             try {
