@@ -1,5 +1,7 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,8 @@ import lombok.Getter;
 
 import javax.persistence.Lob;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class IntroPageResponse {
 
@@ -91,5 +95,35 @@ public class IntroPageResponse {
         private String logo;
         private String introFile;
         private String mediaKitFile;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindContactUsOutDTO {
+        private Long introPageId;
+        private List<ContactUsOutDTO> content;
+        private Long totalElements;
+        private Integer totalPage;
+        private Integer size;
+        private Integer number;
+        private Integer numberOfElements;
+        private Boolean hasPrevious;
+        private Boolean hasNext;
+        private Boolean isFirst;
+        private Boolean isLast;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        public static class ContactUsOutDTO {
+            private String email;
+            private String content;
+            private String type;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+            private LocalDateTime date;
+        }
     }
 }

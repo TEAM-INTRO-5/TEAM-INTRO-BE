@@ -1,0 +1,49 @@
+package com.fastcampus05.zillinks.domain.model.log.intropage;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import java.util.List;
+
+import static com.fastcampus05.zillinks.domain.model.log.intropage.QContactUsLog.*;
+
+@Repository
+public class ContactUsLogQueryRepository {
+
+    private final EntityManager em;
+    private final JPAQueryFactory query;
+
+    private final int SIZE = 8;
+
+    public ContactUsLogQueryRepository(EntityManager em) {
+        this.em = em;
+        this.query = new JPAQueryFactory(em);
+    }
+
+    public Page<ContactUsLog> findAllByStatus(ContactUsStatus status, Long intro_page_id, Integer page) {
+        int startPosition = page * SIZE;
+
+        List<ContactUsLog> contactUsLogListPS = query
+                .selectFrom(contactUsLog)
+                .where(getBooleanExpression(status, intro_page_id))
+                .orderBy(contactUsLog.createdAt.asc())
+                .offset(startPosition)
+                .limit(SIZE)
+                .fetch();
+
+        Long totalCount = query
+                .selectFrom(contactUsLog)
+                .where(getBooleanExpression(status, intro_page_id))
+                .stream().count();
+        return new PageImpl<>(contactUsLogListPS, PageRequest.of(page, SIZE), totalCount);
+    }
+
+    private static BooleanExpression getBooleanExpression(ContactUsStatus status, Long intro_page_id) {
+        return contactUsLog.introPage.id.eq(intro_page_id).and(contactUsLog.contactUsStatus.eq(status));
+    }
+}

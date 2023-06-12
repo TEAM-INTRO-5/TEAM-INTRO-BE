@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+import java.util.StringTokenizer;
+
 @Slf4j
 @RestControllerAdvice
 public class MyExceptionAdvice {
@@ -42,6 +45,14 @@ public class MyExceptionAdvice {
     public ResponseEntity<?> serverError(Exception500 e){
 //        Sentry.captureException(e); checkpoint, 서버 배포전 해제
         return new ResponseEntity<>(e.body(), e.status());
+    }
+
+    @MyErrorLog
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> constraintViolationError(ConstraintViolationException e) {
+        StringTokenizer st = new StringTokenizer(e.getMessage());
+        Exception400 exception400 = new Exception400(st.nextToken(), st.nextToken());
+        return new ResponseEntity<>(exception400.body(), exception400.status());
     }
 
     @MyErrorLog

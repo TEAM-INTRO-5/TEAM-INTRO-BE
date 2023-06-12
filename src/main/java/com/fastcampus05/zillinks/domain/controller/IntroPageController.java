@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
+import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsStatus;
 import com.fastcampus05.zillinks.domain.service.IntroPageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,15 +18,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Validated
 public class IntroPageController {
 
     private final IntroPageService introPageService;
@@ -185,6 +189,29 @@ public class IntroPageController {
     ) {
         introPageService.downloadFile(downloadFileInDTO);
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "연락 관리 내역 조회", description = "연락 관리 내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = FindContactUsOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "status"),
+            @Parameter(name = "page"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user/contactUs")
+    public ResponseEntity<ResponseDTO<FindContactUsOutDTO>> findContactUs(
+            @RequestParam
+            @Pattern(regexp = "UNCONFIRMED|CONFIRM")
+            String status,
+            @RequestParam(defaultValue = "0") Integer page,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        ContactUsStatus contactUsStatus = ContactUsStatus.valueOf(status);
+        FindContactUsOutDTO findContactUsOutDTO = introPageService.findContactUs(contactUsStatus, page, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }
