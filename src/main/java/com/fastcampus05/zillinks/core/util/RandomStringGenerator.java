@@ -8,7 +8,7 @@ public class RandomStringGenerator {
     private static final String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String CHAR_UPPER = CHAR_LOWER.toUpperCase();
     private static final String NUMBER = "0123456789";
-    private static final String SPECIAL = "!@#$%^&*()_+-=[]{}|;:',.<>?/";
+    private static final String SPECIAL = "!@#";
     private static final int STRING_LENGTH = 12;
 
     public static String generateRandomString() {

@@ -132,7 +132,6 @@ public class UserController {
         List<String> validList = new ArrayList<>();
         validList.add(request.getRemoteAddr());
         validList.add(request.getHeader("user-agent"));
-        log.info("test");
         // 1. code 값 존재 유무 확인
         if (code == null || code.isEmpty())
             throw new Exception400("code", "code값이 존재하지 않습니다.");

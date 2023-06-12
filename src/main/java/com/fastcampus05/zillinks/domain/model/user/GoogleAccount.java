@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,15 +19,23 @@ public class GoogleAccount extends TimeBaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @NotNull
     private User user;
 
     @Column(name = "o_auth_id", unique = true)
+    @NotNull
     private String oAuthId;
 
     @Column(name = "o_auth_email", unique = true)
+    @NotNull
     private String oAuthEmail;
+    @NotNull
     private String name;
 
     @Column(name = "logined_at")
     private LocalDateTime loginedAt;
+
+    public void updateLoginedAt(LocalDateTime loginedAt) {
+        this.loginedAt = loginedAt;
+    }
 }
