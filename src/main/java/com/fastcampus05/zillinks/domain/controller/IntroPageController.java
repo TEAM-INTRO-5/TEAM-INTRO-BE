@@ -6,6 +6,7 @@ import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsStatus;
 import com.fastcampus05.zillinks.domain.service.IntroPageService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -192,7 +193,7 @@ public class IntroPageController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "연락 관리 내역 조회", description = "연락 관리 내역 조회")
+    @Operation(summary = "연락 관리 내역 조회 - 획인 필요/완료", description = "연락 관리 내역 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = FindContactUsOutDTO.class))),
     })
@@ -212,6 +213,24 @@ public class IntroPageController {
         ContactUsStatus contactUsStatus = ContactUsStatus.valueOf(status);
         FindContactUsOutDTO findContactUsOutDTO = introPageService.findContactUs(contactUsStatus, page, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "연락 관리 내역 조회 - detail", description = "단일 연락 관리 내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = FindContactUsDetailOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "contactUsId"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user/contactUs/{contactUsId}")
+    public ResponseEntity<ResponseDTO<FindContactUsOutDTO>> findContactUsDetail(
+            @PathVariable Long contactUsId,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        FindContactUsDetailOutDTO findContactUsDetailOutDTO = introPageService.findContactUsDetail(contactUsId, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsDetailOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }

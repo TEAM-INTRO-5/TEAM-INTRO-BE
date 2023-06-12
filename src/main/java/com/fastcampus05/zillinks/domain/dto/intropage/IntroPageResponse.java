@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
+import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -119,11 +120,28 @@ public class IntroPageResponse {
         @AllArgsConstructor
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class ContactUsOutDTO {
+            private Long contactUsLogId;
             private String email;
+            private String name;
             private String content;
             private String type;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
             private LocalDateTime date;
         }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindContactUsDetailOutDTO {
+        private Long contactUsLogId;
+        private String email;
+        private String name;
+        private String type;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
+        private LocalDateTime date;
+        private String status;
+        private String content;
     }
 }

@@ -26,7 +26,7 @@ public class CompanyInfo extends TimeBaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "intro_page_id")
+    @JoinColumn(name = "intro_page_id", unique = true)
     private IntroPage introPage;
 
     @NotEmpty
