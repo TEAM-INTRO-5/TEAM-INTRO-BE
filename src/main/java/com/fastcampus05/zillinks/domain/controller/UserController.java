@@ -30,6 +30,7 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.fastcampus05.zillinks.domain.dto.user.UserResponse.*;
@@ -82,7 +83,41 @@ public class UserController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-
+    @Operation(summary = "logout", description = "remember_me 쿠키를 지워준다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @PostMapping("/s/user/logout")
+    public ResponseEntity<?> logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String value = "";
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("remember_me")) {
+                value = cookie.getValue();
+                break;
+            }
+        }
+        log.info("value={}", value);
+        userService.logout(value);
+        if (!value.isEmpty()) {
+            try {
+                Cookie cookie = new Cookie("remember_me", URLEncoder.encode("", "utf-8"));
+                cookie.setHttpOnly(true);
+                cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
+                cookie.setMaxAge(0); // 쿠키 만료 시점을 설정
+                // HTTPS를 사용할 경우 true로 설정
+                cookie.setSecure(false);
+                response.addCookie(cookie);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
+    }
 
     @Operation(summary = "google_login", description = "구글 로그인으로 유저의 로그인과 함께 accessToken과 refreshToken을 반환해준다. 만일 연동되어 있는 계정이 없는 경우 토큰은 반환되지 않는다.")
     @ApiResponses({
