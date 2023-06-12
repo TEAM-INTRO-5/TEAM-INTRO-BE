@@ -233,4 +233,24 @@ public class IntroPageController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsDetailOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    @Operation(summary = "연락 관리 내역 - detail 확인/삭제", description = "단일 연락 관리 내역 확인/삭제 상태변경")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "contactUsId"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/s/user/contactUs/{contactUsId}")
+    public ResponseEntity<ResponseDTO<FindContactUsOutDTO>> updateContactUsDetail(
+            @PathVariable Long contactUsId,
+            @RequestBody @Valid IntroPageRequest.UpdateContactUsDetailInDTO updateContactUsDetailInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        introPageService.updateContactUsDetail(contactUsId, updateContactUsDetailInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }
