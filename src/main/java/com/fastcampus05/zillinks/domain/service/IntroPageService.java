@@ -11,14 +11,12 @@ import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.model.intropage.CompanyInfo;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageRepository;
-import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsLog;
-import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsLogRepository;
-import com.fastcampus05.zillinks.domain.model.log.intropage.DownloadLog;
-import com.fastcampus05.zillinks.domain.model.log.intropage.DownloadLogRepository;
+import com.fastcampus05.zillinks.domain.model.log.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +25,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
+import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.FindContactUsOutDTO.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,6 +43,7 @@ public class IntroPageService {
     private final S3UploaderFileRepository s3UploaderFileRepository;
     private final S3UploaderRepository s3UploaderRepository;
     private final ContactUsLogRepository contactUsLogRepository;
+    private final ContactUsLogQueryRepository contactUsLogQueryRepository;
     private final DownloadLogRepository downloadLogRepository;
     private final MailService mailService;
 
@@ -229,6 +230,7 @@ public class IntroPageService {
                 .email(contactUsInDTO.getEmail())
                 .content(contactUsInDTO.getContent())
                 .type(contactUsInDTO.getType())
+                .contactUsStatus(ContactUsStatus.UNCONFIRMED)
                 .build());
     }
 
@@ -257,6 +259,36 @@ public class IntroPageService {
                 .email(downloadFileInDTO.getEmail())
                 .keyword(downloadFileInDTO.getKeyword())
                 .build());
+    }
+
+    public FindContactUsOutDTO findContactUs(ContactUsStatus status, Integer page, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Page<ContactUsLog> contactUsLogPG = contactUsLogQueryRepository.findAllByStatus(status, introPagePS.getId(), page);
+        List<ContactUsOutDTO> contactUsOutDTOList = contactUsLogPG.stream()
+                .map(s -> ContactUsOutDTO.builder()
+                        .email(s.getEmail())
+                        .content(s.getContent())
+                        .type(s.getType())
+                        .date(s.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+        return FindContactUsOutDTO.builder()
+                .introPageId(introPagePS.getId())
+                .content(contactUsOutDTOList)
+                .totalElements(contactUsLogPG.getTotalElements())
+                .totalPage(contactUsLogPG.getTotalPages())
+                .size(contactUsLogPG.getSize())
+                .number(contactUsLogPG.getNumber())
+                .numberOfElements(contactUsLogPG.getNumberOfElements())
+                .hasPrevious(contactUsLogPG.hasPrevious())
+                .hasNext(contactUsLogPG.hasNext())
+                .isFirst(contactUsLogPG.isFirst())
+                .isLast(contactUsLogPG.isLast())
+                .build();
     }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
