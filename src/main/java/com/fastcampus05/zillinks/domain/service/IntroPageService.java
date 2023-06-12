@@ -304,17 +304,38 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         ContactUsLog contactUsLogPS = contactUsLogRepository.findById(contactUsId)
                 .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
+
+        // check-point 변경 요망
+        String status = null;
+        if (contactUsLogPS.getContactUsStatus().equals(ContactUsStatus.UNCONFIRMED))
+            status = "-";
+        else if (contactUsLogPS.getContactUsStatus().equals(ContactUsStatus.CONFIRM)) {
+            status = "확인됨";
+        } else {
+            throw new Exception400("contact_us_id", "삭제된 데이터가 조회되었습니다.");
+        }
+
         return FindContactUsDetailOutDTO.builder()
                 .contactUsLogId(contactUsLogPS.getId())
                 .email(contactUsLogPS.getEmail())
                 .name(contactUsLogPS.getName())
                 .type(contactUsLogPS.getType())
                 .date(contactUsLogPS.getCreatedAt())
-                .status((contactUsLogPS.getContactUsStatus().equals(ContactUsStatus.UNCONFIRMED)) ?
-                        // check-point 변경 요망
-                        "-": "확인됨")
+                .status(status)
                 .content(contactUsLogPS.getContent())
                 .build();
+    }
+
+    @Transactional
+    public void updateContactUsDetail(Long contactUsId, IntroPageRequest.UpdateContactUsDetailInDTO updateContactUsDetailInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        ContactUsLog contactUsLogPS = contactUsLogRepository.findById(contactUsId)
+                .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
+        contactUsLogPS.updateContactUsStatus(ContactUsStatus.valueOf(updateContactUsDetailInDTO.getStatus()));
     }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {

@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
+import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -90,5 +91,12 @@ public class IntroPageRequest {
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
         @Schema(description = "이메일", example = "taeheoki@naver.com")
         private String email;
+    }
+
+    @Getter
+    public static class UpdateContactUsDetailInDTO {
+        @Schema(description = "변경 상태 종류", example = "CONFIRM")
+        @Pattern(regexp = "CONFIRM|CANCEL")
+        private String status;
     }
 }

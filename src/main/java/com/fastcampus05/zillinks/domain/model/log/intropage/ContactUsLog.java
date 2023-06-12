@@ -33,4 +33,8 @@ public class ContactUsLog extends IntroPageLog {
         this.name = name;
         this.contactUsStatus = contactUsStatus;
     }
+
+    public void updateContactUsStatus(ContactUsStatus contactUsStatus) {
+        this.contactUsStatus = contactUsStatus;
+    }
 }
