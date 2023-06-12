@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.service;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fastcampus05.zillinks.core.annotation.MyLog;
 import com.fastcampus05.zillinks.core.auth.oauth.Fetch;
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
@@ -108,6 +109,15 @@ public class UserService {
         String rtk = MyJwtProvider.createRefreshToken(refreshToken);
         String atk = MyJwtProvider.createAccessToken(user);
         return new LoginOutDTO(rtk, atk);
+    }
+
+    @Transactional
+    public void logout(String value) {
+        DecodedJWT decodedJWT = MyJwtProvider.verify(value.replace("Bearer+", ""));
+        String token = decodedJWT.getClaim("refreshToken").asString();
+        RefreshToken rtk = refreshTokenRepository.findById(token)
+                .orElseThrow(() -> new Exception401("인증되지 않았습니다."));
+        refreshTokenRepository.delete(rtk);
     }
 
     @Transactional
