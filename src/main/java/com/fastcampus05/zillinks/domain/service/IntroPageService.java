@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
+import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.FIleUtil;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
@@ -256,7 +257,7 @@ public class IntroPageService {
             throw new Exception500("파일 변환에 실패하였습니다.\n" + e.getMessage());
         }
         // check-point 테스트 진행동안 잠시 막아둠
-//        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
+        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .email(downloadFileInDTO.getEmail())
@@ -304,6 +305,8 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         ContactUsLog contactUsLogPS = contactUsLogRepository.findById(contactUsId)
                 .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
+        if (!contactUsLogPS.getIntroPage().equals(introPagePS))
+            throw new Exception401("해당 게시물을 열람할 권한이 없습니다.");
 
         // check-point 변경 요망
         String status = null;
@@ -335,6 +338,8 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         ContactUsLog contactUsLogPS = contactUsLogRepository.findById(contactUsId)
                 .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
+        if (!contactUsLogPS.getIntroPage().equals(introPagePS))
+            throw new Exception401("해당 게시물을 열람할 권한이 없습니다.");
         contactUsLogPS.updateContactUsStatus(ContactUsStatus.valueOf(updateContactUsDetailInDTO.getStatus()));
     }
 
