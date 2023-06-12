@@ -7,7 +7,6 @@ import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
-import com.fastcampus05.zillinks.core.util.dto.token.AuthRequest;
 import com.fastcampus05.zillinks.core.util.dto.token.TokenResponse;
 import com.fastcampus05.zillinks.core.util.service.token.RefreshTokenService;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
@@ -22,13 +21,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -53,8 +52,6 @@ public class AuthController {
     })
     @PostMapping("/accessToken")
     public ResponseEntity<?> generateAccessToken(
-            @RequestBody @Valid AuthRequest.GenerateAccessTokenInDTO generateAccessTokenInDTO,
-            Errors errors,
             HttpServletRequest request,
             HttpServletResponse response) {
         String prefixJwt = request.getHeader(MyJwtProvider.HEADER);
@@ -65,6 +62,17 @@ public class AuthController {
 
         String refreshJwt = prefixJwt.replace(MyJwtProvider.TOKEN_PREFIX, "");
         try {
+            // remember_me가 있는지 확인
+            String value = "";
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("remember_me")) {
+                    value = cookie.getValue();
+                    log.info("value={}", value);
+                    break;
+                }
+            }
+
             // refreshToken이 탈취당했는지 확인하는 자료
             DecodedJWT decodedJWT = MyJwtProvider.verify(refreshJwt);
             String refreshToken = decodedJWT.getClaim("refreshToken").asString();
@@ -86,18 +94,19 @@ public class AuthController {
             } else {
                 // check-point
                 // remember_me가 true일 경우 refresh-token을 설정한 뒤 넘겨준다.
-                try {
-                    String rtk = URLEncoder.encode(tokenResponse.getRefreshToken(), "utf-8");
-                    Cookie cookie = new Cookie("refresh_token", rtk);
-                    cookie.setHttpOnly(true);
-                    cookie.setPath("/"); // accessToken 재발급시에만 사용가능하도록 설정
-                    if (generateAccessTokenInDTO.getRememberMe())
+                if (!value.isEmpty()) {
+                    try {
+                        String rtk = URLEncoder.encode(tokenResponse.getRefreshToken(), "utf-8");
+                        Cookie cookie = new Cookie("remember_me", rtk);
+                        cookie.setHttpOnly(true);
+                        cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
                         cookie.setMaxAge(60 * 60 * 24 * 30);
-                    // HTTPS를 사용할 경우 true로 설정
-                    cookie.setSecure(false);
-                    response.addCookie(cookie);
-                } catch (UnsupportedEncodingException e) {
-                    throw new Exception500(e.getMessage());
+                        // HTTPS를 사용할 경우 true로 설정
+                        cookie.setSecure(false);
+                        response.addCookie(cookie);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new Exception500(e.getMessage());
+                    }
                 }
             }
             ResponseDTO responseBody = new ResponseDTO(tokenResponse);

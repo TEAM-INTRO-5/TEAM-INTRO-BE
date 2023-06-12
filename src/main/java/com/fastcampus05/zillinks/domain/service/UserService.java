@@ -113,10 +113,8 @@ public class UserService {
 
     @Transactional
     public void logout(String value) {
-        if (value.isEmpty())
-            return;
         DecodedJWT decodedJWT = MyJwtProvider.verify(value.replace("Bearer+", ""));
-        String token = decodedJWT.getToken();
+        String token = decodedJWT.getClaim("refreshToken").asString();
         RefreshToken rtk = refreshTokenRepository.findById(token)
                 .orElseThrow(() -> new Exception401("인증되지 않았습니다."));
         refreshTokenRepository.delete(rtk);

@@ -94,25 +94,26 @@ public class UserController {
     ) {
         String value = "";
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("remember_me")) {
-                value = cookie.getValue();
-                break;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("remember_me")) {
+                    value = cookie.getValue();
+                    break;
+                }
             }
-        }
-        log.info("value={}", value);
-        userService.logout(value);
-        if (!value.isEmpty()) {
-            try {
-                Cookie cookie = new Cookie("remember_me", URLEncoder.encode("", "utf-8"));
-                cookie.setHttpOnly(true);
-                cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
-                cookie.setMaxAge(0); // 쿠키 만료 시점을 설정
-                // HTTPS를 사용할 경우 true로 설정
-                cookie.setSecure(false);
-                response.addCookie(cookie);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+            if (!value.isEmpty()) {
+                userService.logout(value);
+                try {
+                    Cookie cookie = new Cookie("remember_me", URLEncoder.encode("", "utf-8"));
+                    cookie.setHttpOnly(true);
+                    cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
+                    cookie.setMaxAge(0); // 쿠키 만료 시점을 설정
+                    // HTTPS를 사용할 경우 true로 설정
+                    cookie.setSecure(false);
+                    response.addCookie(cookie);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         ResponseDTO responseBody = new ResponseDTO<>(null);
