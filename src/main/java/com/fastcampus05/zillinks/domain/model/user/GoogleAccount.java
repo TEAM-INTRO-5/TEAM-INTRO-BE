@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Table(name = "google_account_id")
+@Table(name = "google_account_tb")
 @Entity
 public class GoogleAccount extends TimeBaseEntity {
 
@@ -37,11 +37,4 @@ public class GoogleAccount extends TimeBaseEntity {
     private String oAuthEmail;
     @NotNull
     private String name;
-
-    @Column(name = "logined_at")
-    private LocalDateTime loginedAt;
-
-    public void updateLoginedAt(LocalDateTime loginedAt) {
-        this.loginedAt = loginedAt;
-    }
 }

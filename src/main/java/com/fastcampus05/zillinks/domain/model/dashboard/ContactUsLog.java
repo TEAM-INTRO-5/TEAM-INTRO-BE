@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.domain.model.log.intropage;
+package com.fastcampus05.zillinks.domain.model.dashboard;
 
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.*;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("contact_us_log")
-public class ContactUsLog extends IntroPageLog {
+public class ContactUsLog extends Dashboard {
     @NotNull
     private String content;
     @NotNull

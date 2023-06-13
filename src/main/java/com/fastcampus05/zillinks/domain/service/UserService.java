@@ -17,6 +17,9 @@ import com.fastcampus05.zillinks.core.util.model.token.RefreshTokenRepository;
 import com.fastcampus05.zillinks.core.util.service.mail.MailService;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse.OAuthLoginOutDTO.GoogleProfile;
+import com.fastcampus05.zillinks.domain.model.log.login.LoginLog;
+import com.fastcampus05.zillinks.domain.model.log.login.LoginLogRepository;
+import com.fastcampus05.zillinks.domain.model.log.login.LoginPath;
 import com.fastcampus05.zillinks.domain.model.user.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -63,37 +65,26 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final GoogleAccountRepository googleAccountRepository;
+    private final LoginLogRepository loginLogRepository;
 
 
-    @MyLog
     @Transactional
     public void join(UserRequest.JoinInDTO joinInDTO) {
-
-        User user = User.builder()
-                .loginId(joinInDTO.getLoginId())
-                .email(joinInDTO.getEmail())
-                .password(passwordEncoder.encode(joinInDTO.getPassword()))
-                .bizNum(joinInDTO.getBizNum())
-                .role("USER")
-                .marketing(Marketing.builder()
-                        .marketingEmail(false)
-                        .build())
-                .build();
+        String password = passwordEncoder.encode(joinInDTO.getPassword());
 
         try {
-            userRepository.save(user);
+            userRepository.save(joinInDTO.toEntity(password));
         } catch (Exception e) {
             throw new Exception500("회원가입 실패 : " + e.getMessage());
         }
     }
 
-    @MyLog
     @Transactional
     public void oauthJoin(UserRequest.OauthJoinInDTO oauthJoinInDTO) {
 
         User user = User.builder()
-                .loginId(oauthJoinInDTO.getOAuthId())
-                .email(oauthJoinInDTO.getOAuthEmail())
+                .loginId(oauthJoinInDTO.getLoginId())
+                .email(oauthJoinInDTO.getEmail())
                 .password(passwordEncoder.encode(RandomStringGenerator.generateRandomString()))
                 .bizNum(oauthJoinInDTO.getBizNum())
                 .role("USER")
@@ -103,17 +94,16 @@ public class UserService {
                 .build();
 
         try {
-            userRepository.save(user);
+            user = userRepository.save(user);
         } catch (Exception e) {
             throw new Exception500("유저저장 실패 : " + e.getMessage());
         }
 
         GoogleAccount googleAccount = GoogleAccount.builder()
                 .user(user)
-                .oAuthId(oauthJoinInDTO.getOAuthId())
-                .oAuthEmail(oauthJoinInDTO.getOAuthEmail())
+                .oAuthId(oauthJoinInDTO.getLoginId())
+                .oAuthEmail(oauthJoinInDTO.getEmail())
                 .name(oauthJoinInDTO.getName())
-                .loginedAt(null)
                 .build();
 
         try {
@@ -123,7 +113,6 @@ public class UserService {
         }
     }
 
-    @MyLog
     @Transactional
     public LoginOutDTO login(UserRequest.LoginInDTO loginInDTO, List<String> validList) {
         MyUserDetails myUserDetails;
@@ -135,15 +124,17 @@ public class UserService {
         } catch (Exception e) {
             throw new Exception401("인증되지 않았습니다.");
         }
-        User user = myUserDetails.getUser();
-        RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), user.getId(), validList);
+        User userPS = myUserDetails.getUser();
+        RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userPS.getId(), validList);
         try {
             refreshTokenRepository.save(refreshToken);
         } catch (Exception e) {
             throw new Exception500("Token 생성에 실패하였습니다.");
         }
         String rtk = MyJwtProvider.createRefreshToken(refreshToken);
-        String atk = MyJwtProvider.createAccessToken(user);
+        String atk = MyJwtProvider.createAccessToken(userPS);
+        // 로그인 정보 저장(로깅)
+        loginLogRepository.save(LoginLog.toEntity(userPS.getId(), validList, LoginPath.NONE));
         return new LoginOutDTO(rtk, atk);
     }
 
@@ -190,8 +181,9 @@ public class UserService {
             // google 정보가 존재, 로그인 진행
             GoogleAccount googleAccountPS = googleAccountOP.get();
             // check-point 로그인 로그를 남길 때 일반 로그인과 소셜 로그인을 관리하는건 어떨까?
-            // 로그인 정보 저장
-            googleAccountPS.updateLoginedAt(LocalDateTime.now());
+            // 로그인 정보 저장(로깅)
+            loginLogRepository.save(LoginLog.toEntity(googleAccountPS.getUser().getId(), validList, LoginPath.GOOGLE));
+
             User userPS = googleAccountPS.getUser();
             RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userPS.getId(), validList);
             try {

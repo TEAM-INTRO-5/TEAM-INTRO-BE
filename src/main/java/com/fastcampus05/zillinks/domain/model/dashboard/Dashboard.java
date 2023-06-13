@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.domain.model.log.intropage;
+package com.fastcampus05.zillinks.domain.model.dashboard;
 
 import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
@@ -12,10 +12,11 @@ import javax.validation.constraints.NotNull;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class IntroPageLog extends TimeBaseEntity {
+@Table(name = "dashboard_tb")
+public abstract class Dashboard extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Intro_page_log_id")
+    @Column(name = "dashboard_id")
     private Long id;
 
     @NotNull
@@ -25,7 +26,7 @@ public abstract class IntroPageLog extends TimeBaseEntity {
     @JoinColumn(name = "intro_page_id")
     private IntroPage introPage;
 
-    public IntroPageLog(IntroPage introPage, String email) {
+    public Dashboard(IntroPage introPage, String email) {
         this.introPage = introPage;
         this.email = email;
     }

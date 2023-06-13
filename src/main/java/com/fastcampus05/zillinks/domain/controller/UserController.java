@@ -52,7 +52,10 @@ public class UserController {
             @Parameter(name = "joinInDTO")
     })
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody @Valid UserRequest.JoinInDTO joinInDTO, Errors errors) {
+    public ResponseEntity<?> join(
+            @RequestBody @Valid UserRequest.JoinInDTO joinInDTO,
+            Errors errors
+    ) {
         userService.join(joinInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
@@ -65,7 +68,10 @@ public class UserController {
             @Parameter(name = "oauthJoinInDTO")
     })
     @PostMapping("/oauthJoin")
-    public ResponseEntity<?> oauthJoin(@RequestBody @Valid UserRequest.OauthJoinInDTO oauthJoinInDTO, Errors errors) {
+    public ResponseEntity<?> oauthJoin(
+            @RequestBody @Valid UserRequest.OauthJoinInDTO oauthJoinInDTO,
+            Errors errors
+    ) {
         userService.oauthJoin(oauthJoinInDTO);
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
