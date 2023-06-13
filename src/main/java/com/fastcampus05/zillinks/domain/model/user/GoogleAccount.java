@@ -1,15 +1,21 @@
 package com.fastcampus05.zillinks.domain.model.user;
 
 import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "google_account_id")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Table(name = "google_account_id")
+@Entity
 public class GoogleAccount extends TimeBaseEntity {
 
     @Id

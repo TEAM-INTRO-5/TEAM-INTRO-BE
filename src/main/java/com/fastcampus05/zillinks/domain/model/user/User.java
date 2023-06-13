@@ -44,6 +44,10 @@ public class User extends TimeBaseEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private IntroPage introPage;
 
+    public void setMarketing(Marketing marketing) {
+        this.marketing = marketing;
+    }
+
     public void setIntroPage(IntroPage introPage) {
         this.introPage = introPage;
     }

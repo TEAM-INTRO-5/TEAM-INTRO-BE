@@ -9,6 +9,7 @@ import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.Common;
+import com.fastcampus05.zillinks.core.util.RandomStringGenerator;
 import com.fastcampus05.zillinks.core.util.dto.oauth.GoogleToken;
 import com.fastcampus05.zillinks.core.util.dto.oauth.OAuthProfile;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshToken;
@@ -16,10 +17,7 @@ import com.fastcampus05.zillinks.core.util.model.token.RefreshTokenRepository;
 import com.fastcampus05.zillinks.core.util.service.mail.MailService;
 import com.fastcampus05.zillinks.domain.dto.user.UserRequest;
 import com.fastcampus05.zillinks.domain.dto.user.UserResponse.OAuthLoginOutDTO.GoogleProfile;
-import com.fastcampus05.zillinks.domain.model.user.GoogleAccount;
-import com.fastcampus05.zillinks.domain.model.user.GoogleAccountRepository;
-import com.fastcampus05.zillinks.domain.model.user.User;
-import com.fastcampus05.zillinks.domain.model.user.UserRepository;
+import com.fastcampus05.zillinks.domain.model.user.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -67,26 +65,63 @@ public class UserService {
     private final GoogleAccountRepository googleAccountRepository;
 
 
-//    @MyLog
-//    @Transactional
-//    public UserResponse.JoinOutDTO 회원가입(UserRequest.JoinInDTO joinInDTO){
-//        Optional<User> userOP =userRepository.findByUsername(joinInDTO.getUsername());
-//        if(userOP.isPresent()){
-//            // 이 부분이 try catch 안에 있으면 Exception500에게 제어권을 뺏긴다.
-//            throw new Exception400("username", "유저네임이 존재합니다");
-//        }
-//        String encPassword = passwordEncoder.encode(joinInDTO.getPassword()); // 60Byte
-//        joinInDTO.setPassword(encPassword);
-//        System.out.println("encPassword : "+encPassword);
-//
-//        // 디비 save 되는 쪽만 try catch로 처리하자.
-//        try {
-//            User userPS = userRepository.save(joinInDTO.toEntity());
-//            return new UserResponse.JoinOutDTO(userPS);
-//        }catch (Exception e){
-//            throw new Exception500("회원가입 실패 : "+e.getMessage());
-//        }
-//    }
+    @MyLog
+    @Transactional
+    public void join(UserRequest.JoinInDTO joinInDTO) {
+
+        User user = User.builder()
+                .loginId(joinInDTO.getLoginId())
+                .email(joinInDTO.getEmail())
+                .password(passwordEncoder.encode(joinInDTO.getPassword()))
+                .bizNum(joinInDTO.getBizNum())
+                .role("USER")
+                .marketing(Marketing.builder()
+                        .marketingEmail(false)
+                        .build())
+                .build();
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new Exception500("회원가입 실패 : " + e.getMessage());
+        }
+    }
+
+    @MyLog
+    @Transactional
+    public void oauthJoin(UserRequest.OauthJoinInDTO oauthJoinInDTO) {
+
+        User user = User.builder()
+                .loginId(oauthJoinInDTO.getOAuthId())
+                .email(oauthJoinInDTO.getOAuthEmail())
+                .password(passwordEncoder.encode(RandomStringGenerator.generateRandomString()))
+                .bizNum(oauthJoinInDTO.getBizNum())
+                .role("USER")
+                .marketing(Marketing.builder()
+                        .marketingEmail(false)
+                        .build())
+                .build();
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new Exception500("유저저장 실패 : " + e.getMessage());
+        }
+
+        GoogleAccount googleAccount = GoogleAccount.builder()
+                .user(user)
+                .oAuthId(oauthJoinInDTO.getOAuthId())
+                .oAuthEmail(oauthJoinInDTO.getOAuthEmail())
+                .name(oauthJoinInDTO.getName())
+                .loginedAt(null)
+                .build();
+
+        try {
+            googleAccountRepository.save(googleAccount);
+        } catch (Exception e) {
+            throw new Exception500("회원가입 실패 : " + e.getMessage());
+        }
+    }
 
     @MyLog
     @Transactional
