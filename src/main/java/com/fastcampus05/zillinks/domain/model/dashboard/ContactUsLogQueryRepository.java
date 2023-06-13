@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.domain.model.log.intropage;
+package com.fastcampus05.zillinks.domain.model.dashboard;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.fastcampus05.zillinks.domain.model.log.intropage.QContactUsLog.*;
+import static com.fastcampus05.zillinks.domain.model.dashboard.QContactUsLog.contactUsLog;
+
 
 @Repository
 public class ContactUsLogQueryRepository {

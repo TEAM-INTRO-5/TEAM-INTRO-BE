@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.domain.model.log.intropage;
+package com.fastcampus05.zillinks.domain.model.dashboard;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;

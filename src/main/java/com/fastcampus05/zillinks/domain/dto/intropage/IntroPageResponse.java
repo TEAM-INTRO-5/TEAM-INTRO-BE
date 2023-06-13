@@ -1,16 +1,12 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
-import com.fastcampus05.zillinks.domain.model.log.intropage.ContactUsStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.Lob;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
 

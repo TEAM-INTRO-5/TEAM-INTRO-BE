@@ -1,4 +1,4 @@
-package com.fastcampus05.zillinks.domain.model.log.intropage;
+package com.fastcampus05.zillinks.domain.model.dashboard;
 
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.*;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("download_log")
-public class DownloadLog extends IntroPageLog {
+public class DownloadLog extends Dashboard {
     @NotNull
     private String type;
 
