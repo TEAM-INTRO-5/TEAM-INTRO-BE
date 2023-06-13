@@ -1,5 +1,7 @@
-package com.fastcampus05.zillinks.domain.model.dashboard;
+package com.fastcampus05.zillinks.domain.model.dashboard.repository;
 
+import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
+import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;

@@ -19,15 +19,11 @@ public abstract class Dashboard extends TimeBaseEntity {
     @Column(name = "dashboard_id")
     private Long id;
 
-    @NotNull
-    private String email;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "intro_page_id")
     private IntroPage introPage;
 
-    public Dashboard(IntroPage introPage, String email) {
+    public Dashboard(IntroPage introPage) {
         this.introPage = introPage;
-        this.email = email;
     }
 }
