@@ -246,14 +246,14 @@ public class IntroPageService {
         S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
                 .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
 
-        MultipartFile multipartFile = null;
-        try {
-            multipartFile = FIleUtil.urlToMultipartFile(path, s3UploaderFilePS.getOriginalPath());
-        } catch (IOException e) {
-            throw new Exception500("파일 변환에 실패하였습니다.\n" + e.getMessage());
-        }
-        // check-point 테스트 진행동안 잠시 막아둠
-        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
+//        MultipartFile multipartFile = null;
+//        try {
+//            multipartFile = FIleUtil.urlToMultipartFile(path, s3UploaderFilePS.getOriginalPath());
+//        } catch (IOException e) {
+//            throw new Exception500("파일 변환에 실패하였습니다.\n" + e.getMessage());
+//        }
+//        // check-point 테스트 진행동안 잠시 막아둠
+//        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .email(downloadFileInDTO.getEmail())
