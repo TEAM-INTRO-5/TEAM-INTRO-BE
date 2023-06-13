@@ -90,6 +90,7 @@ public class S3UploaderRepository {
             log.info("버킷 내 객체 삭제 성공 : {}", fileName);
         } catch (AmazonClientException e) {
             log.error("버킷 내 객체 삭제 실패: {}", e.getMessage());
+            // check-point 삭제 실패시 그냥 통과시켜야하나?
             throw new Exception500("버킷 내 객체 삭제 실패");
         }
     }

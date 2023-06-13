@@ -1,6 +1,5 @@
 package com.fastcampus05.zillinks.domain.model.intropage;
 
-import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "intro_page_tb")
@@ -29,19 +29,20 @@ public class IntroPage extends TimeBaseEntity {
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    private String color;
-
-//    @OneToMany(mappedBy = "widget")
-//    private List<Widget> widgets;
+    @Enumerated(EnumType.STRING)
+    private SaveStatus saveStatus; // [HIDDEN, OPEN] 숨김/공개여부
 
     @Embedded
-    private WebPageInfo webPageInfo;
-
-    @Enumerated(EnumType.STRING)
-    private SaveStatus saveStatus; // [UPDATING, SAVED]
+    private Theme theme;
 
     @OneToOne(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
     private CompanyInfo companyInfo;
+
+    @Embedded
+    private SiteInfo siteInfo;
+
+//    @OneToMany(mappedBy = "widget", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Widget> widgets;
 
     // == 연관관계 메서드 == //
     public void setUser(User user) {
@@ -50,11 +51,17 @@ public class IntroPage extends TimeBaseEntity {
     }
 
     public static IntroPage saveIntroPage(User user) {
+
         return IntroPage.builder()
                 .user(user)
-                .color("#ffffff")
-                .webPageInfo(new WebPageInfo(null, null, null, null, null))
-                .saveStatus(SaveStatus.UPDATING)
+                .saveStatus(SaveStatus.HIDDEN)
+                .theme(new Theme("ThemeA", "#ffffff"))
+                .siteInfo(SiteInfo.builder()
+                        .pavicon("")
+                        .title("")
+                        .description("")
+                        .build())
+                // 이후 widget도 시작하자 마자 다 생성하는 방향으로 진행
                 .build();
     }
 
@@ -62,19 +69,15 @@ public class IntroPage extends TimeBaseEntity {
         this.companyInfo = companyInfo;
     }
 
-    public void changeIntroPage(String color) {
-
-        this.color = color;
-        this.saveStatus = SaveStatus.SAVED;
+    // == 비즈니스 로직 == //
+    public void updateMainPage(Boolean status, List<Boolean> widgetStatusList) {
+        SaveStatus saveStatus = status.equals(true) ? SaveStatus.OPEN : SaveStatus.HIDDEN;
+        this.saveStatus = saveStatus;
         // check-point
-        // Widget 부분 추가
+        // widgetStatusList 추가
     }
 
-    public void changeIntroPageInfo(String pavicon, String webPageName, String subDomain, String title, String description) {
-        this.webPageInfo = new WebPageInfo(pavicon, webPageName, subDomain, title, description);
-
-        // check-point
-        // Widget 부분 추가
+    public void updateSaveStatus(SaveStatus saveStatus) {
+        this.saveStatus = saveStatus;
     }
-
 }

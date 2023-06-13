@@ -1,143 +1,93 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
+import com.fastcampus05.zillinks.domain.model.intropage.SaveStatus;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+@Slf4j
 public class IntroPageResponse {
 
     @Getter
     @Builder
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class SaveIntroPageOutDTO {
-        private String color;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class IntroPageOutDTO {
-        private String color;
 
-//         check-point, widget 관련 정리 후 추가
-//         private List<Widget> widgets;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class UpdateIntroPageOutDTO {
-        private String color;
-
-//         check-point, widget 관련 정리 후 추가
-//         private List<Widget> widgets;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class InfoOutDTO {
-        private String pavicon; // 경로
-        private String webPageName;
-        private String domain;
-        private String title;
-        private String description;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class UpdateInfoOutDTO {
-        private String pavicon; // 경로
-        private String webPageName;
-        private String domain;
-        private String title;
-        private String description;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class CompanyInfoOutDTO {
-        private String companyName;
-        private String bizNum;
-        private String contactEmail;
-        private String tagline;
-        private String logo;
-        private String introFile;
-        private String mediaKitFile;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class UpdateCompanyInfoOutDTO {
-        private String companyName;
-        private String bizNum;
-        private String contactEmail;
-        private String tagline;
-        private String logo;
-        private String introFile;
-        private String mediaKitFile;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class FindContactUsOutDTO {
         private Long introPageId;
-        private List<ContactUsOutDTO> content;
-        private Long totalElements;
-        private Integer totalPage;
-        private Integer size;
-        private Integer number;
-        private Integer numberOfElements;
-        private Boolean hasPrevious;
-        private Boolean hasNext;
-        private Boolean isFirst;
-        private Boolean isLast;
+        private SaveStatus saveStatus;
+        private Theme theme;
+        private CompanyInfo companyInfo;
+        private SiteInfo siteInfo;
+//         check-point, widget 관련 정리 후 추가
+//         private List<Widget> widgets;
 
         @Getter
         @Builder
         @AllArgsConstructor
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class ContactUsOutDTO {
-            private Long contactUsLogId;
-            private String email;
-            private String name;
-            private String content;
+        private static class Theme {
             private String type;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
-            private LocalDateTime date;
+            private String color;
         }
-    }
 
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class FindContactUsDetailOutDTO {
-        private Long contactUsLogId;
-        private String email;
-        private String name;
-        private String type;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
-        private LocalDateTime date;
-        private String status;
-        private String content;
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class CompanyInfo {
+            private String companyName;
+            private String startDate;
+            private String representative;
+            private String logo;
+            private String contactEmail;
+            private String bizNum;
+            private String phoneNumber;
+            private String faxNumber;
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class SiteInfo {
+            private String pavicon; // 경로
+            private String subDomain;
+            private String title;
+            private String description;
+        }
+
+        public static IntroPageOutDTO toEntity(IntroPage introPage) {
+            return IntroPageOutDTO.builder()
+                    .introPageId(introPage.getId())
+                    .saveStatus(introPage.getSaveStatus())
+                    .theme(Theme.builder()
+                            .type(introPage.getTheme().getType())
+                            .color(introPage.getTheme().getColor())
+                            .build())
+                    .companyInfo(CompanyInfo.builder()
+                            .companyName(introPage.getCompanyInfo().getCompanyName())
+                            .startDate(introPage.getCompanyInfo().getStartDate())
+                            .representative(introPage.getCompanyInfo().getRepresentative())
+                            .logo(introPage.getCompanyInfo().getLogo())
+                            .contactEmail(introPage.getCompanyInfo().getContactEmail())
+                            .bizNum(introPage.getCompanyInfo().getBizNum())
+                            .phoneNumber(introPage.getCompanyInfo().getPhoneNumber())
+                            .faxNumber(introPage.getCompanyInfo().getFaxNumber())
+                            .build())
+                    .siteInfo(SiteInfo.builder()
+                            .pavicon(introPage.getSiteInfo().getPavicon())
+                            .subDomain(introPage.getSiteInfo().getSubDomain())
+                            .title(introPage.getSiteInfo().getTitle())
+                            .description(introPage.getSiteInfo().getDescription())
+                            .build())
+                    .build();
+        }
     }
 }

@@ -35,18 +35,19 @@ public class DummyEntity {
     public IntroPage newIntroPage() {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
-                .color("#ffffff")
-                .webPageInfo(new WebPageInfo(null, "web_page_name", "domain", "title", "description"))
-                .saveStatus(SaveStatus.valueOf("SAVED"))
+                .theme(new Theme("ThemeA", "#ffffff"))
+                .siteInfo(new SiteInfo(null, "domain", "title", "description"))
+                .saveStatus(SaveStatus.valueOf("HIDDEN"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
                 .companyName(zillinksData.getName())
-                .bizNum(zillinksData.getBizNum())
-                .contactEmail(zillinksData.getContactEmail())
-                .tagline(zillinksData.getTagline())
+                .startDate(zillinksData.getStartDate())
+                .representative(zillinksData.getRepresentative())
                 .logo(null)
-                .introFile(null)
-                .mediaKitFile(null)
+                .contactEmail(zillinksData.getContactEmail())
+                .bizNum(zillinksData.getBizNum())
+                .phoneNumber("010-0000-0000")
+                .faxNumber("010-0000-0000")
                 .build();
         companyInfo.setIntroPage(introPage);
         return introPage;
@@ -56,18 +57,19 @@ public class DummyEntity {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
                 .user(user)
-                .color("#ffffff")
-                .webPageInfo(new WebPageInfo(null, "zillinks", "zillinks", "title", "description"))
-                .saveStatus(SaveStatus.valueOf("SAVED"))
+                .theme(new Theme("ThemeA", "#ffffff"))
+                .siteInfo(new SiteInfo(null, "zillinks", "title", "description"))
+                .saveStatus(SaveStatus.valueOf("HIDDEN"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
                 .companyName(zillinksData.getName())
-                .bizNum(zillinksData.getBizNum())
-                .contactEmail(zillinksData.getContactEmail())
-                .tagline(zillinksData.getTagline())
+                .startDate(zillinksData.getStartDate())
+                .representative(zillinksData.getRepresentative())
                 .logo(null)
-                .introFile(null)
-                .mediaKitFile(null)
+                .contactEmail(zillinksData.getContactEmail())
+                .bizNum(zillinksData.getBizNum())
+                .phoneNumber("010-0000-0000")
+                .faxNumber("010-0000-0000")
                 .build();
         companyInfo.setIntroPage(introPage);
         return introPage;
@@ -76,18 +78,19 @@ public class DummyEntity {
     public IntroPage newMockIntroPage(Long id) {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
-                .color("#ffffff")
-                .webPageInfo(new WebPageInfo("pavicon_path", "web_page_name", "domain", "title", "description"))
-                .saveStatus(SaveStatus.valueOf("SAVED"))
+                .theme(new Theme("ThemeA", "#ffffff"))
+                .siteInfo(new SiteInfo("pavicon_path", "domain", "title", "description"))
+                .saveStatus(SaveStatus.valueOf("HIDDEN"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
                 .companyName(zillinksData.getName())
-                .bizNum(zillinksData.getBizNum())
-                .contactEmail(zillinksData.getContactEmail())
-                .tagline(zillinksData.getTagline())
+                .startDate(zillinksData.getStartDate())
+                .representative(zillinksData.getRepresentative())
                 .logo("logo_path")
-                .introFile("intro_file_path")
-                .mediaKitFile("media_kit_file_path")
+                .contactEmail(zillinksData.getContactEmail())
+                .bizNum(zillinksData.getBizNum())
+                .phoneNumber("010-0000-0000")
+                .faxNumber("010-0000-0000")
                 .build();
         companyInfo.setIntroPage(introPage);
         return introPage;

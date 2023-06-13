@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
@@ -34,7 +35,7 @@ public class DashboardController {
 
     @Operation(summary = "연락 관리 내역 조회 - 획인 필요/완료", description = "연락 관리 내역 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.FindContactUsOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardRequest.FindContactUsOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "status"),
@@ -42,7 +43,7 @@ public class DashboardController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @GetMapping("/s/user/dashboard/contactUs")
-    public ResponseEntity<ResponseDTO<IntroPageResponse.FindContactUsOutDTO>> findContactUs(
+    public ResponseEntity<ResponseDTO<DashboardRequest.FindContactUsOutDTO>> findContactUs(
             @RequestParam
             @Pattern(regexp = "UNCONFIRMED|CONFIRM")
             String status,
@@ -50,25 +51,25 @@ public class DashboardController {
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         ContactUsStatus contactUsStatus = ContactUsStatus.valueOf(status);
-        IntroPageResponse.FindContactUsOutDTO findContactUsOutDTO = dashboardService.findContactUs(contactUsStatus, page, myUserDetails.getUser());
+        DashboardRequest.FindContactUsOutDTO findContactUsOutDTO = dashboardService.findContactUs(contactUsStatus, page, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
     @Operation(summary = "연락 관리 내역 조회 - detail", description = "단일 연락 관리 내역 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = IntroPageResponse.FindContactUsDetailOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardRequest.FindContactUsDetailOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "contactUsId"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @GetMapping("/s/user/dashboard/contactUs/{contactUsId}")
-    public ResponseEntity<ResponseDTO<IntroPageResponse.FindContactUsOutDTO>> findContactUsDetail(
+    public ResponseEntity<ResponseDTO<DashboardRequest.FindContactUsOutDTO>> findContactUsDetail(
             @PathVariable Long contactUsId,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        IntroPageResponse.FindContactUsDetailOutDTO findContactUsDetailOutDTO = dashboardService.findContactUsDetail(contactUsId, myUserDetails.getUser());
+        DashboardRequest.FindContactUsDetailOutDTO findContactUsDetailOutDTO = dashboardService.findContactUsDetail(contactUsId, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsDetailOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
@@ -82,7 +83,7 @@ public class DashboardController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PutMapping("/s/user/dashboard/contactUs/{contactUsId}")
-    public ResponseEntity<ResponseDTO<IntroPageResponse.FindContactUsOutDTO>> updateContactUsDetail(
+    public ResponseEntity<ResponseDTO<DashboardRequest.FindContactUsOutDTO>> updateContactUsDetail(
             @PathVariable Long contactUsId,
             @RequestBody @Valid IntroPageRequest.UpdateContactUsDetailInDTO updateContactUsDetailInDTO,
             Errors errors,

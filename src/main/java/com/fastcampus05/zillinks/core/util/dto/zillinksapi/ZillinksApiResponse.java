@@ -95,9 +95,10 @@ public class ZillinksApiResponse {
     public ZillinksData toZillinksData() {
         return ZillinksData.builder()
                 .name(result.name)
-                .bizNum(query.bizNum)
+                .startDate(result.startDate)
+                .representative(result.representative)
                 .contactEmail(result.contactEmail)
-                .tagline(result.tagline)
+                .bizNum(query.bizNum)
                 .build();
     }
 }

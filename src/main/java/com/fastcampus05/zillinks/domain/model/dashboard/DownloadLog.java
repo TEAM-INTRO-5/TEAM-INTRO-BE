@@ -5,12 +5,14 @@ import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("download_log")
+@Table(name = "download_log_tb")
 public class DownloadLog extends Dashboard {
     @NotNull
     private String type;
