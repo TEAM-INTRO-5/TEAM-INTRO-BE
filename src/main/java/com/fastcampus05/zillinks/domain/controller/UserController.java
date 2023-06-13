@@ -44,6 +44,33 @@ public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "일반 회원가입", description = "일반 아이디로 회원가입")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "joinInDTO")
+    })
+    @PostMapping("/join")
+    public ResponseEntity<?> join(@RequestBody @Valid UserRequest.JoinInDTO joinInDTO, Errors errors) {
+        userService.join(joinInDTO);
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
+    }
+    @Operation(summary = "소셜 회원가입", description = "구글 아이디로 회원가입")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "oauthJoinInDTO")
+    })
+    @PostMapping("/oauthJoin")
+    public ResponseEntity<?> oauthJoin(@RequestBody @Valid UserRequest.OauthJoinInDTO oauthJoinInDTO, Errors errors) {
+        userService.oauthJoin(oauthJoinInDTO);
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
     @Operation(summary = "login", description = "유저의 로그인과 함께 accessToken과 refreshToken을 반환해준다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = LoginOutDTO.class))),
