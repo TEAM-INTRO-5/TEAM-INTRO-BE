@@ -92,7 +92,7 @@ public class UserService {
     public void oauthJoin(UserRequest.OauthJoinInDTO oauthJoinInDTO) {
 
         User user = User.builder()
-                .loginId(oauthJoinInDTO.getLoginId())
+                .loginId(oauthJoinInDTO.getOAuthId())
                 .email(oauthJoinInDTO.getOAuthEmail())
                 .password(passwordEncoder.encode(RandomStringGenerator.generateRandomString()))
                 .bizNum(oauthJoinInDTO.getBizNum())

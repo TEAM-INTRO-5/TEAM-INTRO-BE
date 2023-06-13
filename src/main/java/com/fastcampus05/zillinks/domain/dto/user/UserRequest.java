@@ -54,12 +54,6 @@ public class UserRequest {
 
     @Getter
     public static class OauthJoinInDTO {
-        @Schema(description = "로그인 아이디", example = "taeheoki11")
-        @Pattern(regexp = "^[a-zA-Z0-9]{4,14}$", message = "영문/숫자 4~14자 이내로 작성해주세요")
-        @NotBlank(message = "login_id는 비어있을 수 없습니다.")
-        @JsonProperty("login_id")
-        private String loginId;
-
         @Schema(description = "소셜 아이디", example = "google_12341234")
         @JsonProperty("o_auth_id")
         private String oAuthId;
