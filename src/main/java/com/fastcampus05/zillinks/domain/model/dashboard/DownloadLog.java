@@ -18,8 +18,8 @@ public class DownloadLog extends Dashboard {
     private String type;
 
     @Builder
-    public DownloadLog(IntroPage introPage, String email, String type) {
-        super(introPage, email);
+    public DownloadLog(IntroPage introPage, String type) {
+        super(introPage);
         this.type = type;
     }
 }

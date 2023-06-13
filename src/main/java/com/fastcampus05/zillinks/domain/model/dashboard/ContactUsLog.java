@@ -12,20 +12,26 @@ import javax.validation.constraints.NotNull;
 @DiscriminatorValue("contact_us_log")
 @Table(name = "contact_us_log_tb")
 public class ContactUsLog extends Dashboard {
+
     @NotNull
-    private String content;
-    @NotNull
-    private String type;
+    private String email;
 
     @NotNull
     private String name;
+
+    @NotNull
+    private String content;
+
+    @NotNull
+    private String type;
 
     @Enumerated(EnumType.STRING)
     private ContactUsStatus contactUsStatus; // CANCEL, CONFIRM
 
     @Builder
     public ContactUsLog(IntroPage introPage, String email, String content, String type, String name, ContactUsStatus contactUsStatus) {
-        super(introPage, email);
+        super(introPage);
+        this.email = email;
         this.content = content;
         this.type = type;
         this.name = name;
