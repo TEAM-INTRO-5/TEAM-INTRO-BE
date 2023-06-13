@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "company_info_tb")
@@ -33,22 +34,23 @@ public class CompanyInfo extends TimeBaseEntity {
     private String companyName;
 
     @NotEmpty
-    private String bizNum;
+    private String startDate;
 
     @NotEmpty
-    private String contactEmail;
-
-    @Lob
-    private String tagline;
+    private String representative;
 
     @Column(unique = true)
     private String logo; // S3 저장소의 경로, 코드 구현시에는 본인의 저장소를 적는다 ex) /upload/file
 
-    @Column(unique = true)
-    private String introFile;
+    @NotEmpty
+    private String contactEmail;
 
-    @Column(unique = true)
-    private String mediaKitFile;
+    @NotEmpty
+    private String bizNum;
+
+    private String phoneNumber;
+
+    private String faxNumber;
 
     // == 연관관계 메서드 == //
     public void setIntroPage(IntroPage introPage) {
@@ -61,18 +63,22 @@ public class CompanyInfo extends TimeBaseEntity {
         return CompanyInfo.builder()
                 .introPage(introPage)
                 .companyName(zillinksData.getName())
-                .bizNum(zillinksData.getBizNum())
+                .startDate(zillinksData.getStartDate())
+                .representative(zillinksData.getRepresentative())
+                .logo("")
                 .contactEmail(zillinksData.getContactEmail())
-                .tagline(zillinksData.getTagline())
-                .logo(null)
-                .introFile(null)
-                .mediaKitFile(null)
+                .bizNum(zillinksData.getBizNum())
+                .phoneNumber("")
+                .faxNumber("")
                 .build();
     }
 
-    public void changeCompanyInfo(String logo, String introFile, String mediaKitFile) {
+
+    public void updateCompanyInfo(String representative, String logo, String contactEmail, String phoneNumber, String faxNumber) {
+        this.representative = representative;
         this.logo = logo;
-        this.introFile = introFile;
-        this.mediaKitFile = mediaKitFile;
+        this.contactEmail = contactEmail;
+        this.phoneNumber = phoneNumber;
+        this.faxNumber = faxNumber;
     }
 }

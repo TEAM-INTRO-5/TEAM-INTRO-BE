@@ -3,16 +3,14 @@ package com.fastcampus05.zillinks.domain.model.dashboard;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.*;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("contact_us_log")
+@Table(name = "contact_us_log_tb")
 public class ContactUsLog extends Dashboard {
     @NotNull
     private String content;

@@ -7,31 +7,32 @@ import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 public class IntroPageRequest {
 
     @Getter
     public static class UpdateInDTO {
-        // check-point color 패턴 추가
-        @Schema(description = "색상", example = "#FF5733")
-        private String color;
+        @Schema(description = "공개 여부", example = "false")
+        private Boolean status;
 
-//         check-point, widget 관련 정리 후 추가
-//         private List<Widget> widgets;
+        @Schema(description = "위젯들의 공개 여부", example = "[true, false, true, false, true, false, true, false, true, false, true, false, true, false]")
+        @Size(min = 14, max = 14, message = "위젯의 갯수가")
+        @JsonProperty("widget_status_list")
+        private List<Boolean> widgetStatusList;
+
     }
 
     @Getter
-    public static class UpdateInfoInDTO {
+    public static class UpdateSiteInfoInDTO {
 
         @Schema(description = "pavicon 저장 경로", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
         private String pavicon; // 경로
 
-        @Schema(description = "웹페이지 이름 설정", example = "질링스")
-        @JsonProperty("web_page_name")
-        private String webPageName;
-
-        @Schema(description = "도메인 설정", example = "zillinks")
-        private String domain;
+        @Schema(description = "서브도메인 설정", example = "zillinks")
+        @JsonProperty("sub_domain")
+        private String subDomain;
 
         @Schema(description = "사이트 이름 ", example = "질링스")
         private String title;
@@ -42,16 +43,17 @@ public class IntroPageRequest {
 
     @Getter
     public static class UpdateCompanyInfoInDTO {
+
+        @Schema(description = "대표 성명", example = "홍길동")
+        private String representative;
         @Schema(description = "회사 로고", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
         private String logo;
-
-        @Schema(description = "회사 소개서")
-        @JsonProperty("intro_file")
-        private String introFile;
-
-        @Schema(description = "미디어 킷")
-        @JsonProperty("media_kit_file")
-        private String mediaKitFile;
+        @Schema(description = "연락용 이메일", example = "taeheoki@naver.com")
+        private String contactEmail;
+        @Schema(description = "전화 번호", example = "000-0000-0000")
+        private String phoneNumber;
+        @Schema(description = "팩스 번호", example = "000-0000-0000")
+        private String faxNumber;
     }
 
     @Getter

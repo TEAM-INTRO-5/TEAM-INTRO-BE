@@ -8,22 +8,28 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
-import javax.validation.constraints.NotEmpty;
 
 @Embeddable
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WebPageInfo {
-    @NotEmpty
+public class SiteInfo {
     @Column(unique = true)
     private String pavicon; // 경로
-    @Column(name = "web_page_name")
-    private String webPageName;
+
     @Column(unique = true)
-    private String domain;
+    private String subDomain;
+
     private String title;
+
     @Lob
     private String description;
+
+    public void updateSiteInfo(String pavicon, String subDomain, String title, String description) {
+        this.pavicon = pavicon;
+        this.subDomain = subDomain;
+        this.title = title;
+        this.description = description;
+    }
 }

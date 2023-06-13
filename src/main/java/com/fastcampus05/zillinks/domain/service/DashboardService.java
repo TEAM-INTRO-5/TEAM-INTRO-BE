@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
+import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
@@ -33,15 +34,15 @@ public class DashboardService {
 
 
 
-    public IntroPageResponse.FindContactUsOutDTO findContactUs(ContactUsStatus status, Integer page, User user) {
+    public DashboardRequest.FindContactUsOutDTO findContactUs(ContactUsStatus status, Integer page, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         Page<ContactUsLog> contactUsLogPG = contactUsLogQueryRepository.findAllByStatus(status, introPagePS.getId(), page);
-        List<IntroPageResponse.FindContactUsOutDTO.ContactUsOutDTO> contactUsOutDTOList = contactUsLogPG.stream()
-                .map(s -> IntroPageResponse.FindContactUsOutDTO.ContactUsOutDTO.builder()
+        List<DashboardRequest.FindContactUsOutDTO.ContactUsOutDTO> contactUsOutDTOList = contactUsLogPG.stream()
+                .map(s -> DashboardRequest.FindContactUsOutDTO.ContactUsOutDTO.builder()
                         .contactUsLogId(s.getId())
                         .name(s.getName())
                         .email(s.getEmail())
@@ -50,7 +51,7 @@ public class DashboardService {
                         .date(s.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-        return IntroPageResponse.FindContactUsOutDTO.builder()
+        return DashboardRequest.FindContactUsOutDTO.builder()
                 .introPageId(introPagePS.getId())
                 .content(contactUsOutDTOList)
                 .totalElements(contactUsLogPG.getTotalElements())
@@ -65,7 +66,7 @@ public class DashboardService {
                 .build();
     }
 
-    public IntroPageResponse.FindContactUsDetailOutDTO findContactUsDetail(Long contactUsId, User user) {
+    public DashboardRequest.FindContactUsDetailOutDTO findContactUsDetail(Long contactUsId, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
@@ -86,7 +87,7 @@ public class DashboardService {
             throw new Exception400("contact_us_id", "삭제된 데이터가 조회되었습니다.");
         }
 
-        return IntroPageResponse.FindContactUsDetailOutDTO.builder()
+        return DashboardRequest.FindContactUsDetailOutDTO.builder()
                 .contactUsLogId(contactUsLogPS.getId())
                 .email(contactUsLogPS.getEmail())
                 .name(contactUsLogPS.getName())
