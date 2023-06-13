@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
 
@@ -168,16 +169,16 @@ public class IntroPageController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "updateInfoInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
-    @PutMapping("/s/user/introPage/siteInfo/checkSubDomain")
+    @GetMapping("/s/user/introPage/siteInfo/checkSubDomain")
     public ResponseEntity<ResponseDTO> checkSubDomain(
-            @RequestBody @Valid IntroPageRequest.UpdateSiteInfoInDTO updateSiteInfoInDTO,
-            Errors errors,
+            @RequestParam
+            @Pattern(regexp = "^[_a-zA-Z0-9]{1,16}$")
+            String subDomain,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        introPageService.updateSiteInfo(updateSiteInfoInDTO, myUserDetails.getUser());
+        introPageService.checkSubDomain(subDomain, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(null);
         return ResponseEntity.ok(responseBody);
     }

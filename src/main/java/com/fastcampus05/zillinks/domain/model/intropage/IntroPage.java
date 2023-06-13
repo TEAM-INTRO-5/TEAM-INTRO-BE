@@ -57,7 +57,7 @@ public class IntroPage extends TimeBaseEntity {
                 .saveStatus(SaveStatus.HIDDEN)
                 .theme(new Theme("ThemeA", "#ffffff"))
                 .siteInfo(SiteInfo.builder()
-                        .pavicon("")
+                        .pavicon(null)
                         .title("")
                         .description("")
                         .build())
