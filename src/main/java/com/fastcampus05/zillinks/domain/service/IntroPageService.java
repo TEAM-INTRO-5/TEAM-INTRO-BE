@@ -201,13 +201,22 @@ public class IntroPageService {
         log.info("ss3UploaderFileListPS={}", s3UploaderFileListPS);
         for (String pathOrigin : pathOrginList) {
             log.info("pathOrigin={}", pathOrigin);
-            if (!pathList.contains(pathOrigin) && !pathOrigin.isEmpty()) {
+            if (!pathList.contains(pathOrigin) && !(pathOrigin == null)) {
                 s3UploaderFileRepository.delete(s3UploaderFileListPS.stream().filter(s -> s.getEncodingPath().equals(pathOrigin)).findAny().orElseThrow(
                         () -> new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.")
                 ));
                 s3UploaderRepository.delete(pathOrigin);
             }
         }
+    }
+
+    public void checkSubDomain(String subDomain, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        Optional<IntroPage> introPagePS = introPageRepository.findByDomain(subDomain);
+        if (introPagePS.isPresent())
+            throw new Exception400("sub_domain", "이미 존재하는 서브도메인입니다.");
     }
 
     //    public InfoOutDTO findInfo(User user) {

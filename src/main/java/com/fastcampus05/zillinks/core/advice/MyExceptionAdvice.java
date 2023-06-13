@@ -51,7 +51,9 @@ public class MyExceptionAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> constraintViolationError(ConstraintViolationException e) {
         StringTokenizer st = new StringTokenizer(e.getMessage());
-        Exception400 exception400 = new Exception400(st.nextToken(), st.nextToken());
+        String key = st.nextToken();
+        String value = e.getMessage().replaceFirst(key, "");
+        Exception400 exception400 = new Exception400(key, value);
         return new ResponseEntity<>(exception400.body(), exception400.status());
     }
 

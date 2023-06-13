@@ -65,7 +65,7 @@ public class CompanyInfo extends TimeBaseEntity {
                 .companyName(zillinksData.getName())
                 .startDate(zillinksData.getStartDate())
                 .representative(zillinksData.getRepresentative())
-                .logo("")
+                .logo(null)
                 .contactEmail(zillinksData.getContactEmail())
                 .bizNum(zillinksData.getBizNum())
                 .phoneNumber("")
