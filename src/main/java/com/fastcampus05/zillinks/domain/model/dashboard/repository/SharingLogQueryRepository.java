@@ -6,14 +6,12 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 
 @Repository
-public class VisitorLogQueryRepository {
+public class SharingLogQueryRepository {
 
     private final EntityManager em;
     private final JPAQueryFactory query;
 
-    private final int SIZE = 8;
-
-    public VisitorLogQueryRepository(EntityManager em) {
+    public SharingLogQueryRepository(EntityManager em) {
         this.em = em;
         this.query = new JPAQueryFactory(em);
     }
