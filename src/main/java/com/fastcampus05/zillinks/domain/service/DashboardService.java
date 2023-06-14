@@ -2,16 +2,9 @@ package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
-import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
-import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadLog;
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
-import com.fastcampus05.zillinks.domain.model.dashboard.repository.ContactUsLogQueryRepository;
-import com.fastcampus05.zillinks.domain.model.dashboard.repository.ContactUsLogRepository;
-import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
-import com.fastcampus05.zillinks.domain.model.dashboard.repository.DownloadLogQueryRepository;
-import com.fastcampus05.zillinks.domain.model.dashboard.repository.DownloadLogRepository;
+import com.fastcampus05.zillinks.domain.model.dashboard.*;
+import com.fastcampus05.zillinks.domain.model.dashboard.repository.*;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
@@ -26,7 +19,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse.*;
-import static com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse.FindDownloadFileOutDTO.*;
+import static com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse.FindDownloadFileOutDTO.DownloadFile;
+import static com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse.FindDownloadFileOutDTO.toOutDTO;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,6 +33,7 @@ public class DashboardService {
     private final ContactUsLogQueryRepository contactUsLogQueryRepository;
     private final DownloadLogRepository downloadLogRepository;
     private final DownloadLogQueryRepository downloadLogQueryRepository;
+    private final VisitorLogQueryRepository visitorLogQueryRepository;
 
 
 
@@ -123,5 +118,25 @@ public class DashboardService {
                         .build())
                 .collect(Collectors.toList());
         return toOutDTO(introPagePS, downloadLogPG, downloadFileList, type);
+    }
+
+    public FindVisitorOutDTO findVisitor(String type, Integer page, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        Page<VisitorLog> visitorLogPG = visitorLogQueryRepository.findAllByType(introPagePS.getId(), page);
+        List<FindVisitorOutDTO.Visitor> visitorList = visitorLogPG.stream().map(
+                s -> FindVisitorOutDTO.Visitor.builder()
+                        .visitorId(s.getId())
+                        .keyword(type.equals("VIEW") ? ((s.getKeyword() == null) ? "(없음)": s.getKeyword()) : null)
+                        .sharingCode(type.equals("SHARING") ? ((s.getSharingCode() == null) ? "(없음)": s.getSharingCode()) : null)
+                        .date(s.getCreatedAt())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return FindVisitorOutDTO.toOutDTO(introPagePS, visitorLogPG, visitorList, type);
     }
 }

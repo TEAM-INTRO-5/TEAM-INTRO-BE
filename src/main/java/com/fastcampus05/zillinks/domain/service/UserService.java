@@ -196,7 +196,6 @@ public class UserService {
             return OAuthLoginOutDTO.builder()
                     .refreshToken(rtk)
                     .accessToken(atk)
-                    .googleProfile(new GoogleProfile(oAuthId, oAuthProfile.getEmail(), oAuthProfile.getName()))
                     .build();
         } catch (JsonProcessingException e) {
             throw new Exception500(e.getMessage());

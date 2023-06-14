@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,11 @@ public class UserResponse {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class OAuthLoginOutDTO {
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String accessToken;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String refreshToken;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private GoogleProfile googleProfile;
 
         @Getter

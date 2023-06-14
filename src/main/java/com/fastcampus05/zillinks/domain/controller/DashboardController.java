@@ -94,12 +94,12 @@ public class DashboardController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "다운로드 관리 내역 조회 - 전체/회사소개서/미디어킷", description = "연락 관리 내역 조회")
+    @Operation(summary = "다운로드 관리 내역 조회 - 전체/회사소개서/미디어킷", description = "다운로드 관리 내역 조회 - 전체/회사소개서/미디어킷")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindContactUsOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindDownloadFileOutDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "status"),
+            @Parameter(name = "type"),
             @Parameter(name = "page"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
@@ -116,6 +116,28 @@ public class DashboardController {
             downloadType = DownloadType.valueOf(type);
         DashboardResponse.FindDownloadFileOutDTO findDownloadFileOutDTO  = dashboardService.findDownloadFile(downloadType, page, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findDownloadFileOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "방문자 기록 내역 조회 - 조회/공유", description = "방문자 기록 내역 조회 - 조회/공유")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindVisitorOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "type"),
+            @Parameter(name = "page"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user/dashboard/visitor")
+    public ResponseEntity<ResponseDTO<?>> findVisitor (
+            @RequestParam
+            @Pattern(regexp = "VIEW|SHARING")
+            String type,
+            @RequestParam(defaultValue = "0") Integer page,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        DashboardResponse.FindVisitorOutDTO findVisitorOutDTO  = dashboardService.findVisitor(type, page, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findVisitorOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }
