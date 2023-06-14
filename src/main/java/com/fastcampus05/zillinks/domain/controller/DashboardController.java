@@ -2,10 +2,10 @@ package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
-import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
+import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
-import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
+import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
 import com.fastcampus05.zillinks.domain.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +35,7 @@ public class DashboardController {
 
     @Operation(summary = "연락 관리 내역 조회 - 획인 필요/완료", description = "연락 관리 내역 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardRequest.FindContactUsOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindContactUsOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "status"),
@@ -43,7 +43,7 @@ public class DashboardController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @GetMapping("/s/user/dashboard/contactUs")
-    public ResponseEntity<ResponseDTO<DashboardRequest.FindContactUsOutDTO>> findContactUs(
+    public ResponseEntity<ResponseDTO<DashboardResponse.FindContactUsOutDTO>> findContactUs(
             @RequestParam
             @Pattern(regexp = "UNCONFIRMED|CONFIRM")
             String status,
@@ -51,25 +51,25 @@ public class DashboardController {
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         ContactUsStatus contactUsStatus = ContactUsStatus.valueOf(status);
-        DashboardRequest.FindContactUsOutDTO findContactUsOutDTO = dashboardService.findContactUs(contactUsStatus, page, myUserDetails.getUser());
+        DashboardResponse.FindContactUsOutDTO findContactUsOutDTO = dashboardService.findContactUs(contactUsStatus, page, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
     @Operation(summary = "연락 관리 내역 조회 - detail", description = "단일 연락 관리 내역 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardRequest.FindContactUsDetailOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindContactUsDetailOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "contactUsId"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @GetMapping("/s/user/dashboard/contactUs/{contactUsId}")
-    public ResponseEntity<ResponseDTO<DashboardRequest.FindContactUsOutDTO>> findContactUsDetail(
+    public ResponseEntity<ResponseDTO<DashboardResponse.FindContactUsOutDTO>> findContactUsDetail(
             @PathVariable Long contactUsId,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        DashboardRequest.FindContactUsDetailOutDTO findContactUsDetailOutDTO = dashboardService.findContactUsDetail(contactUsId, myUserDetails.getUser());
+        DashboardResponse.FindContactUsDetailOutDTO findContactUsDetailOutDTO = dashboardService.findContactUsDetail(contactUsId, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findContactUsDetailOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
@@ -83,7 +83,7 @@ public class DashboardController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PutMapping("/s/user/dashboard/contactUs/{contactUsId}")
-    public ResponseEntity<ResponseDTO<DashboardRequest.FindContactUsOutDTO>> updateContactUsDetail(
+    public ResponseEntity<ResponseDTO<DashboardResponse.FindContactUsOutDTO>> updateContactUsDetail(
             @PathVariable Long contactUsId,
             @RequestBody @Valid IntroPageRequest.UpdateContactUsDetailInDTO updateContactUsDetailInDTO,
             Errors errors,
@@ -91,6 +91,31 @@ public class DashboardController {
     ) {
         dashboardService.updateContactUsDetail(contactUsId, updateContactUsDetailInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "다운로드 관리 내역 조회 - 전체/회사소개서/미디어킷", description = "연락 관리 내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindContactUsOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "status"),
+            @Parameter(name = "page"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user/dashboard/downloadFile")
+    public ResponseEntity<ResponseDTO<DashboardResponse.FindDownloadFileOutDTO>> findDownloadFile (
+            @RequestParam
+            @Pattern(regexp = "ALL|INTROFILE|MEDIAKIT")
+            String type,
+            @RequestParam(defaultValue = "0") Integer page,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        DownloadType downloadType = null;
+        if (!type.equals("ALL"))
+            downloadType = DownloadType.valueOf(type);
+        DashboardResponse.FindDownloadFileOutDTO findDownloadFileOutDTO  = dashboardService.findDownloadFile(downloadType, page, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findDownloadFileOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }

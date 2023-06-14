@@ -26,6 +26,7 @@ public class ContactUsLog extends Dashboard {
     private String type;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "contact_us_status")
     private ContactUsStatus contactUsStatus; // CANCEL, CONFIRM
 
     @Builder

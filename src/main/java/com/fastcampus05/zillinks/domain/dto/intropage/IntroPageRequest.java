@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
+import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -18,9 +19,14 @@ public class IntroPageRequest {
         private Boolean status;
 
         @Schema(description = "위젯들의 공개 여부", example = "[true, false, true, false, true, false, true, false, true, false, true, false, true, false]")
-        @Size(min = 14, max = 14, message = "위젯의 갯수가")
+        @Size(min = 14, max = 14, message = "위젯의 개수 14개")
         @JsonProperty("widget_status_list")
         private List<Boolean> widgetStatusList;
+
+        @Schema(description = "위젯들의 순서 리스트", example = "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]")
+        @Size(min = 14, max = 14, message = "위젯의 개수 14개")
+        @JsonProperty("order_list")
+        private List<Boolean> orderList;
 
     }
 
@@ -86,7 +92,7 @@ public class IntroPageRequest {
         private Long introPageId;
 
         @Schema(description = "다운 받을 자료 종류", example = "intro_file")
-        @Pattern(regexp = "intro_file|media_kit_file")
+        @Pattern(regexp = "INTROFILE|MEDIAKIT")
         private String type;
 
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")

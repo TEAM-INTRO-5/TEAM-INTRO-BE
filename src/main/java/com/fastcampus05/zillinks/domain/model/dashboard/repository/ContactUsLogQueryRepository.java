@@ -21,7 +21,6 @@ public class ContactUsLogQueryRepository {
     private final EntityManager em;
     private final JPAQueryFactory query;
 
-    private final int SIZE = 8;
 
     public ContactUsLogQueryRepository(EntityManager em) {
         this.em = em;
@@ -29,24 +28,35 @@ public class ContactUsLogQueryRepository {
     }
 
     public Page<ContactUsLog> findAllByStatus(ContactUsStatus status, Long introPageId, Integer page) {
-        int startPosition = page * SIZE;
+        int size = 10;
+        int startPosition = page * size;
 
         List<ContactUsLog> contactUsLogListPS = query
                 .selectFrom(contactUsLog)
-                .where(getBooleanExpression(status, introPageId))
+                .where(eqIntroPageId(introPageId), eqStatus(status))
                 .orderBy(contactUsLog.createdAt.desc())
                 .offset(startPosition)
-                .limit(SIZE)
+                .limit(size)
                 .fetch();
 
         Long totalCount = query
                 .selectFrom(contactUsLog)
-                .where(getBooleanExpression(status, introPageId))
+                .where(eqIntroPageId(introPageId), eqStatus(status))
                 .stream().count();
-        return new PageImpl<>(contactUsLogListPS, PageRequest.of(page, SIZE), totalCount);
+        return new PageImpl<>(contactUsLogListPS, PageRequest.of(page, size), totalCount);
     }
 
-    private static BooleanExpression getBooleanExpression(ContactUsStatus status, Long intro_page_id) {
-        return contactUsLog.introPage.id.eq(intro_page_id).and(contactUsLog.contactUsStatus.eq(status));
+    private static BooleanExpression eqIntroPageId(Long introPageId) {
+        if (introPageId != null) {
+            return contactUsLog.introPage.id.eq(introPageId);
+        }
+        return null;
+    }
+
+    private static BooleanExpression eqStatus(ContactUsStatus status) {
+        if (status != null) {
+            return contactUsLog.contactUsStatus.eq(status);
+        }
+        return null;
     }
 }

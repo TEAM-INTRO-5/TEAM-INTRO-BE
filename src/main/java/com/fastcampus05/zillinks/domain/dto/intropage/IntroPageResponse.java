@@ -63,7 +63,7 @@ public class IntroPageResponse {
             private String description;
         }
 
-        public static IntroPageOutDTO toEntity(IntroPage introPage) {
+        public static IntroPageOutDTO toOutDTO(IntroPage introPage) {
             return IntroPageOutDTO.builder()
                     .introPageId(introPage.getId())
                     .saveStatus(introPage.getSaveStatus())
