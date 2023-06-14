@@ -1,31 +1,28 @@
 package com.fastcampus05.zillinks.domain.model.dashboard;
 
-import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
-import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-@Entity
 @Getter
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "dtype")
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorValue("visitor_log")
 @Table(name = "visitor_log_tb")
-public abstract class VisitorLog extends TimeBaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dashboard_id")
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "intro_page_id")
-    private IntroPage introPage;
+public class VisitorLog extends Dashboard {
 
     @NotNull
     @Column(name = "device_type")
     private String deviceType;
+
+    private String keyword;
+
+    @Column(name = "sharing_code")
+    private String sharingCode;
 }

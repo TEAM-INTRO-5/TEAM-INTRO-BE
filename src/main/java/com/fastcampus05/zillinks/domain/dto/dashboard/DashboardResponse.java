@@ -1,13 +1,9 @@
 package com.fastcampus05.zillinks.domain.dto.dashboard;
 
-import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
-import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
-import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadLog;
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
+import com.fastcampus05.zillinks.domain.model.dashboard.*;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
-import com.fastcampus05.zillinks.domain.model.intropage.SaveStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -96,6 +92,9 @@ public class DashboardResponse {
     public static class FindDownloadFileOutDTO {
         private Long introPageId;
         private String type;
+        // check-point
+        // 주간 소개서/미디어 다운로드 내역 추가
+
         private List<DownloadFile> content;
         private Long totalElements;
         private Integer totalPage;
@@ -140,6 +139,61 @@ public class DashboardResponse {
                     .hasNext(downloadLogPG.hasNext())
                     .isFirst(downloadLogPG.isFirst())
                     .isLast(downloadLogPG.isLast())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindVisitorOutDTO {
+        private Long introPageId;
+        private String type;
+        private List<Visitor> content;
+        private Long totalElements;
+        private Integer totalPage;
+        private Integer size;
+        private Integer number;
+        private Integer numberOfElements;
+        private Boolean hasPrevious;
+        private Boolean hasNext;
+        private Boolean isFirst;
+        private Boolean isLast;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        public static class Visitor {
+            private Long visitorId;
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            private String keyword;
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            private String sharingCode;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
+            private LocalDateTime date;
+        }
+
+        public static FindVisitorOutDTO toOutDTO(
+                IntroPage introPage,
+                Page<VisitorLog> visitorLogPG,
+                List<Visitor> visitorList,
+                String type
+        ) {
+            return FindVisitorOutDTO.builder()
+                    .introPageId(introPage.getId())
+                    .type(type)
+                    .content(visitorList)
+                    .totalElements(visitorLogPG.getTotalElements())
+                    .totalPage(visitorLogPG.getTotalPages())
+                    .size(visitorLogPG.getSize())
+                    .number(visitorLogPG.getNumber())
+                    .numberOfElements(visitorLogPG.getNumberOfElements())
+                    .hasPrevious(visitorLogPG.hasPrevious())
+                    .hasNext(visitorLogPG.hasNext())
+                    .isFirst(visitorLogPG.isFirst())
+                    .isLast(visitorLogPG.isLast())
                     .build();
         }
     }
