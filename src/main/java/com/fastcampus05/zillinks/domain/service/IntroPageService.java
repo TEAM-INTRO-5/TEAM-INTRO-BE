@@ -76,8 +76,7 @@ public class IntroPageService {
 //        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
-                .email(downloadFileInDTO.getEmail())
-                .type(downloadFileInDTO.getType())
+                .downloadType(DownloadType.valueOf(downloadFileInDTO.getType()))
                 .build());
     }
 
@@ -97,7 +96,7 @@ public class IntroPageService {
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-        return IntroPageOutDTO.toEntity(introPagePS);
+        return IntroPageOutDTO.toOutDTO(introPagePS);
     }
 
     @Transactional
@@ -110,6 +109,10 @@ public class IntroPageService {
 
         if (updateInDTO.getStatus() && (introPagePS.getSiteInfo().getSubDomain() == null ||introPagePS.getSiteInfo().getSubDomain().isBlank()))
             throw new Exception400("status", "기본 주소가 설정되어 있지 않은 상태에서 회사 소개 페이지를 공개하실 수 없습니다.");
+
+        // check-point
+        // orderList를 활용하여 위젯의 순서를 변경하는 로직이 추가
+
         introPagePS.updateMainPage(updateInDTO.getStatus(), updateInDTO.getWidgetStatusList());
         /**
          * check-point
