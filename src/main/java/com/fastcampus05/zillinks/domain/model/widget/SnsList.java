@@ -14,7 +14,7 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Builder
 public class SnsList {
-    private String instgram;
+    private String instagram;
     @Column(name = "linked_in")
     private String linkedIn;
     private String youtube;
