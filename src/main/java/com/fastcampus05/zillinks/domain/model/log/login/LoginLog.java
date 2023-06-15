@@ -35,8 +35,6 @@ public class LoginLog extends TimeBaseEntity {
     public LoginLog(Long id, Long userId, String userAgent, String clientIp, LoginPath loginPath) {
         this.id = id;
         this.userId = userId;
-        this.userAgent = userAgent;
-        this.clientIp = clientIp;
         this.loginPath = loginPath;
     }
 
@@ -44,8 +42,7 @@ public class LoginLog extends TimeBaseEntity {
         return LoginLog.builder()
                 .userId(userId)
                 .clientIp(validList.get(0))
-                .userAgent(validList.get(1))
-                .loginPath(loginPath)
+we;rkghjwoepighwer
                 .build();
     }
 }
