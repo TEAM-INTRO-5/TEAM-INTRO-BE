@@ -1,7 +1,7 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
-import com.fastcampus05.zillinks.domain.model.intropage.SaveStatus;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPageStatus;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class IntroPageResponse {
     public static class IntroPageOutDTO {
 
         private Long introPageId;
-        private SaveStatus saveStatus;
+        private IntroPageStatus introPageStatus;
         private Theme theme;
         private CompanyInfo companyInfo;
         private SiteInfo siteInfo;
@@ -66,7 +66,7 @@ public class IntroPageResponse {
         public static IntroPageOutDTO toOutDTO(IntroPage introPage) {
             return IntroPageOutDTO.builder()
                     .introPageId(introPage.getId())
-                    .saveStatus(introPage.getSaveStatus())
+                    .introPageStatus(introPage.getIntroPageStatus())
                     .theme(Theme.builder()
                             .type(introPage.getTheme().getType())
                             .color(introPage.getTheme().getColor())

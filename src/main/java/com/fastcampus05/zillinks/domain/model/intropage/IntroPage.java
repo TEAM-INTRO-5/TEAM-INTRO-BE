@@ -30,7 +30,7 @@ public class IntroPage extends TimeBaseEntity {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private SaveStatus saveStatus; // [HIDDEN, OPEN] 숨김/공개여부
+    private IntroPageStatus introPageStatus; // [HIDDEN, OPEN] 숨김/공개여부
 
     @Embedded
     private Theme theme;
@@ -54,7 +54,7 @@ public class IntroPage extends TimeBaseEntity {
 
         return IntroPage.builder()
                 .user(user)
-                .saveStatus(SaveStatus.HIDDEN)
+                .introPageStatus(IntroPageStatus.PRIVATE)
                 .theme(new Theme("ThemeA", "#ffffff"))
                 .siteInfo(SiteInfo.builder()
                         .pavicon(null)
@@ -71,13 +71,13 @@ public class IntroPage extends TimeBaseEntity {
 
     // == 비즈니스 로직 == //
     public void updateMainPage(Boolean status, List<Boolean> widgetStatusList) {
-        SaveStatus saveStatus = status.equals(true) ? SaveStatus.OPEN : SaveStatus.HIDDEN;
-        this.saveStatus = saveStatus;
+        IntroPageStatus introPageStatus = status.equals(true) ? IntroPageStatus.PUBLIC : IntroPageStatus.PRIVATE;
+        this.introPageStatus = introPageStatus;
         // check-point
         // widgetStatusList 추가
     }
 
-    public void updateSaveStatus(SaveStatus saveStatus) {
-        this.saveStatus = saveStatus;
+    public void updateSaveStatus(IntroPageStatus introPageStatus) {
+        this.introPageStatus = introPageStatus;
     }
 }

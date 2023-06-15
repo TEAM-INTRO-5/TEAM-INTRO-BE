@@ -27,7 +27,8 @@ public class LoginLog extends TimeBaseEntity {
     private String userAgent;
     @Column(name = "client_ip")
     private String clientIp;
-    @Column(name = "o_auth_user")
+    @Column(name = "login_path")
+    @Enumerated(EnumType.STRING)
     private LoginPath loginPath;
 
     @Builder
