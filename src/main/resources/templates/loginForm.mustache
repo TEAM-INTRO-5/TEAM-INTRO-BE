@@ -17,5 +17,57 @@
 <!--&redirect_uri=https://taeheoki.shop:443/api/callback-->
 <!--&scope=openid%20email%20profile-->
 <!--&response_type=code">구글 로그인</a>-->
+<button id="downloadExcel">엑셀 다운로드</button>
 </body>
+
+<script>
+    document.getElementById("downloadExcel").addEventListener("click", function () {
+        downloadExcel();
+    });
+
+    function downloadExcel() {
+        const excelContactUsInDTO = {
+            status: "UNCONFIRMED",
+        };
+
+        fetch("http://localhost:8080/api/dashboard/contactUs/excel", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(excelContactUsInDTO),
+        })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    const filename = extractFilename(response.headers.get("content-disposition"));
+                    return response.blob().then((blob) => [filename, blob]);
+                })
+                .then(([filename, blob]) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch((error) => {
+                    console.error("There was a problem with the fetch operation:", error);
+                });
+    }
+
+    function extractFilename(contentDisposition) {
+        const filenameRegex = /filename[^;=\n]*=((['"])(.*?)\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(contentDisposition);
+        if (!matches || !matches[1]) {
+            return "default.xlsx";
+        }
+
+        const filename = matches[1];
+        return filename.replace(/['"]+/g, '');
+    }
+</script>
+
+
 </html>

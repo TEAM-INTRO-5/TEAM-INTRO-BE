@@ -6,14 +6,27 @@ import com.fastcampus05.zillinks.core.util.dto.zillinksapi.ZillinksApiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Common {
@@ -48,4 +61,71 @@ public class Common {
         return zillinksApiResponse;
     }
 
+    public static <T> ResponseEntity<byte[]> excelGenerator(List<T> data, Class<T> clazz, String filename) {
+        try (Workbook workbook = new XSSFWorkbook()) {
+
+            Sheet sheet = workbook.createSheet(filename);
+
+            // create header row
+            Row headerRow = sheet.createRow(0);
+            List<Field> fields = Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toList());
+            for (int i = 0; i < fields.size(); i++) {
+                Field field = fields.get(i);
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(field.getName());
+            }
+
+            // create data rows
+            for (int i = 0; i < data.size(); i++) {
+                T item = data.get(i);
+                Row row = sheet.createRow(i + 1);
+                for (int j = 0; j < fields.size(); j++) {
+                    Field field = fields.get(j);
+                    Cell cell = row.createCell(j);
+                    try {
+                        Method getter = clazz.getMethod(getGetterName(field));
+                        Object value = getter.invoke(item);
+                        if (j == 0) {
+                            cell.setCellValue(i + 1);
+                        }
+                        if (value instanceof String) {
+                            cell.setCellValue((String) value);
+                        } else if (value instanceof LocalDateTime) {
+                            cell.setCellValue(((LocalDateTime) value).format(DateTimeFormatter.ofPattern("yy.MM.dd")));
+                        } else if (value instanceof Long) {
+                            cell.setCellValue((Long) value);
+                        } else if (value instanceof Integer) {
+                            cell.setCellValue((Integer) value);
+                        }
+                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            byte[] bytes = null;
+            HttpHeaders headers = null;
+            try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+                workbook.write(bos);
+
+                // Send the file in the response
+                bytes = bos.toByteArray();
+                headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                headers.setContentDispositionFormData("attachment", filename + ".xlsx"); // Add file extension .xlsx
+                headers.setContentLength(bytes.length);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK); // 바이트 배열과 헤더 정보를 사용하여 ResponseEntity<byte[]>를 생성하고 반환합니다.
+        } catch (IOException e) {
+            throw new Exception500("excel 파일 생성에 실패하였습니다.\n" + e.getMessage());
+        }
+    }
+
+    private static String getGetterName(Field field) {
+        String fieldName = field.getName();
+        String capitalized = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+        return "get" + capitalized;
+    }
 }

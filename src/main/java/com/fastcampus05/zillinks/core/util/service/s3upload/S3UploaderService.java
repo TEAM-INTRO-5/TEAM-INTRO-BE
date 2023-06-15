@@ -1,7 +1,6 @@
 package com.fastcampus05.zillinks.core.util.service.s3upload;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
-import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.dto.s3upload.S3UploadResponse;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
@@ -16,9 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -91,34 +87,5 @@ public class S3UploaderService {
     private String makeFilePath(MultipartFile file, String dir, String ext) {
         String fileName = "upload/" + dir + "/" + UUID.randomUUID() + "." + ext;
         return fileName;
-    }
-
-//    private String getUrlByName(Optional<IntroPage> introPageOP, String type) {
-//        if (introPageOP.isEmpty())
-//            return null;
-//        IntroPage introPagePS = introPageOP.get();
-//        Class<? extends IntroPage> introPageClass = introPagePS.getClass();
-//
-//        Field[] fields = introPageClass.getDeclaredFields();
-//
-//        try {
-//            for (Field field : fields) {
-//                if (type.equals(field.getName())) {
-//                    String getterName = fieldNameToGetterName(type);
-//                    Method getter = introPageClass.getMethod(getterName);
-//                    return (String) getter.invoke(introPagePS);
-//                }
-//            }
-//            throw new NoSuchMethodException("type과 일치하는 변수가 없습니다.");
-//        } catch (NoSuchMethodException nsme) {
-//            throw new Exception400("type", "잘못된 type을 입력하였습니다.");
-//        } catch (IllegalAccessException | InvocationTargetException e) {
-//            throw new Exception500("type의 getter 메서드 호출에 실패하였습니다." + e.getMessage());
-//        }
-//    }
-
-    private static String fieldNameToGetterName(String fieldName) {
-        String capitalized = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-        return "get" + capitalized;
     }
 }

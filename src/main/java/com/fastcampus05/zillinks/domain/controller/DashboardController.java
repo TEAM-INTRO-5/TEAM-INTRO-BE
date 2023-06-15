@@ -1,7 +1,11 @@
 package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
+import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.Common;
+import com.fastcampus05.zillinks.core.util.dto.excel.ExcelOutDTO;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
+import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
 import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
@@ -15,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +29,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -139,5 +146,25 @@ public class DashboardController {
         DashboardResponse.FindVisitorOutDTO findVisitorOutDTO  = dashboardService.findVisitor(type, page, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findVisitorOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "연락 관리 내역 엑셀 다운로드 - 획인 필요/완료", description = "연락 관리 내역 엑셀 다운로드 - 획인 필요/완료")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+    })
+    @Parameters({
+            @Parameter(name = "excelContactUsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/s/user/dashboard/contactUs/excel")
+    public ResponseEntity<byte[]> excelContactUs(
+            @RequestBody @Valid DashboardRequest.ExcelContactUsInDTO excelContactUsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        List<ExcelOutDTO.ContactUsOutDTO> contactUsOutDTOList = dashboardService.excelContactUs(excelContactUsInDTO, myUserDetails.getUser());
+        return Common.excelGenerator(contactUsOutDTOList, ExcelOutDTO.ContactUsOutDTO.class, "ContactUs");
+//        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+//        return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }

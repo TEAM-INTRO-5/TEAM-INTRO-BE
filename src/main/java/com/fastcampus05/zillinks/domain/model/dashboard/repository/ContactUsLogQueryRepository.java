@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fastcampus05.zillinks.domain.model.dashboard.QContactUsLog.contactUsLog;
@@ -27,13 +29,13 @@ public class ContactUsLogQueryRepository {
         this.query = new JPAQueryFactory(em);
     }
 
-    public Page<ContactUsLog> findAllByStatus(ContactUsStatus status, Long introPageId, Integer page) {
+    public Page<ContactUsLog> findPGAllByStatus(ContactUsStatus contactUsStatus, Long introPageId, Integer page) {
         int size = 10;
         int startPosition = page * size;
 
         List<ContactUsLog> contactUsLogListPS = query
                 .selectFrom(contactUsLog)
-                .where(eqIntroPageId(introPageId), eqStatus(status))
+                .where(eqIntroPageId(introPageId), eqStatus(contactUsStatus))
                 .orderBy(contactUsLog.createdAt.desc())
                 .offset(startPosition)
                 .limit(size)
@@ -41,9 +43,19 @@ public class ContactUsLogQueryRepository {
 
         Long totalCount = query
                 .selectFrom(contactUsLog)
-                .where(eqIntroPageId(introPageId), eqStatus(status))
+                .where(eqIntroPageId(introPageId), eqStatus(contactUsStatus))
                 .stream().count();
         return new PageImpl<>(contactUsLogListPS, PageRequest.of(page, size), totalCount);
+    }
+
+    public List<ContactUsLog> findAllByStatus(ContactUsStatus contactUsStatus, Long introPageId) {
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+
+        return query
+                .selectFrom(contactUsLog)
+                .where(eqIntroPageId(introPageId), eqStatus(contactUsStatus), goeOneMonthAgo(oneMonthAgo))
+                .orderBy(contactUsLog.createdAt.desc())
+                .fetch();
     }
 
     private static BooleanExpression eqIntroPageId(Long introPageId) {
@@ -53,9 +65,16 @@ public class ContactUsLogQueryRepository {
         return null;
     }
 
-    private static BooleanExpression eqStatus(ContactUsStatus status) {
-        if (status != null) {
-            return contactUsLog.contactUsStatus.eq(status);
+    private static BooleanExpression eqStatus(ContactUsStatus contactUsStatus) {
+        if (contactUsStatus != null) {
+            return contactUsLog.contactUsStatus.eq(contactUsStatus);
+        }
+        return null;
+    }
+
+    private static BooleanExpression goeOneMonthAgo(LocalDate oneMonthAgo) {
+        if (oneMonthAgo != null) {
+            return contactUsLog.createdAt.goe(oneMonthAgo.atStartOfDay());
         }
         return null;
     }
