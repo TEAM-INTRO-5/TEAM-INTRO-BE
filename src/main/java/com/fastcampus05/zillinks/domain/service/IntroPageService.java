@@ -195,7 +195,7 @@ public class IntroPageService {
                 updateSiteInfoInDTO.getTitle(),
                 updateSiteInfoInDTO.getDescription()
         );
-        introPagePS.updateSaveStatus(SaveStatus.HIDDEN);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
