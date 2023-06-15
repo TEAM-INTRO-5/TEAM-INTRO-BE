@@ -170,4 +170,15 @@ public class UserRequest {
         @NotEmpty
         private String bizNum;
     }
+
+    @Getter
+    public static class UserInfoUpdateInDTO {
+        @Schema(description = "이메일", example = "taeheoki11@gmail.com")
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
+        private String email;
+        @Schema(description = "유저 프로필", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
+        private String profile;
+        @Schema(description = "마케팅 알림", example = "true")
+        private Boolean marketing;
+    }
 }

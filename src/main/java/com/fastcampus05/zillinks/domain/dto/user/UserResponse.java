@@ -1,5 +1,7 @@
 package com.fastcampus05.zillinks.domain.dto.user;
 
+import com.fastcampus05.zillinks.domain.model.user.Marketing;
+import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -65,5 +67,23 @@ public class UserResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class FindIdByBizNumOutDTO {
         private String loginId;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UserInfoOutDTO{
+        private String loginId;
+        private String email;
+        private String bizNum;
+        private String profile;
+        private Marketing marketing;
+
+        public UserInfoOutDTO(User user) {
+            this.loginId = user.getLoginId();
+            this.email = user.getEmail();
+            this.bizNum = user.getBizNum();
+            this.profile = user.getProfile();
+            this.marketing = user.getMarketing();
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.fastcampus05.zillinks.domain.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fastcampus05.zillinks.core.annotation.MyLog;
 import com.fastcampus05.zillinks.core.auth.oauth.Fetch;
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.core.auth.token.MyJwtProvider;
@@ -12,6 +11,9 @@ import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.core.util.RandomStringGenerator;
 import com.fastcampus05.zillinks.core.util.dto.oauth.GoogleToken;
 import com.fastcampus05.zillinks.core.util.dto.oauth.OAuthProfile;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshToken;
 import com.fastcampus05.zillinks.core.util.model.token.RefreshTokenRepository;
 import com.fastcampus05.zillinks.core.util.service.mail.MailService;
@@ -39,6 +41,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,7 +69,8 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final GoogleAccountRepository googleAccountRepository;
     private final LoginLogRepository loginLogRepository;
-
+    private final S3UploaderFileRepository s3UploaderFileRepository;
+    private final S3UploaderRepository s3UploaderRepository;
 
     @Transactional
     public void join(UserRequest.JoinInDTO joinInDTO) {
@@ -81,11 +85,12 @@ public class UserService {
 
     @Transactional
     public void oauthJoin(UserRequest.OauthJoinInDTO oauthJoinInDTO) {
-
+        String password = RandomStringGenerator.generateRandomString();
+        log.info("password={}", password);
         User user = User.builder()
                 .loginId(oauthJoinInDTO.getLoginId())
                 .email(oauthJoinInDTO.getEmail())
-                .password(passwordEncoder.encode(RandomStringGenerator.generateRandomString()))
+                .password(passwordEncoder.encode(password))
                 .bizNum(oauthJoinInDTO.getBizNum())
                 .role("USER")
                 .marketing(Marketing.builder()
@@ -170,7 +175,7 @@ public class UserService {
 
             String oAuthId = "google_" + oAuthProfile.getId();
 
-            Optional<GoogleAccount> googleAccountOP  = googleAccountRepository.findByOAuthId(oAuthId);
+            Optional<GoogleAccount> googleAccountOP = googleAccountRepository.findByOAuthId(oAuthId);
             // google 정보가 없을 경우 회원가입 진행, 토큰발행 X
             if (googleAccountOP.isEmpty()) {
                 return OAuthLoginOutDTO.builder()
@@ -201,6 +206,7 @@ public class UserService {
             throw new Exception500(e.getMessage());
         }
     }
+
     public String validBizNum(String bizNum) {
         if (userRepository.findByBizNum(bizNum).isPresent()) {
             throw new Exception400("bizNum", "이미 존재하는 사업자등록번호입니다.");
@@ -252,5 +258,41 @@ public class UserService {
         else if (updatePasswordInDTO.getPassword().equals(updatePasswordInDTO.getNewPassword()))
             throw new Exception400("new_password", "이전 비밀번호와 같은 것으로 변경할 수 없습니다.");
         userPS.updatePassword(passwordEncoder.encode(updatePasswordInDTO.getNewPassword()));
+    }
+
+    public UserInfoOutDTO userInfo(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        return new UserInfoOutDTO(userPS);
+    }
+
+    @Transactional
+    public UserInfoOutDTO userInfoUpdate(UserRequest.UserInfoUpdateInDTO userInfoUpdateInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        Marketing marketing = new Marketing();
+        marketing.setMarketingEmail(userPS.getMarketing(), userInfoUpdateInDTO.getMarketing());
+
+        manageS3Uploader(userPS.getProfile(), userInfoUpdateInDTO.getProfile());
+
+        userPS.updateMyPage(userInfoUpdateInDTO.getEmail(), userInfoUpdateInDTO.getProfile(), marketing);
+
+        return new UserInfoOutDTO(userPS);
+    }
+
+    private void manageS3Uploader(String pathOrigin, String path) {
+        log.info("변경 전 pathOrigin={}", pathOrigin);
+        log.info("변경 후 path={}", path);
+
+        S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(pathOrigin).orElse(null);
+
+        if (!Objects.equals(path, pathOrigin) && pathOrigin != null) {
+
+            s3UploaderFileRepository.delete(Objects.requireNonNull(s3UploaderFilePS));
+
+            s3UploaderRepository.delete(pathOrigin);
+        }
     }
 }
