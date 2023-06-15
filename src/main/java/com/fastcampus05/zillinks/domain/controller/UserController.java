@@ -279,7 +279,7 @@ public class UserController {
 
     @Operation(summary = "유저 기본 정보 조회", description = "유저 기본 정보 조회 - 마이페이지")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserInfoOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "myUserDetails", hidden = true)
@@ -306,9 +306,9 @@ public class UserController {
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        UserInfoOutDTO userInfoOutDTO = userService.userInfoUpdate(userInfoUpdateInDTO, myUserDetails.getUser());
-        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", userInfoOutDTO);
-        return new ResponseEntity(responseBody, HttpStatus.OK);
+        userService.userInfoUpdate(userInfoUpdateInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
     }
 
 

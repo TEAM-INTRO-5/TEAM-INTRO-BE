@@ -22,14 +22,12 @@ public class Marketing {
         if(userMarketing.marketingEmail == Boolean.FALSE && requestMarketingEmail == Boolean.TRUE){
             this.marketingEmail = true;
             this.marketingEmailDate = LocalDateTime.now();
-            // 동의한 상태로 변동이 없어서 저번 갱신 시간 그대로 대입
+            // 동의한 상태로 변동이 없어서 갱신 안 함
         } else if (userMarketing.marketingEmail == Boolean.TRUE && requestMarketingEmail == Boolean.TRUE) {
             this.marketingEmail = true;
-            this.marketingEmailDate = userMarketing.getMarketingEmailDate();
         }else {
             // 동의 안 함이라 갱신 안 함 - 동의 안 함의 시간도 갱신하려면 LocalDateTime.now(); 대입
             this.marketingEmail = false;
-            this.marketingEmailDate = userMarketing.getMarketingEmailDate();
         }
     }
 

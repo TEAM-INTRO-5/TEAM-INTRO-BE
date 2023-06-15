@@ -268,7 +268,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserInfoOutDTO userInfoUpdate(UserRequest.UserInfoUpdateInDTO userInfoUpdateInDTO, User user) {
+    public void userInfoUpdate(UserRequest.UserInfoUpdateInDTO userInfoUpdateInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
@@ -278,8 +278,6 @@ public class UserService {
         manageS3Uploader(userPS.getProfile(), userInfoUpdateInDTO.getProfile());
 
         userPS.updateMyPage(userInfoUpdateInDTO.getEmail(), userInfoUpdateInDTO.getProfile(), marketing);
-
-        return new UserInfoOutDTO(userPS);
     }
 
     private void manageS3Uploader(String pathOrigin, String path) {
@@ -289,8 +287,11 @@ public class UserService {
         S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(pathOrigin).orElse(null);
 
         if (!Objects.equals(path, pathOrigin) && pathOrigin != null) {
-
-            s3UploaderFileRepository.delete(Objects.requireNonNull(s3UploaderFilePS));
+            try {
+                s3UploaderFileRepository.delete(s3UploaderFilePS);
+            } catch (Exception e) {
+                throw new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.");
+            }
 
             s3UploaderRepository.delete(pathOrigin);
         }
