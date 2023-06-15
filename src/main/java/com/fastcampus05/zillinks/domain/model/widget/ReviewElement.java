@@ -22,6 +22,7 @@ public class ReviewElement {
 
     private String image;
     private String name;
+    @Column(name = "groups")
     private String group;
     private Integer rating;
     private String details;

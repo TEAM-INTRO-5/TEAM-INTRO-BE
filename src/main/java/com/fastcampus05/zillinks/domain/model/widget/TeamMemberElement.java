@@ -22,6 +22,7 @@ public class TeamMemberElement {
 
     private String profile;
     private String name;
+    @Column(name = "groups")
     private String group;
     private String position;
     private String tagline;
