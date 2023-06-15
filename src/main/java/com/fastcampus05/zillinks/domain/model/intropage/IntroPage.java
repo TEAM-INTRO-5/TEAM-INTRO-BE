@@ -30,7 +30,7 @@ public class IntroPage extends TimeBaseEntity {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private IntroPageStatus introPageStatus; // [HIDDEN, OPEN] 숨김/공개여부
+    private IntroPageStatus introPageStatus; // [PUBLIC, PRIVATE] 숨김/공개여부
 
     @Embedded
     private Theme theme;
