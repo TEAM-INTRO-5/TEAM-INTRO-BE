@@ -21,7 +21,7 @@ public class User extends TimeBaseEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true)
+    @Column(name = "login_id", unique = true)
     @NotEmpty
     private String loginId;
 
@@ -33,10 +33,12 @@ public class User extends TimeBaseEntity {
     @Column(length = 60)
     private String password;
 
-    @Column(unique = true) // checkpoint
+    @Column(name = "biz_num", unique = true) // checkpoint
     private String bizNum;
 
     private String role; // USER|ADMIN
+
+    private String profile;
 
     @Embedded
     private Marketing marketing;
@@ -55,5 +57,11 @@ public class User extends TimeBaseEntity {
     // 비밀번호 찾기, 재설정 과정
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateMyPage(String email, String profile, Marketing marketing) {
+        this.email = email;
+        this.profile = profile;
+        this.marketing = marketing;
     }
 }

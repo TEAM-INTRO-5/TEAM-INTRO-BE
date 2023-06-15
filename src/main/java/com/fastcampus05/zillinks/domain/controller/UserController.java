@@ -30,7 +30,6 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.fastcampus05.zillinks.domain.dto.user.UserResponse.*;
@@ -60,6 +59,7 @@ public class UserController {
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
+
     @Operation(summary = "소셜 회원가입", description = "구글 아이디로 회원가입")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -276,4 +276,40 @@ public class UserController {
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
+
+    @Operation(summary = "유저 기본 정보 조회", description = "유저 기본 정보 조회 - 마이페이지")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserInfoOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user")
+    public ResponseEntity<ResponseDTO> userInfo(
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        UserInfoOutDTO userInfoOutDTO = userService.userInfo(myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", userInfoOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+    @Operation(summary = "유저 기본 정보 수정", description = "유저 기본 정보 수정 - 마이페이지")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "userInfoUpdateInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/s/user")
+    public ResponseEntity<ResponseDTO> userInfoUpdate(
+            @RequestBody @Valid UserRequest.UserInfoUpdateInDTO userInfoUpdateInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        userService.userInfoUpdate(userInfoUpdateInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+
 }
