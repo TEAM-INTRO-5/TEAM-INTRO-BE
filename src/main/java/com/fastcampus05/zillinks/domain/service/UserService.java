@@ -209,7 +209,7 @@ public class UserService {
 
     public String validBizNum(String bizNum) {
         if (userRepository.findByBizNum(bizNum).isPresent()) {
-            throw new Exception400("bizNum", "이미 존재하는 사업자등록번호입니다.");
+            throw new Exception400("biz_num", "이미 존재하는 사업자등록번호입니다.");
         }
 
         Common.zillinksApi(bizNum);
@@ -234,7 +234,7 @@ public class UserService {
 
     public FindIdByBizNumOutDTO findIdByBizNum(UserRequest.FindIdByBizNumInDTO findIdByBizNumInDTO) {
         User userOP = userRepository.findByBizNum(findIdByBizNumInDTO.getBizNum()).orElseThrow(
-                () -> new Exception400("email", "user가 존재하지 않습니다.")
+                () -> new Exception400("biz_num", "user가 존재하지 않습니다.")
         );
         return FindIdByBizNumOutDTO.builder()
                 .loginId(userOP.getLoginId())

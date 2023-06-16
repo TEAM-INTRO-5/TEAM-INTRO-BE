@@ -168,6 +168,7 @@ public class UserRequest {
         @Schema(description = "사업자 등록 번호", example = "2258701327")
         @Pattern(regexp = "^[0-9]{10}$", message = "숫자 10자리로 입력해 주세요.")
         @NotEmpty
+        @JsonProperty("biz_num")
         private String bizNum;
     }
 
