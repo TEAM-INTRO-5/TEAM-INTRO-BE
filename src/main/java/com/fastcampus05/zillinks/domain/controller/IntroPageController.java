@@ -134,7 +134,7 @@ public class IntroPageController {
             @Parameter(name = "updateCompanyInfoInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
-    @PatchMapping("/s/user/companyInfo")
+    @PatchMapping("/s/user/introPage/companyInfo")
     public ResponseEntity<ResponseDTO> updateCompanyInfo(
             @RequestBody @Valid IntroPageRequest.UpdateCompanyInfoInDTO updateCompanyInfoInDTO,
             Errors errors,
@@ -150,7 +150,7 @@ public class IntroPageController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "updateInfoInDTO"),
+            @Parameter(name = "updateSiteInfoInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PutMapping("/s/user/introPage/siteInfo")

@@ -40,7 +40,7 @@ public class S3UploaderService {
     @Transactional
     public S3UploadResponse.PathResponse uploadImage(MultipartFile image, String name, String type, User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
 
 //        delete(getUrlByName(introPageOP, type));
@@ -64,7 +64,7 @@ public class S3UploaderService {
     @Transactional
     public S3UploadResponse.PathResponse uploadFile(MultipartFile file, String name, String type, User user) {
         User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception400("email", "등록되지 않은 유저입니다."));
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
 
 //        delete(getUrlByName(introPageOP, type));
