@@ -3,6 +3,7 @@ package com.fastcampus05.zillinks.domain.model.widget;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("contact_us")
+@SuperBuilder
 @Table(name = "contact_us_tb")
 public class ContactUs extends Widget {
     @Column(name = "map_status")

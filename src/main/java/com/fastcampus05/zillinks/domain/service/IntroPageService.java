@@ -12,6 +12,7 @@ import com.fastcampus05.zillinks.domain.model.dashboard.repository.DownloadLogRe
 import com.fastcampus05.zillinks.domain.model.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
+import com.fastcampus05.zillinks.domain.model.widget.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,23 +58,18 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("intro_page_id", "존재하지 않는 회사 소개 페이지입니다."));
 
         String path = null;
-        // check-point 위젯부분 추가후 진행
-//        if (downloadFileInDTO.getType().equals("intro_file"))
-//            path = introPagePS.getCompanyInfo().getIntroFile();
-//        else if (downloadFileInDTO.getType().equals("media_kit_file"))
-//            path = introPagePS.getCompanyInfo().getMediaKitFile();
-
+        List<Widget> widgets = introPagePS.getWidgets();
+        for (Widget widget : widgets) {
+            if (widgets instanceof Download) {
+                if (downloadFileInDTO.getType().equals("intro_file"))
+                    path = ((Download) widgets).getIntroFile();
+                else if (downloadFileInDTO.getType().equals("media_kit_file"))
+                    path = ((Download) widgets).getMediaKitFile();
+                break;
+            }
+        }
         S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
                 .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
-
-//        MultipartFile multipartFile = null;
-//        try {
-//            multipartFile = FIleUtil.urlToMultipartFile(path, s3UploaderFilePS.getOriginalPath());
-//        } catch (IOException e) {
-//            throw new Exception500("파일 변환에 실패하였습니다.\n" + e.getMessage());
-//        }
-//        // check-point 테스트 진행동안 잠시 막아둠
-//        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .downloadType(DownloadType.valueOf(downloadFileInDTO.getType()))
@@ -86,8 +82,30 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
-        CompanyInfo companyInfo = CompanyInfo.saveCompanyInfo(introPagePS);
-        companyInfo.setIntroPage(introPagePS);
+        introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
+        introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
+        introPagePS.addWidgets(KeyVisualAndSlogan.builder()
+                .filter(Filter.BLACK)
+                .build());
+        introPagePS.addWidgets(MissionAndVision.builder().build());
+        introPagePS.addWidgets(ProductsAndServices.builder()
+                .callToActionStatus(false)
+                .build());
+        introPagePS.addWidgets(TeamMember.builder().build());
+        introPagePS.addWidgets(ContactUs.builder()
+                .mapStatus(false)
+                .build());
+        introPagePS.addWidgets(Performance.builder().build());
+        introPagePS.addWidgets(TeamCulture.builder().build());
+        introPagePS.addWidgets(History.builder().build());
+        introPagePS.addWidgets(Review.builder().build());
+        introPagePS.addWidgets(Patent.builder().build());
+        introPagePS.addWidgets(News.builder().build());
+        introPagePS.addWidgets(Download.builder().build());
+        introPagePS.addWidgets(Partners.builder().build());
+        introPagePS.addWidgets(Channel.builder()
+                .build());
+
     }
 
     public IntroPageOutDTO findIntroPage(User user) {
@@ -158,6 +176,7 @@ public class IntroPageService {
                 updateCompanyInfoInDTO.getPhoneNumber(),
                 updateCompanyInfoInDTO.getFaxNumber()
         );
+        log.info("test");
     }
 
     @Transactional

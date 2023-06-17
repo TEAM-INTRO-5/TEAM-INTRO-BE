@@ -1,8 +1,7 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -14,6 +13,8 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("channel")
 @Table(name = "channel_tb")
+@SuperBuilder
+@AllArgsConstructor
 public class Channel extends Widget {
     @Embedded
     private SnsList snsList;

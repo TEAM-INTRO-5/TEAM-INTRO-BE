@@ -40,10 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.fastcampus05.zillinks.domain.dto.user.UserResponse.*;
 
@@ -275,25 +272,30 @@ public class UserService {
         Marketing marketing = new Marketing();
         marketing.setMarketingEmail(userPS.getMarketing(), userInfoUpdateInDTO.getMarketing());
 
-        manageS3Uploader(userPS.getProfile(), userInfoUpdateInDTO.getProfile());
+        List<String> pathOrginList = new ArrayList<>();
+        pathOrginList.add(userPS.getProfile());
+        List<String> pathList = new ArrayList<>();
+        pathList.add(userInfoUpdateInDTO.getProfile());
+
+        manageS3Uploader(pathOrginList, pathList);
+
 
         userPS.updateMyPage(userInfoUpdateInDTO.getEmail(), userInfoUpdateInDTO.getProfile(), marketing);
     }
 
-    private void manageS3Uploader(String pathOrigin, String path) {
-        log.info("변경 전 pathOrigin={}", pathOrigin);
-        log.info("변경 후 path={}", path);
-
-        S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(pathOrigin).orElse(null);
-
-        if (!Objects.equals(path, pathOrigin) && pathOrigin != null) {
-            try {
-                s3UploaderFileRepository.delete(s3UploaderFilePS);
-            } catch (Exception e) {
-                throw new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.");
+    private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
+        log.info("변경 전 pathOriginList={}", pathOrginList);
+        log.info("변경 후 pathList={}", pathList);
+        List<S3UploaderFile> s3UploaderFileListPS = s3UploaderFileRepository.findByEncodingPaths(pathOrginList).orElse(null);
+        log.info("ss3UploaderFileListPS={}", s3UploaderFileListPS);
+        for (String pathOrigin : pathOrginList) {
+            log.info("pathOrigin={}", pathOrigin);
+            if (!pathList.contains(pathOrigin) && !(pathOrigin == null)) {
+                s3UploaderFileRepository.delete(s3UploaderFileListPS.stream().filter(s -> s.getEncodingPath().equals(pathOrigin)).findAny().orElseThrow(
+                        () -> new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.")
+                ));
+                s3UploaderRepository.delete(pathOrigin);
             }
-
-            s3UploaderRepository.delete(pathOrigin);
         }
     }
 }
