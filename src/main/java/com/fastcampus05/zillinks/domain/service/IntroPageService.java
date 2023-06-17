@@ -12,6 +12,7 @@ import com.fastcampus05.zillinks.domain.model.dashboard.repository.DownloadLogRe
 import com.fastcampus05.zillinks.domain.model.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
+import com.fastcampus05.zillinks.domain.model.widget.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -86,8 +87,31 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
-        CompanyInfo companyInfo = CompanyInfo.saveCompanyInfo(introPagePS);
-        companyInfo.setIntroPage(introPagePS);
+        introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
+        introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
+        introPagePS.addWidgets(KeyVisualAndSlogan.builder()
+                .filter(Filter.BLACK)
+                .build());
+        introPagePS.addWidgets(MissionAndVision.builder().build());
+        introPagePS.addWidgets(ProductsAndServices.builder()
+                .callToActionStatus(false)
+                .build());
+        introPagePS.addWidgets(TeamMember.builder().build());
+        introPagePS.addWidgets(ContactUs.builder()
+                .mapStatus(false)
+                .build());
+        introPagePS.addWidgets(Performance.builder().build());
+        introPagePS.addWidgets(TeamCulture.builder().build());
+        introPagePS.addWidgets(History.builder().build());
+        introPagePS.addWidgets(Review.builder().build());
+        introPagePS.addWidgets(Patent.builder().build());
+        introPagePS.addWidgets(News.builder().build());
+        introPagePS.addWidgets(Download.builder().build());
+        introPagePS.addWidgets(Partners.builder().build());
+        introPagePS.addWidgets(Channel.builder()
+                .snsList(SnsList.builder().build())
+                .build());
+
     }
 
     public IntroPageOutDTO findIntroPage(User user) {

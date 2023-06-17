@@ -1,8 +1,7 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -14,6 +13,8 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("download")
 @Table(name = "download_tb")
+@SuperBuilder
+@AllArgsConstructor
 public class Download extends Widget {
     private String description;
     @Column(name = "media_kit_file")

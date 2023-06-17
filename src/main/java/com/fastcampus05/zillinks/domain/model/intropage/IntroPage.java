@@ -1,13 +1,17 @@
 package com.fastcampus05.zillinks.domain.model.intropage;
 
 import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import com.fastcampus05.zillinks.domain.model.dashboard.Dashboard;
 import com.fastcampus05.zillinks.domain.model.user.User;
+import com.fastcampus05.zillinks.domain.model.widget.Widget;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Builder
+@Slf4j
 public class IntroPage extends TimeBaseEntity {
 
     public static final String DEFAULT_IMAGE = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg";
@@ -38,11 +43,14 @@ public class IntroPage extends TimeBaseEntity {
     @OneToOne(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
     private CompanyInfo companyInfo;
 
-    @Embedded
+    @OneToOne(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
     private SiteInfo siteInfo;
 
-//    @OneToMany(mappedBy = "widget", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Widget> widgets;
+    @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dashboard> dashboards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Widget> widgets = new ArrayList<>();
 
     // == 연관관계 메서드 == //
     public void setUser(User user) {
@@ -50,23 +58,29 @@ public class IntroPage extends TimeBaseEntity {
         user.setIntroPage(this);
     }
 
-    public static IntroPage saveIntroPage(User user) {
+    public void setSiteInfo(SiteInfo siteInfo) {
+        this.siteInfo = siteInfo;
+        siteInfo.setIntroPage(this);
+    }
 
-        return IntroPage.builder()
-                .user(user)
-                .introPageStatus(IntroPageStatus.PRIVATE)
-                .theme(new Theme("ThemeA", "#ffffff"))
-                .siteInfo(SiteInfo.builder()
-                        .pavicon(null)
-                        .title("")
-                        .description("")
-                        .build())
-                // 이후 widget도 시작하자 마자 다 생성하는 방향으로 진행
-                .build();
+    public void addWidgets(Widget widget) {
+        this.widgets.add(widget);
+        widget.setWidgetStatus(false);
+        widget.setIntroPage(this);
     }
 
     public void setCompanyInfo(CompanyInfo companyInfo) {
         this.companyInfo = companyInfo;
+        companyInfo.setIntroPage(this);
+    }
+
+    public static IntroPage saveIntroPage(User user) {
+        return IntroPage.builder()
+                .user(user)
+                .introPageStatus(IntroPageStatus.PRIVATE)
+                .theme(new Theme("ThemeA", "#000000"))
+                .widgets(new ArrayList<>())
+                .build();
     }
 
     // == 비즈니스 로직 == //
