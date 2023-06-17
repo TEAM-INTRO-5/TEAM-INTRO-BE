@@ -37,7 +37,23 @@ public class IntroPageController {
     /**
      * 일반 유저 사용 영역
      */
-    // check-point 와이어 프레임 정리가 되어 있지 않음, 이후 정리가 필요한 내용
+    @Operation(summary = "회사 소개 메인 페이지 조회 - 일반 유저 조회", description = "회사 소개 메인 페이지 조회 - 일반 유저 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "contactUsInDTO")
+    })
+    @PostMapping("/introPage")
+    public ResponseEntity<ResponseDTO> findIntroPage(
+            @RequestParam String subDomain,
+            @RequestParam String share
+    ) {
+        // check-point
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "Contact-us 요청", description = "Contact-us 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -155,7 +171,7 @@ public class IntroPageController {
             @Parameter(name = "updateSiteInfoInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
-    @PutMapping("/s/user/introPage/siteInfo")
+    @PatchMapping("/s/user/introPage/siteInfo")
     public ResponseEntity<ResponseDTO> updateSiteInfo(
             @RequestBody @Valid IntroPageRequest.UpdateSiteInfoInDTO updateSiteInfoInDTO,
             Errors errors,

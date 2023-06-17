@@ -58,23 +58,18 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("intro_page_id", "존재하지 않는 회사 소개 페이지입니다."));
 
         String path = null;
-        // check-point 위젯부분 추가후 진행
-//        if (downloadFileInDTO.getType().equals("intro_file"))
-//            path = introPagePS.getCompanyInfo().getIntroFile();
-//        else if (downloadFileInDTO.getType().equals("media_kit_file"))
-//            path = introPagePS.getCompanyInfo().getMediaKitFile();
-
+        List<Widget> widgets = introPagePS.getWidgets();
+        for (Widget widget : widgets) {
+            if (widgets instanceof Download) {
+                if (downloadFileInDTO.getType().equals("intro_file"))
+                    path = ((Download) widgets).getIntroFile();
+                else if (downloadFileInDTO.getType().equals("media_kit_file"))
+                    path = ((Download) widgets).getMediaKitFile();
+                break;
+            }
+        }
         S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
                 .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
-
-//        MultipartFile multipartFile = null;
-//        try {
-//            multipartFile = FIleUtil.urlToMultipartFile(path, s3UploaderFilePS.getOriginalPath());
-//        } catch (IOException e) {
-//            throw new Exception500("파일 변환에 실패하였습니다.\n" + e.getMessage());
-//        }
-//        // check-point 테스트 진행동안 잠시 막아둠
-//        mailService.sendFile(downloadFileInDTO.getEmail(), introPagePS.getCompanyInfo().getCompanyName(), downloadFileInDTO.getType(), multipartFile);
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .downloadType(DownloadType.valueOf(downloadFileInDTO.getType()))
@@ -109,7 +104,6 @@ public class IntroPageService {
         introPagePS.addWidgets(Download.builder().build());
         introPagePS.addWidgets(Partners.builder().build());
         introPagePS.addWidgets(Channel.builder()
-                .snsList(SnsList.builder().build())
                 .build());
 
     }
@@ -182,6 +176,7 @@ public class IntroPageService {
                 updateCompanyInfoInDTO.getPhoneNumber(),
                 updateCompanyInfoInDTO.getFaxNumber()
         );
+        log.info("test");
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -55,10 +54,13 @@ public class IntroPageRequest {
         @Schema(description = "회사 로고", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
         private String logo;
         @Schema(description = "연락용 이메일", example = "taeheoki@naver.com")
+        @JsonProperty("contact_email")
         private String contactEmail;
         @Schema(description = "전화 번호", example = "000-0000-0000")
+        @JsonProperty("phone_number")
         private String phoneNumber;
         @Schema(description = "팩스 번호", example = "000-0000-0000")
+        @JsonProperty("fax_number")
         private String faxNumber;
     }
 
