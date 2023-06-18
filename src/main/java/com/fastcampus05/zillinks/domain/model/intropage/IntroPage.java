@@ -46,11 +46,14 @@ public class IntroPage extends TimeBaseEntity {
     @OneToOne(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
     private SiteInfo siteInfo;
 
-    @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Dashboard> dashboards = new ArrayList<>();
+    @OneToOne(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private HeaderAndFooter headerAndFooter;
 
     @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Widget> widgets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dashboard> dashboards = new ArrayList<>();
 
     // == 연관관계 메서드 == //
     public void setUser(User user) {
@@ -72,6 +75,11 @@ public class IntroPage extends TimeBaseEntity {
     public void setCompanyInfo(CompanyInfo companyInfo) {
         this.companyInfo = companyInfo;
         companyInfo.setIntroPage(this);
+    }
+
+    public void setHeaderAndFooter(HeaderAndFooter headerAndFooter) {
+        this.headerAndFooter = headerAndFooter;
+        headerAndFooter.setIntroPage(this);
     }
 
     public static IntroPage saveIntroPage(User user) {
