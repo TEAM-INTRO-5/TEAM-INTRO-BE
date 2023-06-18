@@ -54,40 +54,6 @@ public class IntroPageController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "Contact-us 요청", description = "Contact-us 요청")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-    })
-    @Parameters({
-            @Parameter(name = "contactUsInDTO")
-    })
-    @PostMapping("/contactUs")
-    public ResponseEntity<ResponseDTO> saveContactUs(
-            @RequestBody @Valid IntroPageRequest.ContactUsInDTO contactUsInDTO,
-            Errors errors
-    ) {
-        introPageService.saveContactUs(contactUsInDTO);
-        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
-        return new ResponseEntity(responseBody, HttpStatus.OK);
-    }
-
-    @Operation(summary = "회사소개서/미디어킷 다운로드 요청", description = "회사소개서/미디어킷 다운로드 요청")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-    })
-    @Parameters({
-            @Parameter(name = "downloadFileInDTO")
-    })
-    @PostMapping("/downloadFile")
-    public ResponseEntity<ResponseDTO> downloadFile(
-            @RequestBody @Valid IntroPageRequest.DownloadFileInDTO downloadFileInDTO,
-            Errors errors
-    ) {
-        introPageService.downloadFile(downloadFileInDTO);
-        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
-        return new ResponseEntity(responseBody, HttpStatus.OK);
-    }
-
     /**
      * 회사 페이지 편집 영역
      */
@@ -197,6 +163,24 @@ public class IntroPageController {
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         introPageService.checkSubDomain(subDomain, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(null);
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @Operation(summary = "헤더풋터 설정", description = "헤더풋터 설정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/s/user/introPage/headerAndFooter")
+    public ResponseEntity<ResponseDTO> updateHeaderAndFooter(
+            @RequestBody @Valid IntroPageRequest.UpdateHeaderAndFooter updateHeaderAndFooter,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        introPageService.updateHeaderAndFooter(updateHeaderAndFooter, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(null);
         return ResponseEntity.ok(responseBody);
     }
