@@ -6,7 +6,10 @@ import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
-import com.fastcampus05.zillinks.domain.model.dashboard.*;
+import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
+import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
+import com.fastcampus05.zillinks.domain.model.dashboard.DownloadLog;
+import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
 import com.fastcampus05.zillinks.domain.model.dashboard.repository.ContactUsLogRepository;
 import com.fastcampus05.zillinks.domain.model.dashboard.repository.DownloadLogRepository;
 import com.fastcampus05.zillinks.domain.model.intropage.*;
@@ -22,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
-import static com.fastcampus05.zillinks.domain.model.intropage.HeaderAndFooter.saveHeaderAndFooter;
+import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.IntroPageOutDTO;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,43 +41,6 @@ public class IntroPageService {
     private final S3UploaderRepository s3UploaderRepository;
     private final ContactUsLogRepository contactUsLogRepository;
     private final DownloadLogRepository downloadLogRepository;
-
-    @Transactional
-    public void saveContactUs(IntroPageRequest.ContactUsInDTO contactUsInDTO) {
-        IntroPage introPagePS = introPageRepository.findById(contactUsInDTO.getIntroPageId())
-                .orElseThrow(() -> new Exception400("intro_page_id", "존재하지 않는 회사 소개 페이지입니다."));
-        contactUsLogRepository.save(ContactUsLog.builder()
-                .introPage(introPagePS)
-                .name(contactUsInDTO.getName())
-                .email(contactUsInDTO.getEmail())
-                .content(contactUsInDTO.getContent())
-                .type(contactUsInDTO.getType())
-                .contactUsStatus(ContactUsStatus.UNCONFIRMED)
-                .build());
-    }
-
-    public void downloadFile(IntroPageRequest.DownloadFileInDTO downloadFileInDTO) {
-        IntroPage introPagePS = introPageRepository.findById(downloadFileInDTO.getIntroPageId())
-                .orElseThrow(() -> new Exception400("intro_page_id", "존재하지 않는 회사 소개 페이지입니다."));
-
-        String path = null;
-        List<Widget> widgets = introPagePS.getWidgets();
-        for (Widget widget : widgets) {
-            if (widgets instanceof Download) {
-                if (downloadFileInDTO.getType().equals("intro_file"))
-                    path = ((Download) widgets).getIntroFile();
-                else if (downloadFileInDTO.getType().equals("media_kit_file"))
-                    path = ((Download) widgets).getMediaKitFile();
-                break;
-            }
-        }
-        S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
-                .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
-        downloadLogRepository.save(DownloadLog.builder()
-                .introPage(introPagePS)
-                .downloadType(DownloadType.valueOf(downloadFileInDTO.getType()))
-                .build());
-    }
 
     @Transactional
     public void saveIntroPage(User user) {
@@ -219,6 +184,26 @@ public class IntroPageService {
         introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
+    public void checkSubDomain(String subDomain, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        Optional<IntroPage> introPagePS = introPageRepository.findByDomain(subDomain);
+        if (introPagePS.isPresent())
+            throw new Exception400("sub_domain", "이미 존재하는 서브도메인입니다.");
+    }
+
+    @Transactional
+    public void updateHeaderAndFooter(IntroPageRequest.UpdateHeaderAndFooter updateHeaderAndFooter, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        introPagePS.getHeaderAndFooter().updateHeaderAndFooter(updateHeaderAndFooter.getHeaderAndFooterStatusList());
+    }
+
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
         log.info("변경 전 pathOriginList={}", pathOrginList);
         log.info("변경 후 pathList={}", pathList);
@@ -233,15 +218,6 @@ public class IntroPageService {
                 s3UploaderRepository.delete(pathOrigin);
             }
         }
-    }
-
-    public void checkSubDomain(String subDomain, User user) {
-        User userPS = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-
-        Optional<IntroPage> introPagePS = introPageRepository.findByDomain(subDomain);
-        if (introPagePS.isPresent())
-            throw new Exception400("sub_domain", "이미 존재하는 서브도메인입니다.");
     }
 
     //    public InfoOutDTO findInfo(User user) {

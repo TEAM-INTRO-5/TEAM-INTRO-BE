@@ -89,13 +89,13 @@ public class DashboardResponse {
     @Builder
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class FindDownloadFileOutDTO {
+    public static class FindDownloadOutDTO {
         private Long introPageId;
         private String type;
         // check-point
         // 주간 소개서/미디어 다운로드 내역 추가
 
-        private List<DownloadFile> content;
+        private List<Download> content;
         private Long totalElements;
         private Integer totalPage;
         private Integer size;
@@ -110,26 +110,26 @@ public class DashboardResponse {
         @Builder
         @AllArgsConstructor
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class DownloadFile {
-            private Long downloadFileLogId;
+        public static class Download {
+            private Long downloadLogId;
             private DownloadType type;
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
             private LocalDateTime date;
         }
 
-        public static FindDownloadFileOutDTO toOutDTO(
+        public static FindDownloadOutDTO toOutDTO(
                 IntroPage introPage,
                 Page<DownloadLog> downloadLogPG,
-                List<DownloadFile> downloadFileList,
+                List<Download> downloadList,
                 DownloadType type
         ) {
             String typeString = "ALL";
             if (type != null)
                 typeString = String.valueOf(type);
-            return FindDownloadFileOutDTO.builder()
+            return FindDownloadOutDTO.builder()
                     .introPageId(introPage.getId())
                     .type(typeString)
-                    .content(downloadFileList)
+                    .content(downloadList)
                     .totalElements(downloadLogPG.getTotalElements())
                     .totalPage(downloadLogPG.getTotalPages())
                     .size(downloadLogPG.getSize())

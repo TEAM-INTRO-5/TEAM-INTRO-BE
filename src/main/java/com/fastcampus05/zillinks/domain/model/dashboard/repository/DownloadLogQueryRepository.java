@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.fastcampus05.zillinks.domain.model.dashboard.QContactUsLog.contactUsLog;
@@ -28,13 +29,13 @@ public class DownloadLogQueryRepository {
         this.query = new JPAQueryFactory(em);
     }
 
-    public Page<DownloadLog> findAllByType(DownloadType type, Long introPageId, Integer page) {
+    public Page<DownloadLog> findPGAllByType(DownloadType downloadType, Long introPageId, Integer page) {
         int size = 8;
         int startPosition = page * size;
 
         List<DownloadLog> downloadLogListPS = query
                 .selectFrom(downloadLog)
-                .where(eqIntroPageId(introPageId), eqDownloadType(type))
+                .where(eqIntroPageId(introPageId), eqDownloadType(downloadType))
                 .orderBy(downloadLog.createdAt.desc())
                 .offset(startPosition)
                 .limit(size)
@@ -42,9 +43,19 @@ public class DownloadLogQueryRepository {
 
         Long totalCount = query
                 .selectFrom(downloadLog)
-                .where(eqIntroPageId(introPageId), eqDownloadType(type))
+                .where(eqIntroPageId(introPageId), eqDownloadType(downloadType))
                 .stream().count();
         return new PageImpl<>(downloadLogListPS, PageRequest.of(page, size), totalCount);
+    }
+
+    public List<DownloadLog> findAllByType(DownloadType downloadType, Long introPageId) {
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+
+        return query
+                .selectFrom(downloadLog)
+                .where(eqIntroPageId(introPageId), eqDownloadType(downloadType), goeOneMonthAgo(oneMonthAgo))
+                .orderBy(downloadLog.createdAt.desc())
+                .fetch();
     }
 
     private BooleanExpression eqIntroPageId(Long introPageId) {
@@ -53,9 +64,16 @@ public class DownloadLogQueryRepository {
         return null;
     }
 
-    private BooleanExpression eqDownloadType(DownloadType type) {
-        if (type != null)
-            return downloadLog.downloadType.eq(type);
+    private BooleanExpression eqDownloadType(DownloadType downloadType) {
+        if (downloadType != null)
+            return downloadLog.downloadType.eq(downloadType);
+        return null;
+    }
+
+    private static BooleanExpression goeOneMonthAgo(LocalDate oneMonthAgo) {
+        if (oneMonthAgo != null) {
+            return downloadLog.createdAt.goe(oneMonthAgo.atStartOfDay());
+        }
         return null;
     }
 }
