@@ -58,6 +58,16 @@ public class DownloadLogQueryRepository {
                 .fetch();
     }
 
+    public List<DownloadLog> findAllInWeek(Long introPageId) {
+        LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
+
+        return query
+                .selectFrom(downloadLog)
+                .where(eqIntroPageId(introPageId), goeOneMonthAgo(oneWeekAgo))
+                .orderBy(downloadLog.createdAt.desc())
+                .fetch();
+    }
+
     private BooleanExpression eqIntroPageId(Long introPageId) {
         if (introPageId != null)
             return downloadLog.introPage.id.eq(introPageId);
@@ -73,6 +83,13 @@ public class DownloadLogQueryRepository {
     private static BooleanExpression goeOneMonthAgo(LocalDate oneMonthAgo) {
         if (oneMonthAgo != null) {
             return downloadLog.createdAt.goe(oneMonthAgo.atStartOfDay());
+        }
+        return null;
+    }
+
+    private static BooleanExpression goeOneWeekAgo(LocalDate oneWeekAgo) {
+        if (oneWeekAgo != null) {
+            return downloadLog.createdAt.goe(oneWeekAgo.atStartOfDay());
         }
         return null;
     }

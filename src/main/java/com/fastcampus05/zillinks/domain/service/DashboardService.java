@@ -71,8 +71,8 @@ public class DashboardService {
                 break;
             }
         }
-        S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
-                .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
+//        S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
+//                .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .downloadType(DownloadType.valueOf(downloadInDTO.getType()))
@@ -151,14 +151,19 @@ public class DashboardService {
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        // 다운로드 일주인간의 내역 보여주기
+        List<DownloadLog> downloadLogList = downloadLogQueryRepository.findAllInWeek(introPagePS.getId());
+
+        // 다운로드 내역 페이징 보여주기
         Page<DownloadLog> downloadLogPG = downloadLogQueryRepository.findPGAllByType(type, introPagePS.getId(), page);
-        List<FindDownloadOutDTO.Download> downloadList = downloadLogPG.stream()
-                .map(s -> FindDownloadOutDTO.Download.builder()
+        List<FindDownloadOutDTO.DownloadOutDTO> downloadOutDTOList = downloadLogPG.stream()
+                .map(s -> FindDownloadOutDTO.DownloadOutDTO.builder()
                         .downloadLogId(s.getId())
                         .type(s.getDownloadType())
                         .date(s.getCreatedAt())
                         .build()).collect(Collectors.toList());
-        return toOutDTO(introPagePS, downloadLogPG, downloadList, type);
+        return toOutDTO(introPagePS, downloadLogList, downloadLogPG, downloadOutDTOList, type);
     }
 
     public FindVisitorOutDTO findVisitor(String type, Integer page, User user) {
@@ -232,7 +237,7 @@ public class DashboardService {
         return visitorLogList.stream()
                 .map(s -> ExcelOutDTO.VisitorOutDTO.builder()
                         .deviceType(s.getDeviceType())
-                        .type(excelVisitorInDTO.getType().equals("VIEW") ? s.getKeyword() : s.getSharingCode())
+                        .type(excelVisitorInDTO.getType().equals("VIEW") ? ((s.getKeyword() == null) ? "(없음)": s.getKeyword()) : ((s.getSharingCode() == null) ? "(없음)": s.getSharingCode()))
                         .date(s.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
