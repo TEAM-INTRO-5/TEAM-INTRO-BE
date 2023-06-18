@@ -50,9 +50,11 @@ public class IntroPage extends TimeBaseEntity {
     private HeaderAndFooter headerAndFooter;
 
     @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Widget> widgets = new ArrayList<>();
 
     @OneToMany(mappedBy = "introPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Dashboard> dashboards = new ArrayList<>();
 
     // == 연관관계 메서드 == //

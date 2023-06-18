@@ -15,5 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class TeamCulture extends Widget {
     @OneToMany(mappedBy = "teamCulture", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<TeamCultureElement> teamCultureElements = new ArrayList<>();
 }
