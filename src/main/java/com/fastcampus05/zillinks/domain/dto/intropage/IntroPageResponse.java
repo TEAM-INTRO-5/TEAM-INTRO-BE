@@ -13,10 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +30,7 @@ public class IntroPageResponse {
         private ThemeOutDTO theme;
         private CompanyInfoOutDTO companyInfo;
         private SiteInfoOutDTO siteInfo;
+        private HeaderAndFooterOutDTO headerAndFooter;
         private List<WidgetOutDTO> widgets;
 
         @Getter
@@ -73,6 +70,28 @@ public class IntroPageResponse {
             private String subDomain;
             private String title;
             private String description;
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class HeaderAndFooterOutDTO {
+            private Boolean misionAndVision;
+            private Boolean productsAndServices;
+            private Boolean teamMember;
+            private Boolean contactUs;
+            private Boolean news;
+            private Boolean download;
+            private Boolean history;
+            private Boolean teamCulture;
+            private Boolean performance;
+            private Boolean partners;
+            private Boolean review;
+            private Boolean patent;
+            private Boolean footer;
         }
 
         @Getter
@@ -432,7 +451,6 @@ public class IntroPageResponse {
                     widgetOutDTOs.add(PartnersOutDTO.toOutDTO((Partners) widget));
                 else if (widget instanceof Channel)
                     widgetOutDTOs.add(ChannelOutDTO.toOutDTO((Channel) widget));
-
             }
             return IntroPageOutDTO.builder()
                     .introPageId(introPage.getId())
@@ -456,6 +474,21 @@ public class IntroPageResponse {
                             .subDomain(introPage.getSiteInfo().getSubDomain())
                             .title(introPage.getSiteInfo().getTitle())
                             .description(introPage.getSiteInfo().getDescription())
+                            .build())
+                    .headerAndFooter(HeaderAndFooterOutDTO.builder()
+                            .misionAndVision(introPage.getHeaderAndFooter().getMisionAndVision())
+                            .productsAndServices(introPage.getHeaderAndFooter().getProductsAndServices())
+                            .teamMember(introPage.getHeaderAndFooter().getTeamMember())
+                            .contactUs(introPage.getHeaderAndFooter().getContactUs())
+                            .news(introPage.getHeaderAndFooter().getNews())
+                            .download(introPage.getHeaderAndFooter().getDownload())
+                            .history(introPage.getHeaderAndFooter().getHistory())
+                            .teamCulture(introPage.getHeaderAndFooter().getTeamCulture())
+                            .performance(introPage.getHeaderAndFooter().getPerformance())
+                            .partners(introPage.getHeaderAndFooter().getPartners())
+                            .review(introPage.getHeaderAndFooter().getReview())
+                            .patent(introPage.getHeaderAndFooter().getPatent())
+                            .footer(introPage.getHeaderAndFooter().getFooter())
                             .build())
                     .widgets(widgetOutDTOs)
                     .build();

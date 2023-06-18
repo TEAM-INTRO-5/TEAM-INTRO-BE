@@ -112,7 +112,7 @@ public class Common {
                 bytes = bos.toByteArray();
                 headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-                headers.setContentDispositionFormData("attachment", filename + ".xlsx"); // Add file extension .xlsx
+                headers.setContentDispositionFormData("attachment", filename + ".csv"); // Add file extension .xlsx
                 headers.setContentLength(bytes.length);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -1,13 +1,11 @@
 package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
-import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.core.util.dto.excel.ExcelOutDTO;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
 import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse;
-import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
 import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
 import com.fastcampus05.zillinks.domain.service.DashboardService;
@@ -39,6 +37,40 @@ import java.util.List;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+
+    @Operation(summary = "Contact-us 요청", description = "Contact-us 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "contactUsInDTO")
+    })
+    @PostMapping("/dashboard/contactUs")
+    public ResponseEntity<ResponseDTO> saveContactUs(
+            @RequestBody @Valid DashboardRequest.ContactUsInDTO contactUsInDTO,
+            Errors errors
+    ) {
+        dashboardService.saveContactUs(contactUsInDTO);
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "회사소개서/미디어킷 다운로드 요청", description = "회사소개서/미디어킷 다운로드 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "downloadInDTO")
+    })
+    @PostMapping("/dashboard/download")
+    public ResponseEntity<ResponseDTO> download(
+            @RequestBody @Valid DashboardRequest.DownloadInDTO downloadInDTO,
+            Errors errors
+    ) {
+        dashboardService.download(downloadInDTO);
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 
     @Operation(summary = "연락 관리 내역 조회 - 획인 필요/완료", description = "연락 관리 내역 조회")
     @ApiResponses({
@@ -89,29 +121,28 @@ public class DashboardController {
             @Parameter(name = "contactUsId"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
-    @PutMapping("/s/user/dashboard/contactUs/{contactUsId}")
+    @PutMapping("/s/user/dashboard/contactUs")
     public ResponseEntity<ResponseDTO<DashboardResponse.FindContactUsOutDTO>> updateContactUsDetail(
-            @PathVariable Long contactUsId,
-            @RequestBody @Valid IntroPageRequest.UpdateContactUsDetailInDTO updateContactUsDetailInDTO,
+            @RequestBody @Valid DashboardRequest.UpdateContactUsDetailInDTO updateContactUsDetailInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        dashboardService.updateContactUsDetail(contactUsId, updateContactUsDetailInDTO, myUserDetails.getUser());
+        dashboardService.updateContactUsDetail(updateContactUsDetailInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
     @Operation(summary = "다운로드 관리 내역 조회 - 전체/회사소개서/미디어킷", description = "다운로드 관리 내역 조회 - 전체/회사소개서/미디어킷")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindDownloadFileOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindDownloadOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "type"),
             @Parameter(name = "page"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
-    @GetMapping("/s/user/dashboard/downloadFile")
-    public ResponseEntity<ResponseDTO<DashboardResponse.FindDownloadFileOutDTO>> findDownloadFile (
+    @GetMapping("/s/user/dashboard/download")
+    public ResponseEntity<ResponseDTO<DashboardResponse.FindDownloadOutDTO>> findDownload (
             @RequestParam
             @Pattern(regexp = "ALL|INTROFILE|MEDIAKIT")
             String type,
@@ -121,8 +152,8 @@ public class DashboardController {
         DownloadType downloadType = null;
         if (!type.equals("ALL"))
             downloadType = DownloadType.valueOf(type);
-        DashboardResponse.FindDownloadFileOutDTO findDownloadFileOutDTO  = dashboardService.findDownloadFile(downloadType, page, myUserDetails.getUser());
-        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findDownloadFileOutDTO);
+        DashboardResponse.FindDownloadOutDTO findDownloadOutDTO = dashboardService.findDownload(downloadType, page, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findDownloadOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
@@ -164,6 +195,53 @@ public class DashboardController {
     ) {
         List<ExcelOutDTO.ContactUsOutDTO> contactUsOutDTOList = dashboardService.excelContactUs(excelContactUsInDTO, myUserDetails.getUser());
         return Common.excelGenerator(contactUsOutDTOList, ExcelOutDTO.ContactUsOutDTO.class, "ContactUs");
+//        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+//        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "연락 관리 내역 엑셀 다운로드 - 획인 필요/완료", description = "연락 관리 내역 엑셀 다운로드 - 획인 필요/완료")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+    })
+    @Parameters({
+            @Parameter(name = "excelDownloadInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/s/user/dashboard/download/excel")
+//    @PostMapping("/dashboard/download/excel")
+    public ResponseEntity<byte[]> excelDownload(
+            @RequestBody @Valid DashboardRequest.ExcelDownloadInDTO excelDownloadInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        DownloadType downloadType = null;
+        if (!excelDownloadInDTO.getType().equals("ALL"))
+            downloadType = DownloadType.valueOf(excelDownloadInDTO.getType());
+        List<ExcelOutDTO.DownloadOutDTO> downloadOutDTOList = dashboardService.excelDownload(downloadType, myUserDetails.getUser());
+//        List<ExcelOutDTO.DownloadOutDTO> downloadOutDTOList = dashboardService.excelDownload(downloadType);
+        return Common.excelGenerator(downloadOutDTOList, ExcelOutDTO.DownloadOutDTO.class, "Download");
+//        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+//        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "방문자 기록 내역 엑셀 다운로드 - 조회/공유", description = "방문자 기록 내역 엑셀 다운로드 - 조회/공유")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+    })
+    @Parameters({
+            @Parameter(name = "excelVisitorInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/s/user/dashboard/visitor/excel")
+//    @PostMapping("/dashboard/visitor/excel")
+    public ResponseEntity<byte[]> excelVisitor(
+            @RequestBody @Valid DashboardRequest.ExcelVisitorInDTO excelVisitorInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        List<ExcelOutDTO.VisitorOutDTO> visitorOutDTOList = dashboardService.excelVisitor(excelVisitorInDTO, myUserDetails.getUser());
+//        List<ExcelOutDTO.VisitorOutDTO> visitorOutDTOList = dashboardService.excelVisitor(excelVisitorInDTO, null);
+        return Common.excelGenerator(visitorOutDTOList, ExcelOutDTO.VisitorOutDTO.class, "Visitor");
 //        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
 //        return new ResponseEntity(responseBody, HttpStatus.OK);
     }

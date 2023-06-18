@@ -20,4 +20,25 @@ public class ExcelOutDTO {
         private String type;
         private LocalDateTime date;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    public static class DownloadOutDTO {
+        private Long index;
+        private String type;
+        private LocalDateTime date;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    public static class VisitorOutDTO {
+        private Long index;
+        private String deviceType;
+        private String type;
+        private LocalDateTime date;
+    }
 }

@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -48,7 +45,6 @@ public class IntroPageRequest {
 
     @Getter
     public static class UpdateCompanyInfoInDTO {
-
         @Schema(description = "대표 성명", example = "홍길동")
         private String representative;
         @Schema(description = "회사 로고", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
@@ -65,47 +61,11 @@ public class IntroPageRequest {
     }
 
     @Getter
-    public static class ContactUsInDTO {
-        @Schema(description = "요청할 회사의 ID", example = "1")
-        @JsonProperty("intro_page_id")
-        private Long introPageId;
-
-        @Schema(description = "문의 내용", example = "IR 자료 요청")
-        @Pattern(regexp = "IR 자료 요청|상품 문의|채용 문의")
-        private String type;
-
-        @Schema(description = "성명", example = "홍길동")
-        @NotBlank
-        private String name;
-
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @Schema(description = "연락처", example = "taeheoki@naver.com")
-        private String email;
-
-        @Schema(description = "내용", example = "이러쿵 저러쿵 이건 내용입니다.")
-        @NotNull
-        private String content;
+    public static class UpdateHeaderAndFooter {
+        @Schema(description = "위젯들의 공개 여부", example = "[true, false, true, false, true, false, true, false, true, false, true, false, true]")
+        @Size(min = 13, max = 13, message = "상태의 개수 12개")
+        @JsonProperty("header_and_footer_status_list")
+        private List<Boolean> headerAndFooterStatusList;
     }
 
-    @Getter
-    public static class DownloadFileInDTO {
-        @Schema(description = "요청할 회사의 ID", example = "1")
-        @JsonProperty("intro_page_id")
-        private Long introPageId;
-
-        @Schema(description = "다운 받을 자료 종류", example = "intro_file")
-        @Pattern(regexp = "INTROFILE|MEDIAKIT")
-        private String type;
-
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @Schema(description = "이메일", example = "taeheoki@naver.com")
-        private String email;
-    }
-
-    @Getter
-    public static class UpdateContactUsDetailInDTO {
-        @Schema(description = "변경 상태 종류", example = "CONFIRM")
-        @Pattern(regexp = "CONFIRM|CANCEL")
-        private String status;
-    }
 }
