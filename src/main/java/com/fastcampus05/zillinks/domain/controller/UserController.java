@@ -292,6 +292,7 @@ public class UserController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", userInfoOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
     @Operation(summary = "유저 기본 정보 수정", description = "유저 기본 정보 수정 - 마이페이지")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -310,6 +311,20 @@ public class UserController {
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
-
-
+    
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 - 마이페이지")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/s/user")
+    public ResponseEntity<ResponseDTO> DeleteUser(
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        userService.DeleteUser(myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseBody);
+    }
 }
