@@ -10,6 +10,7 @@ import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fastcampus05.zillinks.domain.model.widget.ProductsAndServices;
 import com.fastcampus05.zillinks.domain.model.widget.ProductsAndServicesElement;
 import com.fastcampus05.zillinks.domain.model.widget.Widget;
+import com.fastcampus05.zillinks.domain.model.widget.repository.ProductsAndServicesElementQueryRepository;
 import com.fastcampus05.zillinks.domain.model.widget.repository.ProductsAndServicesElementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class WidgetService {
 
     private final UserRepository userRepository;
     private final ProductsAndServicesElementRepository productsAndServicesElementRepository;
+    private final ProductsAndServicesElementQueryRepository productsAndServicesElementQueryRepository;
 
     @Transactional
     public WidgetResponse.SaveProductsAndServicesElementOutDTO saveProductsAndServicesElement(WidgetRequest.SaveProductsAndServicesElementInDTO saveProductsAndServicesElement, User user) {
@@ -48,5 +50,16 @@ public class WidgetService {
         ProductsAndServicesElement productsAndServicesElementPS = productsAndServicesElementRepository.save(productsAndServicesElement);
         productsAndServicesElementPS.setOrder(productsAndServicesElementPS.getId());
         return WidgetResponse.SaveProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElementPS);
+    }
+
+    @Transactional
+    public void deleteProductsAndServicesElements(WidgetRequest.DeleteProductsAndServicesElementsInDTO deleteProductsAndServicesElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        productsAndServicesElementQueryRepository.deleteByDeleteList(deleteProductsAndServicesElementsInDTO.getDeleteList());
     }
 }

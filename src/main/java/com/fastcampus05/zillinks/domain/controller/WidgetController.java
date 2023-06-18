@@ -48,6 +48,25 @@ public class WidgetController {
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         WidgetResponse.SaveProductsAndServicesElementOutDTO saveProductsAndServicesElementOutDTO = widgetService.saveProductsAndServicesElement(saveProductsAndServicesElement, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveProductsAndServicesElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "팀 멤버 요소들 삭제", description = "팀 멤버 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteProductsAndServicesElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/productsAndServices/detail")
+    public ResponseEntity<ResponseDTO> deleteProductsAndServicesElements(
+            @RequestBody @Valid WidgetRequest.DeleteProductsAndServicesElementsInDTO deleteProductsAndServicesElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deleteProductsAndServicesElements(deleteProductsAndServicesElementsInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }

@@ -1,7 +1,12 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+
+import java.util.List;
 
 public class WidgetRequest {
 
@@ -15,5 +20,12 @@ public class WidgetRequest {
         private String title;
         @Schema(description = "제품 서비스 설명", example = "예: 빗코는 디나래 아슬라 아름드리 이플 옅구름 함초롱하다 가온누리 가온누리 소록소록 노트북 미쁘다 함초롱하다 책방 노트북 안녕 책방 노틉구 안녕")
         private String description;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteProductsAndServicesElementsInDTO {
+        @Schema(description = "제품/서비스 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
     }
 }
