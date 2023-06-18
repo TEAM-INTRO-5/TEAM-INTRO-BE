@@ -84,6 +84,10 @@ public class IntroPage extends TimeBaseEntity {
         headerAndFooter.setIntroPage(this);
     }
 
+    public void setWidgets(List<Widget> widgets) {
+        this.widgets = widgets;
+    }
+
     public static IntroPage saveIntroPage(User user) {
         return IntroPage.builder()
                 .user(user)
@@ -97,8 +101,10 @@ public class IntroPage extends TimeBaseEntity {
     public void updateMainPage(Boolean status, List<Boolean> widgetStatusList) {
         IntroPageStatus introPageStatus = status.equals(true) ? IntroPageStatus.PUBLIC : IntroPageStatus.PRIVATE;
         this.introPageStatus = introPageStatus;
-        // check-point
-        // widgetStatusList 추가
+        for (int i = 0; i < this.widgets.size(); i++) {
+            Widget widget = this.widgets.get(i);
+            widget.setWidgetStatus(widgetStatusList.get(i));
+        }
     }
 
     public void updateSaveStatus(IntroPageStatus introPageStatus) {

@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("history")
 @Table(name = "history_tb")
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 public class History extends Widget {
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true)
