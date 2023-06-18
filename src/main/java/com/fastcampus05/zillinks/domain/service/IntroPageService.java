@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.*;
+import static com.fastcampus05.zillinks.domain.model.intropage.HeaderAndFooter.saveHeaderAndFooter;
 
 @Service
 @Transactional(readOnly = true)
@@ -84,6 +85,7 @@ public class IntroPageService {
         IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
         introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
         introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
+        introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
         introPagePS.addWidgets(KeyVisualAndSlogan.builder()
                 .filter(Filter.BLACK)
                 .build());
