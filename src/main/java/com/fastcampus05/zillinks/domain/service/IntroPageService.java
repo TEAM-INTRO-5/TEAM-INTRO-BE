@@ -6,12 +6,6 @@ import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
-import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
-import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadLog;
-import com.fastcampus05.zillinks.domain.model.dashboard.DownloadType;
-import com.fastcampus05.zillinks.domain.model.dashboard.repository.ContactUsLogRepository;
-import com.fastcampus05.zillinks.domain.model.dashboard.repository.DownloadLogRepository;
 import com.fastcampus05.zillinks.domain.model.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
@@ -22,16 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.IntroPageOutDTO;
 
-@Service
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class IntroPageService {
 
     public static final String DEFAULT_IMAGE = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg";
