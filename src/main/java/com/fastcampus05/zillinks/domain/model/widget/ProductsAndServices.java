@@ -19,6 +19,7 @@ import java.util.List;
 public class ProductsAndServices extends Widget {
 
     @OneToMany(mappedBy = "productsAndServices", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ProductsAndServicesElement> productsAndServicesElements = new ArrayList<>();
 
     @Column(name = "call_to_action_status")

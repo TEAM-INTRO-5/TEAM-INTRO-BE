@@ -16,5 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Partners extends Widget {
     @OneToMany(mappedBy = "partners", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<PartnersElement> partnersElements = new ArrayList<>();
 }

@@ -16,5 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Performance extends Widget {
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<PerformanceElement> performanceElements = new ArrayList<>();
 }

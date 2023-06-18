@@ -16,5 +16,5 @@ import java.util.List;
 @AllArgsConstructor
 public class Patent extends Widget {
     @OneToMany(mappedBy = "patent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PatentElement> patentElements = new ArrayList<>();
+    private List<PatentElement> patentElements;
 }

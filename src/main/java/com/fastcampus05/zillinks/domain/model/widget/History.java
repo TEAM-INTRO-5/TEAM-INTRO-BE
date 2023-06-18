@@ -15,5 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class History extends Widget {
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<HistoryElement> historyElements = new ArrayList<>();
 }
