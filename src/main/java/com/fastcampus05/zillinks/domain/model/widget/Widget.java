@@ -35,6 +35,10 @@ public abstract class Widget {
     @Column(name = "widget_status")
     private Boolean widgetStatus;
 
+    @NotNull
+    @Column(name = "orders")
+    private Integer order;
+
     @CreatedDate
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
@@ -49,5 +53,9 @@ public abstract class Widget {
 
     public void setWidgetStatus(Boolean widgetStatus) {
         this.widgetStatus = widgetStatus;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

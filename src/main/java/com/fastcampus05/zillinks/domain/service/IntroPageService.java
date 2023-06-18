@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +40,6 @@ public class IntroPageService {
     private final UserRepository userRepository;
     private final S3UploaderFileRepository s3UploaderFileRepository;
     private final S3UploaderRepository s3UploaderRepository;
-    private final ContactUsLogRepository contactUsLogRepository;
-    private final DownloadLogRepository downloadLogRepository;
 
     @Transactional
     public void saveIntroPage(User user) {
@@ -51,28 +50,20 @@ public class IntroPageService {
         introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
         introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
         introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
-        introPagePS.addWidgets(KeyVisualAndSlogan.builder()
-                .filter(Filter.BLACK)
-                .build());
-        introPagePS.addWidgets(MissionAndVision.builder().build());
-        introPagePS.addWidgets(ProductsAndServices.builder()
-                .callToActionStatus(false)
-                .build());
-        introPagePS.addWidgets(TeamMember.builder().build());
-        introPagePS.addWidgets(ContactUs.builder()
-                .mapStatus(false)
-                .build());
-        introPagePS.addWidgets(Performance.builder().build());
-        introPagePS.addWidgets(TeamCulture.builder().build());
-        introPagePS.addWidgets(History.builder().build());
-        introPagePS.addWidgets(Review.builder().build());
-        introPagePS.addWidgets(Patent.builder().build());
-        introPagePS.addWidgets(News.builder().build());
-        introPagePS.addWidgets(Download.builder().build());
-        introPagePS.addWidgets(Partners.builder().build());
-        introPagePS.addWidgets(Channel.builder()
-                .build());
-
+        introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(1).filter(Filter.BLACK).build());
+        introPagePS.addWidgets(MissionAndVision.builder().order(2).build());
+        introPagePS.addWidgets(ProductsAndServices.builder().order(3).callToActionStatus(false).build());
+        introPagePS.addWidgets(TeamMember.builder().order(4).build());
+        introPagePS.addWidgets(ContactUs.builder().order(5).mapStatus(false).build());
+        introPagePS.addWidgets(Performance.builder().order(6).build());
+        introPagePS.addWidgets(TeamCulture.builder().order(7).build());
+        introPagePS.addWidgets(History.builder().order(8).build());
+        introPagePS.addWidgets(Review.builder().order(9).build());
+        introPagePS.addWidgets(Patent.builder().order(10).build());
+        introPagePS.addWidgets(News.builder().order(11).build());
+        introPagePS.addWidgets(Download.builder().order(12).build());
+        introPagePS.addWidgets(Partners.builder().order(13).build());
+        introPagePS.addWidgets(Channel.builder().order(14).build());
     }
 
     public IntroPageOutDTO findIntroPage(User user) {
@@ -81,7 +72,11 @@ public class IntroPageService {
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-        return IntroPageOutDTO.toOutDTO(introPagePS);
+        List<Integer> orderList = new ArrayList<>();
+        for (Widget widget : introPagePS.getWidgets()) {
+            orderList.add(widget.getOrder());
+        }
+        return IntroPageOutDTO.toOutDTO(introPagePS, orderList);
     }
 
     @Transactional
@@ -95,9 +90,10 @@ public class IntroPageService {
         if (updateInDTO.getStatus() && (introPagePS.getSiteInfo().getSubDomain() == null ||introPagePS.getSiteInfo().getSubDomain().isBlank()))
             throw new Exception400("status", "기본 주소가 설정되어 있지 않은 상태에서 회사 소개 페이지를 공개하실 수 없습니다.");
 
-        // check-point
-        // orderList를 활용하여 위젯의 순서를 변경하는 로직이 추가
-
+        List<Widget> widgets = introPagePS.getWidgets();
+        for (int i = 0; i < widgets.size(); i++) {
+            widgets.get(i).setOrder(updateInDTO.getOrderList().get(i));
+        }
         introPagePS.updateMainPage(updateInDTO.getStatus(), updateInDTO.getWidgetStatusList());
         /**
          * check-point

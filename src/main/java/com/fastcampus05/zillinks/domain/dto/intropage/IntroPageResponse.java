@@ -31,6 +31,7 @@ public class IntroPageResponse {
         private CompanyInfoOutDTO companyInfo;
         private SiteInfoOutDTO siteInfo;
         private HeaderAndFooterOutDTO headerAndFooter;
+        private List<Integer> orderList;
         private List<WidgetOutDTO> widgets;
 
         @Getter
@@ -419,10 +420,13 @@ public class IntroPageResponse {
             }
         }
 
-        public static IntroPageOutDTO toOutDTO(IntroPage introPage) {
+        public static IntroPageOutDTO toOutDTO(IntroPage introPage, List<Integer> orderList) {
             List<Widget> widgets = introPage.getWidgets();
             List<WidgetOutDTO> widgetOutDTOs = new ArrayList<>();
-            for (Widget widget : widgets) {
+            // check-point 바뀐 순서대로 보내줄지, 아니면 그냥 고정된 순서로 보내고 orderList로 처리할지
+            for (int i = 0; i < orderList.size(); i++) {
+//                for (Widget widget : widgets) {
+                Widget widget = widgets.get(orderList.get(i) - 1);
                 if (widget instanceof KeyVisualAndSlogan)
                     widgetOutDTOs.add(KeyVisualAndSloganOutDTO.toOutDTO((KeyVisualAndSlogan) widget));
                 else if (widget instanceof MissionAndVision)
@@ -490,6 +494,7 @@ public class IntroPageResponse {
                             .patent(introPage.getHeaderAndFooter().getPatent())
                             .footer(introPage.getHeaderAndFooter().getFooter())
                             .build())
+                    .orderList(orderList)
                     .widgets(widgetOutDTOs)
                     .build();
         }
