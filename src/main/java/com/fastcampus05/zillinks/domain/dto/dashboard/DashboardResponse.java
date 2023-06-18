@@ -11,8 +11,11 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DashboardResponse {
     @Getter
@@ -92,10 +95,9 @@ public class DashboardResponse {
     public static class FindDownloadOutDTO {
         private Long introPageId;
         private String type;
-        // check-point
-        // 주간 소개서/미디어 다운로드 내역 추가
-
-        private List<Download> content;
+        private List<Integer> introFile;
+        private List<Integer> mediaKitFile;
+        private List<DownloadOutDTO> content;
         private Long totalElements;
         private Integer totalPage;
         private Integer size;
@@ -110,7 +112,7 @@ public class DashboardResponse {
         @Builder
         @AllArgsConstructor
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Download {
+        public static class DownloadOutDTO {
             private Long downloadLogId;
             private DownloadType type;
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd", timezone = "UTC")
@@ -119,17 +121,35 @@ public class DashboardResponse {
 
         public static FindDownloadOutDTO toOutDTO(
                 IntroPage introPage,
+                List<DownloadLog> downloadLogList,
                 Page<DownloadLog> downloadLogPG,
-                List<Download> downloadList,
+                List<DownloadOutDTO> downloadOutDTOList,
                 DownloadType type
         ) {
             String typeString = "ALL";
             if (type != null)
                 typeString = String.valueOf(type);
+
+            // 주간 다운로드 List 변환
+            List<Integer> introFile = new ArrayList<>();
+            List<Integer> mediaKitFile = new ArrayList<>();
+
+            List<DownloadLog> introFileLogList = downloadLogList.stream().filter(s -> s.getDownloadType().equals(DownloadType.INTROFILE)).collect(Collectors.toList());
+            List<DownloadLog> mediaKitFileLogList = downloadLogList.stream().filter(s -> s.getDownloadType().equals(DownloadType.MEDIAKIT)).collect(Collectors.toList());
+            for (int i = 6; i >= 0; i--) {
+                LocalDate date = LocalDate.now().minusDays(i);
+                int size = introFileLogList.stream().filter(s -> s.getCreatedAt().toLocalDate().compareTo(date) == 0).collect(Collectors.toList()).size();
+                introFile.add(size);
+                size = mediaKitFileLogList.stream().filter(s -> s.getCreatedAt().toLocalDate().compareTo(date) == 0).collect(Collectors.toList()).size();
+                mediaKitFile.add(size);
+            }
+
             return FindDownloadOutDTO.builder()
                     .introPageId(introPage.getId())
                     .type(typeString)
-                    .content(downloadList)
+                    .introFile(introFile)
+                    .mediaKitFile(mediaKitFile)
+                    .content(downloadOutDTOList)
                     .totalElements(downloadLogPG.getTotalElements())
                     .totalPage(downloadLogPG.getTotalPages())
                     .size(downloadLogPG.getSize())
