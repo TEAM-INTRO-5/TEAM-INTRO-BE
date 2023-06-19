@@ -44,10 +44,10 @@ import java.util.*;
 
 import static com.fastcampus05.zillinks.domain.dto.user.UserResponse.*;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     @Value("${google-oauth.client-id}")

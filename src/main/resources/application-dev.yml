@@ -57,6 +57,8 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+#    property-naming-strategy: SNAKE_CASE
+
   servlet:
     multipart:
       max-file-size: 10MB
