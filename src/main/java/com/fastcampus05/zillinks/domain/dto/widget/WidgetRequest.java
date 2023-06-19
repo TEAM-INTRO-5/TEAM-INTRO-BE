@@ -118,6 +118,16 @@ public class WidgetRequest {
      */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePerformanceInDTO {
+        @Schema(description = "핵심성과 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "핵심성과 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePerformanceElementInDTO {
         @Schema(description = "성과지표 설명", example = "핵심 지표")
         private String descrition;

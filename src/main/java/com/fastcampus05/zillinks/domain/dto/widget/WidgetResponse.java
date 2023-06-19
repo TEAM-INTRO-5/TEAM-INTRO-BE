@@ -287,6 +287,53 @@ public class WidgetResponse {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePerformanceOutDTO {
+        private Long performanceId;
+        private List<PerformanceElementOutDTO> performanceElements;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class PerformanceElementOutDTO {
+            private Long performanceElementId;
+            private String descrition;
+            private String additionalDescrition;
+            private String indicator;
+
+            private static PerformanceElementOutDTO toOutDTO(PerformanceElement performanceElement) {
+                return PerformanceElementOutDTO.builder()
+                        .performanceElementId(performanceElement.getId())
+                        .descrition(performanceElement.getDescrition())
+                        .additionalDescrition(performanceElement.getAdditionalDescrition())
+                        .indicator(performanceElement.getIndicator())
+                        .build();
+            }
+        }
+
+        public static UpdatePerformanceOutDTO toOutDTO(Performance performance) {
+            List<PerformanceElement> performanceElements = performance.getPerformanceElements();
+            List<PerformanceElementOutDTO> performanceElementOutDTOs = new ArrayList<>();
+            for (int i = 0; i < performanceElements.size(); i++) {
+                for (PerformanceElement performanceElement : performanceElements) {
+                    if (performanceElement.getOrder() != i + 1)
+                        continue;
+                    performanceElementOutDTOs.add(PerformanceElementOutDTO.toOutDTO(performanceElement));
+                }
+            }
+            return UpdatePerformanceOutDTO.builder()
+                    .performanceId(performance.getId())
+                    .performanceElements(performanceElementOutDTOs)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePerformanceElementOutDTO {
         private Long performanceElementId;
         private String descrition;

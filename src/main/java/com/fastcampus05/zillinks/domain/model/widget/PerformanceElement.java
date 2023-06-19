@@ -29,4 +29,8 @@ public class PerformanceElement extends TimeBaseEntity {
     @Column(name = "additional_descrition")
     private String additionalDescrition;
     private String indicator;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }

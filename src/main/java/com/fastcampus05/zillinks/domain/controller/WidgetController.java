@@ -147,6 +147,25 @@ public class WidgetController {
     /**
      * 핵심 성과
      */
+    @Operation(summary = "핵심성과 수정", description = "핵심성과 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdatePerformanceOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updatePerformanceInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/performance")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdatePerformanceOutDTO>> updatePerformance(
+            @RequestBody @Valid WidgetRequest.UpdatePerformanceInDTO updatePerformanceInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdatePerformanceOutDTO updatePerformanceOutDTO = widgetService.updatePerformance(updatePerformanceInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updatePerformanceOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "핵심성과 요소 추가", description = "핵심성과 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SavePerformanceElementOutDTO.class))),
