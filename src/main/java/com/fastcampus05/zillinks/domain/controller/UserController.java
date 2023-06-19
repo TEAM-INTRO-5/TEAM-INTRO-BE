@@ -302,12 +302,12 @@ public class UserController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PutMapping("/s/user")
-    public ResponseEntity<ResponseDTO> userInfoUpdate(
+    public ResponseEntity<ResponseDTO> updateUserInfo(
             @RequestBody @Valid UserRequest.UserInfoUpdateInDTO userInfoUpdateInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        userService.userInfoUpdate(userInfoUpdateInDTO, myUserDetails.getUser());
+        userService.updateUserInfo(userInfoUpdateInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
@@ -320,10 +320,10 @@ public class UserController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @DeleteMapping("/s/user")
-    public ResponseEntity<ResponseDTO> DeleteUser(
+    public ResponseEntity<ResponseDTO> deleteUser(
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        userService.DeleteUser(myUserDetails.getUser());
+        userService.deleteUser(myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseBody);
     }
