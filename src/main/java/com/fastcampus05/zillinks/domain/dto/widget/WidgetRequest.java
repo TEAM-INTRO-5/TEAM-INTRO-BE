@@ -126,4 +126,11 @@ public class WidgetRequest {
         @Schema(description = "숫자 지표", example = "99%")
         private String indicator;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeletePerformanceElementsInDTO {
+        @Schema(description = "핵심성과 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }

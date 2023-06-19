@@ -278,6 +278,17 @@ public class WidgetService {
         return WidgetResponse.SavePerformanceElementOutDTO.toOutDTO(performanceElementPS);
     }
 
+    @Transactional
+    public void deletePerformanceElements(WidgetRequest.DeletePerformanceElementsInDTO deletePerformanceElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+       performanceElementQueryRepository.deleteByDeleteList(deletePerformanceElementsInDTO.getDeleteList());
+    }
+
 
 //    List<String> pathOrginList = new ArrayList<>();
 //        pathOrginList.add(introPagePS.getSiteInfo().getPavicon());

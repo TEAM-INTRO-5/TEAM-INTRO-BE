@@ -165,4 +165,23 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", savePerformanceElementOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    @Operation(summary = "핵심성과 요소들 삭제", description = "핵심성과 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteProductsAndServicesElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/performance/detail")
+    public ResponseEntity<ResponseDTO> deletePerformanceElements(
+            @RequestBody @Valid WidgetRequest.DeletePerformanceElementsInDTO deletePerformanceElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deletePerformanceElements(deletePerformanceElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }
