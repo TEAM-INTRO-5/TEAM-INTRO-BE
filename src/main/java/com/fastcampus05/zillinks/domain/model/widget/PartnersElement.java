@@ -20,6 +20,9 @@ public class PartnersElement {
     @JoinColumn(name = "partners_id")
     private Partners partners;
 
+    @Column(name = "orders")
+    private Long order;
+
     @Column(name = "partners_type")
     private PartnersType partnersType;
 

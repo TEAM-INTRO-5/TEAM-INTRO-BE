@@ -20,6 +20,9 @@ public class TeamMemberElement {
     @JoinColumn(name = "team_member_id")
     private TeamMember teamMember;
 
+    @Column(name = "orders")
+    private Long order;
+
     private String profile;
     private String name;
     @Column(name = "groups")

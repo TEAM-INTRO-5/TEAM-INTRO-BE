@@ -39,6 +39,12 @@ public abstract class Widget {
     @Column(name = "orders")
     private Integer order;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "widget_type")
+    private WidgetType widgetType;
+
     @CreatedDate
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;

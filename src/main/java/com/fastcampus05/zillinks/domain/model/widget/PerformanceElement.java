@@ -21,6 +21,9 @@ public class PerformanceElement {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
+    @Column(name = "orders")
+    private Long order;
+
     private String descrition;
     @Column(name = "additional_descrition")
     private String additionalDescrition;
