@@ -222,11 +222,6 @@ public class IntroPageResponse {
                                 .text(productsAndServices.getCallToAction().getText())
                                 .link(productsAndServices.getCallToAction().getLink())
                                 .build() : null)
-//                        .callToAction(CallToAction.builder()
-//                                .description(productsAndServices.getCallToAction().getDescription())
-//                                .text(productsAndServices.getCallToAction().getText())
-//                                .link(productsAndServices.getCallToAction().getLink())
-//                                .build())
                         .build();
             }
         }
