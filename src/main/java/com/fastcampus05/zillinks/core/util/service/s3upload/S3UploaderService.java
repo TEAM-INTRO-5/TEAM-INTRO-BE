@@ -54,6 +54,7 @@ public class S3UploaderService {
         S3UploaderFile s3UploaderFile = S3UploaderFile.builder()
                 .originalPath(image.getOriginalFilename())
                 .encodingPath(uploadPath)
+                .userId(userPS.getId())
                 .build();
         s3UploaderFileRepository.save(s3UploaderFile);
         return S3UploadResponse.PathResponse.builder()
@@ -77,6 +78,7 @@ public class S3UploaderService {
         S3UploaderFile s3UploaderFile = S3UploaderFile.builder()
                 .originalPath(file.getOriginalFilename())
                 .encodingPath(uploadPath)
+                .userId(userPS.getId())
                 .build();
         s3UploaderFileRepository.save(s3UploaderFile);
         return S3UploadResponse.PathResponse.builder()

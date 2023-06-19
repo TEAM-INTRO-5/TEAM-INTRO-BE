@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.model.widget.repository;
 
+import com.fastcampus05.zillinks.domain.model.widget.TeamMemberElement;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,12 @@ public class TeamMemberElementQueryRepository {
     public TeamMemberElementQueryRepository(EntityManager em) {
         this.em = em;
         this.query = new JPAQueryFactory(em);
+    }
+
+    public List<TeamMemberElement> findAllByDeleteList(List<Long> deleteList) {
+        return query.selectFrom(teamMemberElement)
+                .where(inDeleteList(deleteList))
+                .fetch();
     }
 
     public void deleteByDeleteList(List<Long> deleteList) {
