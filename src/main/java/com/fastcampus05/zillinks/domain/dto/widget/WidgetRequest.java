@@ -1,6 +1,5 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +8,26 @@ import lombok.Getter;
 import java.util.List;
 
 public class WidgetRequest {
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateProductsAndServicesInDTO {
+        @Schema(description = "제품/서비스 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "제품/서비스들의 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+
+        @Schema(description = "Call To Action 사용 여부", example = "true")
+        private Boolean callToActionStatus;
+
+        @Schema(description = "버튼 설명", example = "이 상품이 궁금하세요?")
+        private String description;
+        @Schema(description = "버튼 텍스트", example = "상품 보러가기")
+        private String text;
+        @Schema(description = "버튼 링크", example = "https://zillinks.com")
+        private String link;
+    }
 
     @Getter
     public static class SaveProductsAndServicesElementInDTO {

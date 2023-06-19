@@ -84,8 +84,25 @@ public class IntroPageService {
             throw new Exception400("status", "기본 주소가 설정되어 있지 않은 상태에서 회사 소개 페이지를 공개하실 수 없습니다.");
 
         List<Widget> widgets = introPagePS.getWidgets();
-        for (int i = 0; i < widgets.size(); i++) {
-            widgets.get(i).setOrder(updateInDTO.getOrderList().get(i));
+//        for (int i = 0; i < widgets.size(); i++) {
+//            widgets.get(i).setOrder(updateInDTO.getOrderList().get(i));
+//        }
+        Integer index = 1;
+
+        List<Integer> arr = new ArrayList<>();
+        for (int i = 0; i < updateInDTO.getOrderList().size(); i++)
+            arr.add(0);
+
+        for (Integer num : updateInDTO.getOrderList()) {
+            Widget widget = widgets.stream().filter(s -> s.getOrder() == num).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = widgets.indexOf(widget);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            widgets.get(i).setOrder(arr.get(i));
         }
         introPagePS.updateMainPage(updateInDTO.getStatus(), updateInDTO.getWidgetStatusList());
         /**

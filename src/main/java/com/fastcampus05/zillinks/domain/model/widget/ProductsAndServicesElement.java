@@ -25,8 +25,9 @@ public class ProductsAndServicesElement {
     private String title;
     private String description;
 
-    public ProductsAndServicesElement(ProductsAndServices productsAndServices, String image, String name, String title, String description) {
+    public ProductsAndServicesElement(ProductsAndServices productsAndServices, Long order, String image, String name, String title, String description) {
         this.productsAndServices = productsAndServices;
+        this.order = order;
         this.image = image;
         this.name = name;
         this.title = title;

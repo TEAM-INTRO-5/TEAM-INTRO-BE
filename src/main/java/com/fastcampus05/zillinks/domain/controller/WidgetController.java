@@ -2,11 +2,8 @@ package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
-import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
-import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
-import com.fastcampus05.zillinks.domain.service.DashboardService;
 import com.fastcampus05.zillinks.domain.service.WidgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +30,26 @@ public class WidgetController {
 
     private final WidgetService widgetService;
 
-    @Operation(summary = "팀 멤버 요소 추가", description = "팀 멤버 요소 추가")
+    @Operation(summary = "제품/서비스 수정", description = "제품/서비스 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateProductsAndServicesOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteProductsAndServicesElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/productsAndServices")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateProductsAndServicesOutDTO>> updateProductsAndServices(
+            @RequestBody @Valid WidgetRequest.UpdateProductsAndServicesInDTO updateProductsAndServicesInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateProductsAndServicesOutDTO updateProductsAndServicesOutDTO = widgetService.updateProductsAndServices(updateProductsAndServicesInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateProductsAndServicesOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "제품/서비스 요소 추가", description = "제품/서비스 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveProductsAndServicesElementOutDTO.class))),
     })
@@ -52,7 +68,7 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "팀 멤버 요소들 삭제", description = "팀 멤버 요소들 삭제")
+    @Operation(summary = "제품/서비스 요소들 삭제", description = "제품/서비스 요소들 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
