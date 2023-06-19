@@ -86,4 +86,61 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    @Operation(summary = "팀 멤버 수정", description = "팀 멤버 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateTeamMemberOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateTeamMemberInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/teamMember")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateTeamMemberOutDTO>> updateTeamMember(
+            @RequestBody @Valid WidgetRequest.UpdateTeamMemberInDTO updateTeamMemberInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateTeamMemberOutDTO updateTeamMemberOutDTO = widgetService.updateTeamMember(updateTeamMemberInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateTeamMemberOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "팀 멤버 요소 추가", description = "팀 멤버 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveTeamMemberElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "saveTeamMemberElement"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/teamMember/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SaveTeamMemberElementOutDTO>> saveTeamMemberElement(
+            @RequestBody @Valid WidgetRequest.SaveTeamMemberElementInDTO saveTeamMemberElement,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SaveTeamMemberElementOutDTO saveTeamMemberElementOutDTO = widgetService.saveTeamMemberElement(saveTeamMemberElement, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveTeamMemberElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "팀 멤버 요소들 삭제", description = "팀 멤버 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteProductsAndServicesElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/teamMember/detail")
+    public ResponseEntity<ResponseDTO> deleteTeamMemberElements(
+            @RequestBody @Valid WidgetRequest.DeleteTeamMemberElementsInDTO deleteTeamMemberElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deleteTeamMemberElements(deleteTeamMemberElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }

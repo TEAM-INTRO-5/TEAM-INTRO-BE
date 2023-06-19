@@ -47,4 +47,68 @@ public class WidgetRequest {
         @Schema(description = "제품/서비스 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateTeamMemberInDTO {
+        @Schema(description = "팀 멤버 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "팀 멤버 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveTeamMemberElementInDTO {
+        @Schema(description = "프로필 이미지", example = "url 경로")
+        private String profile;
+        @Schema(description = "성명", example = "홍길동")
+        private String name;
+        @Schema(description = "소속", example = "지원사업부")
+        private String group;
+        @Schema(description = "직책", example = "주임")
+        private String position;
+        @Schema(description = "한줄 소개", example = "스타트업 전문 패스트 빌더입니다.")
+        private String tagline;
+        @Schema(description = "이메일", example = "example@gmail.com")
+        private String email;
+        @Schema(description = "SNS 사용 여부", example = "true")
+        private Boolean snsStatus;
+        @Schema(description = "인스타그램 사용 여부", example = "true")
+        private Boolean instagramStatus;
+        @Schema(description = "인스타그램 url 주소", example = "url 주소")
+        private String instagram;
+        @Schema(description = "링크드인 사용 여부", example = "true")
+        private Boolean linkedInStatus;
+        @Schema(description = "링크드인 url 주소", example = "url 주소")
+        private String linkedIn;
+        @Schema(description = "유튜브 사용 여부", example = "true")
+        private Boolean youtubeStatus;
+        @Schema(description = "유튜브 url 주소", example = "url 주소")
+        private String youtube;
+        @Schema(description = "노션 사용 여부", example = "true")
+        private Boolean notionStatus;
+        @Schema(description = "노션 url 주소", example = "url 주소")
+        private String notion;
+        @Schema(description = "네이버 블로그 사용 여부", example = "true")
+        private Boolean naverBlogStatus;
+        @Schema(description = "네이버 블로그 url 주소", example = "url 주소")
+        private String naverBlog;
+        @Schema(description = "브런치 스토리 사용 여부", example = "true")
+        private Boolean brunchStroyStatus;
+        @Schema(description = "브런치 스토리 url 주소", example = "url 주소")
+        private String brunchStroy;
+        @Schema(description = "페이스북 사용 여부", example = "true")
+        private Boolean facebookStatus;
+        @Schema(description = "페이스북 url 주소", example = "url 주소")
+        private String facebook;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteTeamMemberElementsInDTO {
+        @Schema(description = "팀 멤버 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }

@@ -217,16 +217,11 @@ public class IntroPageResponse {
                         .widgetStatus(productsAndServices.getWidgetStatus())
                         .productsAndServicesElements(productsAndServicesElementOutDTOs)
                         .callToActionStatus(productsAndServices.getCallToActionStatus())
-//                        .callToAction(productsAndServices.getCallToAction() != null ? CallToAction.builder()
-//                                .description(productsAndServices.getCallToAction().getDescription())
-//                                .text(productsAndServices.getCallToAction().getText())
-//                                .link(productsAndServices.getCallToAction().getLink())
-//                                .build() : null)
-                        .callToAction(CallToAction.builder()
+                        .callToAction(productsAndServices.getCallToAction() != null ? CallToAction.builder()
                                 .description(productsAndServices.getCallToAction().getDescription())
                                 .text(productsAndServices.getCallToAction().getText())
                                 .link(productsAndServices.getCallToAction().getLink())
-                                .build())
+                                .build() : null)
                         .build();
             }
         }
@@ -294,7 +289,7 @@ public class IntroPageResponse {
                             .tagline(teamMemberElement.getTagline())
                             .email(teamMemberElement.getEmail())
                             .snsStatus(teamMemberElement.getSnsStatus())
-                            .snsList(SnsListOutDTO.toOutDTO(teamMemberElement.getSnsList()))
+                            .snsList(teamMemberElement.getSnsList() != null ? SnsListOutDTO.toOutDTO(teamMemberElement.getSnsList()) : null)
                             .build();
                 }
             }

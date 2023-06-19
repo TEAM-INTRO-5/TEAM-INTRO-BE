@@ -35,4 +35,21 @@ public class TeamMemberElement {
     private Boolean snsStatus;
     @Embedded
     private SnsList snsList;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
+
+    public TeamMemberElement(TeamMember teamMember, Long order, String profile, String name, String group, String position, String tagline, String email, Boolean snsStatus, SnsList snsList) {
+        this.teamMember = teamMember;
+        this.order = order;
+        this.profile = profile;
+        this.name = name;
+        this.group = group;
+        this.position = position;
+        this.tagline = tagline;
+        this.email = email;
+        this.snsStatus = snsStatus;
+        this.snsList = snsList;
+    }
 }
