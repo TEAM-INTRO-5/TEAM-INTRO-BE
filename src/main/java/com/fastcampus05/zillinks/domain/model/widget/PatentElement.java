@@ -20,6 +20,9 @@ public class PatentElement {
     @JoinColumn(name = "patent_id")
     private Patent patent;
 
+    @Column(name = "orders")
+    private Long order;
+
     @Column(name = "patent_type")
     @Enumerated(EnumType.STRING)
     private PatentType patentType;

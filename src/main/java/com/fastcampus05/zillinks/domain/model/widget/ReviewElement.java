@@ -20,6 +20,9 @@ public class ReviewElement {
     @JoinColumn(name = "review_id")
     private Review review;
 
+    @Column(name = "orders")
+    private Long order;
+
     private String image;
     private String name;
     @Column(name = "groups")

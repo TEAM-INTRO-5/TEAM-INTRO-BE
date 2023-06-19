@@ -20,6 +20,9 @@ public class TeamCultureElement {
     @JoinColumn(name = "team_culture_id")
     private TeamCulture teamCulture;
 
+    @Column(name = "orders")
+    private Long order;
+
     private String image;
     private String culture;
     private String desciption;

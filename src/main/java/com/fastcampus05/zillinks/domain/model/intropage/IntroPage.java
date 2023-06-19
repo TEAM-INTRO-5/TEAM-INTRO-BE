@@ -98,12 +98,12 @@ public class IntroPage extends TimeBaseEntity {
     }
 
     // == 비즈니스 로직 == //
-    public void updateMainPage(Boolean status, List<Boolean> widgetStatusList) {
+    public void updateMainPage(Boolean status, List<Boolean> widgetStatusList, List<Integer> arr) {
         IntroPageStatus introPageStatus = status.equals(true) ? IntroPageStatus.PUBLIC : IntroPageStatus.PRIVATE;
         this.introPageStatus = introPageStatus;
         for (int i = 0; i < this.widgets.size(); i++) {
             Widget widget = this.widgets.get(i);
-            widget.setWidgetStatus(widgetStatusList.get(i));
+            widget.setWidgetStatus(widgetStatusList.get(arr.get(i) - 1));
         }
     }
 

@@ -188,6 +188,8 @@ public class DashboardService {
     public List<ExcelOutDTO.ContactUsOutDTO> excelContactUs(DashboardRequest.ExcelContactUsInDTO excelContactUsInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+//        User userPS = userRepository.findById(1L)
+//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));

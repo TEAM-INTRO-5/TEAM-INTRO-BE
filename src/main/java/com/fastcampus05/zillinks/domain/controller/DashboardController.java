@@ -188,12 +188,14 @@ public class DashboardController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PostMapping("/s/user/dashboard/contactUs/excel")
+//    @PostMapping("/dashboard/contactUs/excel")
     public ResponseEntity<byte[]> excelContactUs(
             @RequestBody @Valid DashboardRequest.ExcelContactUsInDTO excelContactUsInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         List<ExcelOutDTO.ContactUsOutDTO> contactUsOutDTOList = dashboardService.excelContactUs(excelContactUsInDTO, myUserDetails.getUser());
+//        List<ExcelOutDTO.ContactUsOutDTO> contactUsOutDTOList = dashboardService.excelContactUs(excelContactUsInDTO, null);
         return Common.excelGenerator(contactUsOutDTOList, ExcelOutDTO.ContactUsOutDTO.class, "ContactUs");
 //        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
 //        return new ResponseEntity(responseBody, HttpStatus.OK);
@@ -218,7 +220,7 @@ public class DashboardController {
         if (!excelDownloadInDTO.getType().equals("ALL"))
             downloadType = DownloadType.valueOf(excelDownloadInDTO.getType());
         List<ExcelOutDTO.DownloadOutDTO> downloadOutDTOList = dashboardService.excelDownload(downloadType, myUserDetails.getUser());
-//        List<ExcelOutDTO.DownloadOutDTO> downloadOutDTOList = dashboardService.excelDownload(downloadType);
+//        List<ExcelOutDTO.DownloadOutDTO> downloadOutDTOList = dashboardService.excelDownload(downloadType, null);
         return Common.excelGenerator(downloadOutDTOList, ExcelOutDTO.DownloadOutDTO.class, "Download");
 //        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
 //        return new ResponseEntity(responseBody, HttpStatus.OK);

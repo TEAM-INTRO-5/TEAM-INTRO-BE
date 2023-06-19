@@ -21,6 +21,9 @@ public class NewsElement {
     @JoinColumn(name = "news_id")
     private News news;
 
+    @Column(name = "orders")
+    private Long order;
+
     private String image;
     private LocalDateTime date;
     private String press;

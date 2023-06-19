@@ -26,17 +26,18 @@
     });
 
     function downloadExcel() {
-        const excelDownloadInDTO = {
-            // status: "UNCONFIRMED",
-            type: "ALL",
+        // const excelDownloadInDTO = {
+        const excelContactUsInDTO = {
+            status: "UNCONFIRMED",
+            // type: "ALL",
         };
 
-        fetch("https://localhost:443/api/dashboard/download/excel", {
+        fetch("https://localhost:443/api/dashboard/contactUs/excel", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(excelDownloadInDTO),
+            body: JSON.stringify(excelContactUsInDTO),
         })
                 .then((response) => {
                     if (!response.ok) {

@@ -21,6 +21,9 @@ public class HistoryElement {
     @JoinColumn(name = "history_id")
     private History history;
 
+    @Column(name = "orders")
+    private Long order;
+
     private String image;
     private LocalDateTime date;
     private String title;

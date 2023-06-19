@@ -43,20 +43,20 @@ public class IntroPageService {
         introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
         introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
         introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
-        introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(1).filter(Filter.BLACK).build());
-        introPagePS.addWidgets(MissionAndVision.builder().order(2).build());
-        introPagePS.addWidgets(ProductsAndServices.builder().order(3).callToActionStatus(false).build());
-        introPagePS.addWidgets(TeamMember.builder().order(4).build());
-        introPagePS.addWidgets(ContactUs.builder().order(5).mapStatus(false).build());
-        introPagePS.addWidgets(Performance.builder().order(6).build());
-        introPagePS.addWidgets(TeamCulture.builder().order(7).build());
-        introPagePS.addWidgets(History.builder().order(8).build());
-        introPagePS.addWidgets(Review.builder().order(9).build());
-        introPagePS.addWidgets(Patent.builder().order(10).build());
-        introPagePS.addWidgets(News.builder().order(11).build());
-        introPagePS.addWidgets(Download.builder().order(12).build());
-        introPagePS.addWidgets(Partners.builder().order(13).build());
-        introPagePS.addWidgets(Channel.builder().order(14).build());
+        introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(1).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
+        introPagePS.addWidgets(MissionAndVision.builder().order(2).widgetType(WidgetType.MISSIONANDVISION).build());
+        introPagePS.addWidgets(ProductsAndServices.builder().order(3).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
+        introPagePS.addWidgets(TeamMember.builder().order(4).widgetType(WidgetType.TEAMMEMBER).build());
+        introPagePS.addWidgets(ContactUs.builder().order(5).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
+        introPagePS.addWidgets(Performance.builder().order(6).widgetType(WidgetType.PERFORMANCE).build());
+        introPagePS.addWidgets(TeamCulture.builder().order(7).widgetType(WidgetType.TEAMCULTURE).build());
+        introPagePS.addWidgets(History.builder().order(8).widgetType(WidgetType.HISTORY).build());
+        introPagePS.addWidgets(Review.builder().order(9).widgetType(WidgetType.REVIEW).build());
+        introPagePS.addWidgets(Patent.builder().order(10).widgetType(WidgetType.PATENT).build());
+        introPagePS.addWidgets(News.builder().order(11).widgetType(WidgetType.NEWS).build());
+        introPagePS.addWidgets(Download.builder().order(12).widgetType(WidgetType.DOWNLOAD).build());
+        introPagePS.addWidgets(Partners.builder().order(13).widgetType(WidgetType.PARTNERS).build());
+        introPagePS.addWidgets(Channel.builder().order(14).widgetType(WidgetType.CHANNEL).build());
     }
 
     public IntroPageOutDTO findIntroPage(User user) {
@@ -104,7 +104,7 @@ public class IntroPageService {
         for (int i = 0; i < arr.size(); i++) {
             widgets.get(i).setOrder(arr.get(i));
         }
-        introPagePS.updateMainPage(updateInDTO.getStatus(), updateInDTO.getWidgetStatusList());
+        introPagePS.updateMainPage(updateInDTO.getStatus(), updateInDTO.getWidgetStatusList(), arr);
         /**
          * check-point
          * if (!introPagePS.getWebPageInfo().getPavicon().equals(updateInfoInDTO.getPavicon())) {

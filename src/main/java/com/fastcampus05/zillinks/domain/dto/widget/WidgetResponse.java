@@ -47,7 +47,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateProductsAndServicesOutDTO {
         private Long productsAndServicesId;
-//        private List<Long> orderList;
+        //        private List<Long> orderList;
         private List<ProductsAndServicesElementOutDTO> productsAndServicesElements;
         private Boolean callToActionStatus;
         private CallToActionOutDTO callToAction;
@@ -93,13 +93,14 @@ public class WidgetResponse {
             List<ProductsAndServicesElement> productsAndServicesElements = productsAndServices.getProductsAndServicesElements();
             List<ProductsAndServicesElementOutDTO> productsAndServicesElementOutDTOs = new ArrayList<>();
             for (int i = 0; i < orderList.size(); i++) {
-//            for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
-                ProductsAndServicesElement productsAndServicesElement = productsAndServicesElements.get((int) (orderList.get(i) - 1));
-                productsAndServicesElementOutDTOs.add(ProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElement));
+                for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
+                    if (productsAndServicesElement.getOrder() != i + 1)
+                        continue;
+                    productsAndServicesElementOutDTOs.add(ProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElement));
+                }
             }
             return UpdateProductsAndServicesOutDTO.builder()
                     .productsAndServicesId(productsAndServices.getId())
-//                    .orderList(orderList)
                     .productsAndServicesElements(productsAndServicesElementOutDTOs)
                     .callToActionStatus(productsAndServices.getCallToActionStatus())
                     .callToAction(productsAndServices.getCallToActionStatus() ? CallToActionOutDTO.builder()
