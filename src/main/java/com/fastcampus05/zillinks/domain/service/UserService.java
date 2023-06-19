@@ -304,6 +304,7 @@ public class UserService {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
+        s3UploaderFileRepository.deleteByUserId(userPS.getId());
         userRepository.delete(userPS);
     }
 

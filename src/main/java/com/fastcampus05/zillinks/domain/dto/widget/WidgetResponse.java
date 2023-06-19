@@ -259,7 +259,7 @@ public class WidgetResponse {
                     .tagline(teamMemberElement.getTagline())
                     .email(teamMemberElement.getEmail())
                     .snsStatus(teamMemberElement.getSnsStatus())
-                    .snsList(teamMemberElement.getSnsList() != null ? SnsListOutDTO.builder()
+                    .snsList(teamMemberElement.getSnsStatus() ? SnsListOutDTO.builder()
                             .instagramStatus(teamMemberElement.getSnsList().getInstagramStatus())
                             .instagram(teamMemberElement.getSnsList().getInstagram())
                             .linkedInStatus(teamMemberElement.getSnsList().getLinkedInStatus())

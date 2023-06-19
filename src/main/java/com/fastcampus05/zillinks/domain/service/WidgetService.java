@@ -2,6 +2,8 @@ package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
@@ -17,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class WidgetService {
 
+    private final S3UploaderFileRepository s3UploaderFileRepository;
+    private final S3UploaderRepository s3UploaderRepository;
     private final UserRepository userRepository;
     private final ProductsAndServicesElementRepository productsAndServicesElementRepository;
     private final ProductsAndServicesElementQueryRepository productsAndServicesElementQueryRepository;
@@ -121,6 +124,17 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
+        List<ProductsAndServicesElement> productsAndServicesElements = productsAndServicesElementQueryRepository.findAllByDeleteList(deleteProductsAndServicesElementsInDTO.getDeleteList());
+        for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
+            String image = productsAndServicesElement.getImage();
+            if (image == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(image).orElseThrow(
+                    () -> new Exception500("deleteProductsAndServicesElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(image);
+        }
+
         productsAndServicesElementQueryRepository.deleteByDeleteList(deleteProductsAndServicesElementsInDTO.getDeleteList());
     }
 
@@ -199,7 +213,16 @@ public class WidgetService {
                         .brunchStroy(saveTeamMemberElement.getBrunchStroy())
                         .facebookStatus(saveTeamMemberElement.getFacebookStatus())
                         .facebook(saveTeamMemberElement.getFacebook())
-                        .build() : null
+                        .build() :
+                        SnsList.builder()
+                        .instagramStatus(false)
+                        .linkedInStatus(false)
+                        .youtubeStatus(false)
+                        .notionStatus(false)
+                        .naverBlogStatus(false)
+                        .brunchStroyStatus(false)
+                        .facebookStatus(false)
+                        .build()
         );
         TeamMemberElement teamMemberElementPS = teamMemberElementRepository.save(teamMemberElement);
         return WidgetResponse.SaveTeamMemberElementOutDTO.toOutDTO(teamMemberElementPS);
@@ -212,6 +235,17 @@ public class WidgetService {
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        List<TeamMemberElement> teamMemberElements = teamMemberElementQueryRepository.findAllByDeleteList(deleteTeamMemberElementsInDTO.getDeleteList());
+        for (TeamMemberElement teamMemberElement : teamMemberElements) {
+            String profile = teamMemberElement.getProfile();
+            if (profile == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(profile).orElseThrow(
+                    () -> new Exception500("deleteTeamMemberElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(profile);
+        }
 
         teamMemberElementQueryRepository.deleteByDeleteList(deleteTeamMemberElementsInDTO.getDeleteList());
     }

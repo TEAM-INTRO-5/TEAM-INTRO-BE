@@ -15,4 +15,6 @@ public interface S3UploaderFileRepository extends JpaRepository<S3UploaderFile, 
     @Query("select s from S3UploaderFile s where s.encodingPath in :encodingPaths")
     Optional<List<S3UploaderFile>> findByEncodingPaths(@Param("encodingPaths") List<String> encodingPaths);
 
+    @Query("delete from S3UploaderFile f where f.userId = :userId")
+    void deleteByUserId(Long userId);
 }
