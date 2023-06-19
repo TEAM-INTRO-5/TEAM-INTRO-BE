@@ -143,4 +143,64 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    /**
+     * 핵심 성과
+     */
+    @Operation(summary = "핵심성과 수정", description = "핵심성과 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdatePerformanceOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updatePerformanceInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/performance")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdatePerformanceOutDTO>> updatePerformance(
+            @RequestBody @Valid WidgetRequest.UpdatePerformanceInDTO updatePerformanceInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdatePerformanceOutDTO updatePerformanceOutDTO = widgetService.updatePerformance(updatePerformanceInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updatePerformanceOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "핵심성과 요소 추가", description = "핵심성과 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SavePerformanceElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "savePerformanceElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/performance/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SavePerformanceElementOutDTO>> savePerformanceElement(
+            @RequestBody @Valid WidgetRequest.SavePerformanceElementInDTO savePerformanceElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SavePerformanceElementOutDTO savePerformanceElementOutDTO = widgetService.savePerformanceElement(savePerformanceElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", savePerformanceElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "핵심성과 요소들 삭제", description = "핵심성과 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteProductsAndServicesElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/performance/detail")
+    public ResponseEntity<ResponseDTO> deletePerformanceElements(
+            @RequestBody @Valid WidgetRequest.DeletePerformanceElementsInDTO deletePerformanceElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deletePerformanceElements(deletePerformanceElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }

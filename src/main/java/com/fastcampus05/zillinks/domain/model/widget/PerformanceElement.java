@@ -1,16 +1,17 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "performance_element_tb")
-public class PerformanceElement {
+public class PerformanceElement extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +29,8 @@ public class PerformanceElement {
     @Column(name = "additional_descrition")
     private String additionalDescrition;
     private String indicator;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }
