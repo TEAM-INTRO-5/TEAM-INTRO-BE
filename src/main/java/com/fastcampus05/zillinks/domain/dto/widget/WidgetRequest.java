@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import javax.persistence.Column;
 import java.util.List;
 
 public class WidgetRequest {
@@ -110,5 +111,19 @@ public class WidgetRequest {
     public static class DeleteTeamMemberElementsInDTO {
         @Schema(description = "팀 멤버 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
+    }
+
+    /**
+     * 핵심 성과
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SavePerformanceElementInDTO {
+        @Schema(description = "성과지표 설명", example = "핵심 지표")
+        private String descrition;
+        @Schema(description = "성과지표 부가 설명", example = "전년 대비 상승율")
+        private String additionalDescrition;
+        @Schema(description = "숫자 지표", example = "99%")
+        private String indicator;
     }
 }

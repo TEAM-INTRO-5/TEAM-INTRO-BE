@@ -10,10 +10,7 @@ import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fastcampus05.zillinks.domain.model.widget.*;
-import com.fastcampus05.zillinks.domain.model.widget.repository.ProductsAndServicesElementQueryRepository;
-import com.fastcampus05.zillinks.domain.model.widget.repository.ProductsAndServicesElementRepository;
-import com.fastcampus05.zillinks.domain.model.widget.repository.TeamMemberElementQueryRepository;
-import com.fastcampus05.zillinks.domain.model.widget.repository.TeamMemberElementRepository;
+import com.fastcampus05.zillinks.domain.model.widget.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +33,8 @@ public class WidgetService {
     private final ProductsAndServicesElementQueryRepository productsAndServicesElementQueryRepository;
     private final TeamMemberElementRepository teamMemberElementRepository;
     private final TeamMemberElementQueryRepository teamMemberElementQueryRepository;
+    private final PerformanceElementRepository performanceElementRepository;
+    private final PerformanceElementQueryRepository performanceElementQueryRepository;
 
     @Transactional
     public WidgetResponse.UpdateProductsAndServicesOutDTO updateProductsAndServices(WidgetRequest.UpdateProductsAndServicesInDTO updateProductsAndServicesInDTO, User user) {
@@ -248,6 +247,35 @@ public class WidgetService {
         }
 
         teamMemberElementQueryRepository.deleteByDeleteList(deleteTeamMemberElementsInDTO.getDeleteList());
+    }
+
+    /**
+     * 핵심 성과
+     */
+    @Transactional
+    public WidgetResponse.SavePerformanceElementOutDTO savePerformanceElement(WidgetRequest.SavePerformanceElementInDTO savePerformanceElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        Performance performancePS = (Performance) introPagePS.getWidgets().stream().filter(s -> s instanceof Performance).findFirst().orElseThrow(
+                () -> new Exception500("Performance 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (PerformanceElement performanceElement : performancePS.getPerformanceElements()) {
+            index = Math.max(index, performanceElement.getOrder());
+        }
+        PerformanceElement performanceElement = PerformanceElement.builder()
+                .performance(performancePS)
+                .order(index + 1)
+                .descrition(savePerformanceElementInDTO.getDescrition())
+                .additionalDescrition(savePerformanceElementInDTO.getAdditionalDescrition())
+                .indicator(savePerformanceElementInDTO.getIndicator())
+                .build();
+        PerformanceElement performanceElementPS = performanceElementRepository.save(performanceElement);
+        return WidgetResponse.SavePerformanceElementOutDTO.toOutDTO(performanceElementPS);
     }
 
 

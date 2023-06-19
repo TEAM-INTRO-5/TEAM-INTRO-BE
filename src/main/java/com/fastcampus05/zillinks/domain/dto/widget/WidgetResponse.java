@@ -279,4 +279,29 @@ public class WidgetResponse {
         }
     }
 
+    /**
+     * 핵심 성과
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SavePerformanceElementOutDTO {
+        private Long performanceElementId;
+        private String descrition;
+        private String additionalDescrition;
+        private String indicator;
+
+        public static SavePerformanceElementOutDTO toOutDTO(
+                PerformanceElement performanceElement
+        ) {
+            return SavePerformanceElementOutDTO.builder()
+                    .performanceElementId(performanceElement.getId())
+                    .descrition(performanceElement.getDescrition())
+                    .additionalDescrition(performanceElement.getAdditionalDescrition())
+                    .indicator(performanceElement.getIndicator())
+                    .build();
+        }
+    }
 }

@@ -143,4 +143,26 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    /**
+     * 핵심 성과
+     */
+    @Operation(summary = "핵심성과 요소 추가", description = "핵심성과 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SavePerformanceElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "savePerformanceElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/performance/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SavePerformanceElementOutDTO>> savePerformanceElement(
+            @RequestBody @Valid WidgetRequest.SavePerformanceElementInDTO savePerformanceElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SavePerformanceElementOutDTO savePerformanceElementOutDTO = widgetService.savePerformanceElement(savePerformanceElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", savePerformanceElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }
