@@ -26,4 +26,12 @@ public class ProductsAndServices extends Widget {
     private Boolean callToActionStatus;
     @Embedded
     private CallToAction callToAction;
+
+    public void setCallToAction(CallToAction callToAction) {
+        this.callToAction = callToAction;
+    }
+
+    public void setCallToActionStatus(Boolean callToActionStatus) {
+        this.callToActionStatus = callToActionStatus;
+    }
 }

@@ -16,4 +16,10 @@ public class CallToAction {
     private String description;
     private String text;
     private String link;
+
+    public void updateCallToAction(String description, String text, String link) {
+        this.description = description;
+        this.text = text;
+        this.link = link;
+    }
 }

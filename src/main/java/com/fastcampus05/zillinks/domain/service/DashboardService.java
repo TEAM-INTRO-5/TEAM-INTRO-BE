@@ -3,7 +3,6 @@ package com.fastcampus05.zillinks.domain.service;
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception401;
 import com.fastcampus05.zillinks.core.util.dto.excel.ExcelOutDTO;
-import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.domain.dto.dashboard.DashboardRequest;
 import com.fastcampus05.zillinks.domain.model.dashboard.*;
@@ -27,10 +26,10 @@ import java.util.stream.Collectors;
 import static com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse.*;
 import static com.fastcampus05.zillinks.domain.dto.dashboard.DashboardResponse.FindDownloadOutDTO.toOutDTO;
 
-@Service
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DashboardService {
 
     private final UserRepository userRepository;
