@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.core.util.dto.map.KakaoAddress;
+import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
@@ -431,6 +432,42 @@ public class WidgetService {
         teamCultureElementQueryRepository.deleteByDeleteList(deleteTeamCultureElementsInDTO.getDeleteList());
     }
 
+    @Transactional
+    public WidgetResponse.KeyVisualAndSloganOutDTO saveKeyVisualAndSlogan(WidgetRequest.KeyVisualAndSloganInDTO keyVisualAndSloganInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        KeyVisualAndSlogan keyVisualAndSloganPS = (KeyVisualAndSlogan) introPagePS.getWidgets().stream().filter(s -> s instanceof KeyVisualAndSlogan).findFirst().orElseThrow(
+                () -> new Exception500("KeyVisualAndSlogan 위젯이 존재하지 않습니다."));
+
+        if (keyVisualAndSloganInDTO.getWidgetStatus() == Boolean.FALSE) {
+            keyVisualAndSloganPS.setWidgetStatus(false);
+            return null;
+        }
+
+        List<String> pathOrginList = new ArrayList<>();
+        pathOrginList.add(keyVisualAndSloganPS.getBackground());
+        List<String> pathList = new ArrayList<>();
+        pathList.add(keyVisualAndSloganInDTO.getBackground());
+
+        manageS3Uploader(pathOrginList, pathList);
+
+        keyVisualAndSloganPS.setWidgetStatus(true);
+        keyVisualAndSloganPS.updateKeyVisualAndSlogan(
+                keyVisualAndSloganInDTO.getBackground(),
+                keyVisualAndSloganInDTO.getFilter(),
+                keyVisualAndSloganInDTO.getSlogan(),
+                keyVisualAndSloganInDTO.getSloganDetail()
+        );
+
+        return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
+    }
+
+
+
 
 //    List<String> pathOrginList = new ArrayList<>();
 //        pathOrginList.add(introPagePS.getSiteInfo().getPavicon());
@@ -439,19 +476,19 @@ public class WidgetService {
 //
 //    manageS3Uploader(pathOrginList, pathList);
 
-//    private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
-//        log.info("변경 전 pathOriginList={}", pathOrginList);
-//        log.info("변경 후 pathList={}", pathList);
-//        List<S3UploaderFile> s3UploaderFileListPS = s3UploaderFileRepository.findByEncodingPaths(pathOrginList).orElse(null);
-//        log.info("ss3UploaderFileListPS={}", s3UploaderFileListPS);
-//        for (String pathOrigin : pathOrginList) {
-//            log.info("pathOrigin={}", pathOrigin);
-//            if (!pathList.contains(pathOrigin) && !(pathOrigin == null)) {
-//                s3UploaderFileRepository.delete(s3UploaderFileListPS.stream().filter(s -> s.getEncodingPath().equals(pathOrigin)).findAny().orElseThrow(
-//                        () -> new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.")
-//                ));
-//                s3UploaderRepository.delete(pathOrigin);
-//            }
-//        }
-//    }
+    private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
+        log.info("변경 전 pathOriginList={}", pathOrginList);
+        log.info("변경 후 pathList={}", pathList);
+        List<S3UploaderFile> s3UploaderFileListPS = s3UploaderFileRepository.findByEncodingPaths(pathOrginList).orElse(null);
+        log.info("ss3UploaderFileListPS={}", s3UploaderFileListPS);
+        for (String pathOrigin : pathOrginList) {
+            log.info("pathOrigin={}", pathOrigin);
+            if (!pathList.contains(pathOrigin) && !(pathOrigin == null)) {
+                s3UploaderFileRepository.delete(s3UploaderFileListPS.stream().filter(s -> s.getEncodingPath().equals(pathOrigin)).findAny().orElseThrow(
+                        () -> new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.")
+                ));
+                s3UploaderRepository.delete(pathOrigin);
+            }
+        }
+    }
 }
