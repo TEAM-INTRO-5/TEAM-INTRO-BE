@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -806,6 +807,53 @@ public class WidgetResponse {
     /**
      * 파트너스
      */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePartnersOutDTO {
+        private Long partnersId;
+        private List<PartnersElementOutDTO> partnersElements;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class PartnersElementOutDTO {
+            private Long partnersElementId;
+            private PartnersType partnersType;
+            private String companyName;
+            private String logo;
+
+            private static PartnersElementOutDTO toOutDTO(PartnersElement partnersElement) {
+                return PartnersElementOutDTO.builder()
+                        .partnersElementId(partnersElement.getId())
+                        .partnersType(partnersElement.getPartnersType())
+                        .companyName(partnersElement.getCompanyName())
+                        .logo(partnersElement.getLogo())
+                        .build();
+            }
+        }
+
+        public static UpdatePartnersOutDTO toOutDTO(Partners partners) {
+            List<PartnersElement> partnersElements = partners.getPartnersElements();
+            List<PartnersElementOutDTO> partnersElementOutDTOs = new ArrayList<>();
+            for (int i = 0; i < partnersElements.size(); i++) {
+                for (PartnersElement partnersElement : partnersElements) {
+                    if (partnersElement.getOrder() != i + 1)
+                        continue;
+                    partnersElementOutDTOs.add(PartnersElementOutDTO.toOutDTO(partnersElement));
+                }
+            }
+            return UpdatePartnersOutDTO.builder()
+                    .partnersId(partners.getId())
+                    .partnersElements(partnersElementOutDTOs)
+                    .build();
+        }
+    }
+
     @Getter
     @Builder
     @AllArgsConstructor

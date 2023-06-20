@@ -569,6 +569,25 @@ public class WidgetController {
     /**
      * 파트너스
      */
+    @Operation(summary = "파트너스 수정", description = "파트너스 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdatePartnersOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updatePartnersInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/partners")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdatePartnersOutDTO>> updatePartners(
+            @RequestBody @Valid WidgetRequest.UpdatePartnersInDTO updatePartnersInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdatePartnersOutDTO updatePartnersOutDTO = widgetService.updatePartners(updatePartnersInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updatePartnersOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "파트너스 요소 추가", description = "파트너스 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SavePartnersElementOutDTO.class))),

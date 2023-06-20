@@ -374,6 +374,16 @@ public class WidgetRequest {
      */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePartnersInDTO {
+        @Schema(description = "파트너스 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "파트너스 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePartnersElementInDTO {
         @Schema(description = "구분", example = "PARTNERS")
         private PartnersType partnersType;
