@@ -46,6 +46,8 @@ public class WidgetService {
     private final HistoryElementQueryRepository historyElementQueryRepository;
     private final ReviewElementRepository reviewElementRepository;
     private final ReviewElementQueryRepository reviewElementQueryRepository;
+    private final PatentElementRepository patentElementRepository;
+    private final PatentElementQueryRepository patentElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -577,7 +579,7 @@ public class WidgetService {
     }
 
     @Transactional
-    public WidgetResponse.SaveReviewElementOutDTO saveReviewElementInDTO(WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO, User user) {
+    public WidgetResponse.SaveReviewElementOutDTO saveReviewElement(WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
@@ -625,5 +627,32 @@ public class WidgetService {
                 s3UploaderRepository.delete(pathOrigin);
             }
         }
+    }
+
+    /**
+     * 특허/인증
+     */
+    @Transactional
+    public WidgetResponse.SavePatentElementOutDTO savePatentElement(WidgetRequest.SavePatentElementInDTO savePatentElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Patent patentPS = (Patent) introPagePS.getWidgets().stream().filter(s -> s instanceof Patent).findFirst().orElseThrow(
+                () -> new Exception500("Patent 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (PatentElement patentElement : patentPS.getPatentElements()) {
+            index = Math.max(index, patentElement.getOrder());
+        }
+        PatentElement patentElement = PatentElement.builder()
+                .patent(patentPS)
+                .order(index + 1)
+                .patentType(savePatentElementInDTO.getPatentType())
+                .title(savePatentElementInDTO.getTitle())
+                .image(savePatentElementInDTO.getImage())
+                .build();
+        PatentElement patentElementPS = patentElementRepository.save(patentElement);
+        return WidgetResponse.SavePatentElementOutDTO.toOutDTO(patentElementPS);
     }
 }

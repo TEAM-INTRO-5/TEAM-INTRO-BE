@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -646,6 +646,32 @@ public class WidgetResponse {
                     .group(reviewElement.getGroup())
                     .rating(reviewElement.getRating())
                     .details(reviewElement.getDetails())
+                    .build();
+        }
+    }
+
+    /**
+     * 특허/인증
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SavePatentElementOutDTO {
+        private Long patentElementId;
+        private PatentType patentType;
+        private String title;
+        private String image;
+
+        public static SavePatentElementOutDTO toOutDTO(
+                PatentElement patentElement
+        ) {
+            return SavePatentElementOutDTO.builder()
+                    .patentElementId(patentElement.getId())
+                    .patentType(patentElement.getPatentType())
+                    .title(patentElement.getTitle())
+                    .image(patentElement.getImage())
                     .build();
         }
     }
