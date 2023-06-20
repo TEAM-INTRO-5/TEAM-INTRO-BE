@@ -737,6 +737,39 @@ public class WidgetService {
      * 보고 자료
      */
     @Transactional
+    public WidgetResponse.UpdateNewsOutDTO updateNews(WidgetRequest.UpdateNewsInDTO updateNewsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        News newsPS = (News) introPagePS.getWidgets().stream().filter(s -> s instanceof News).findFirst().orElseThrow(
+                () -> new Exception500("News 위젯이 존재하지 않습니다.")
+        );
+
+        newsPS.setWidgetStatus(updateNewsInDTO.getWidgetStatus());
+
+        List<NewsElement> newsElements = newsPS.getNewsElements();
+        Long index = 1L;
+
+        List<Long> arr = new ArrayList<>();
+        for (int i = 0; i < updateNewsInDTO.getOrderList().size(); i++)
+            arr.add(0L);
+
+        for (Long aLong : updateNewsInDTO.getOrderList()) {
+            NewsElement newsElementPS = newsElements.stream().filter(s -> s.getOrder() == aLong).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = newsElements.indexOf(newsElementPS);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            newsElements.get(i).setOrder(arr.get(i));
+        }
+        return WidgetResponse.UpdateNewsOutDTO.toOutDTO(newsPS);
+    }
+
+    @Transactional
     public WidgetResponse.SaveNewsElementOutDTO saveNewsElement(WidgetRequest.SaveNewsElementInDTO saveNewsElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));

@@ -509,6 +509,25 @@ public class WidgetController {
     /**
      * 보도 자료
      */
+    @Operation(summary = "보도 자료 수정", description = "보도 자료 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateNewsOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateNewsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/news")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateNewsOutDTO>> updateNews(
+            @RequestBody @Valid WidgetRequest.UpdateNewsInDTO updateNewsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateNewsOutDTO updateNewsOutDTO = widgetService.updateNews(updateNewsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateNewsOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "보도 자료 요소 추가", description = "보도 자료 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveNewsElementOutDTO.class))),

@@ -30,4 +30,8 @@ public class NewsElement extends TimeBaseEntity {
     private String press;
     private String title;
     private String description;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }

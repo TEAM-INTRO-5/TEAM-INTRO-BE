@@ -732,6 +732,57 @@ public class WidgetResponse {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateNewsOutDTO {
+        private Long newsId;
+        private List<NewsElementOutDTO> newsElements;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class NewsElementOutDTO {
+            private Long newsElementId;
+            private String image;
+            private LocalDate date;
+            private String press;
+            private String title;
+            private String description;
+
+            private static NewsElementOutDTO toOutDTO(NewsElement newsElement) {
+                return NewsElementOutDTO.builder()
+                        .newsElementId(newsElement.getId())
+                        .image(newsElement.getImage())
+                        .date(newsElement.getDate())
+                        .press(newsElement.getPress())
+                        .title(newsElement.getTitle())
+                        .description(newsElement.getDescription())
+                        .build();
+            }
+        }
+
+        public static UpdateNewsOutDTO toOutDTO(News news) {
+            List<NewsElement> newsElements = news.getNewsElements();
+            List<NewsElementOutDTO> newsElementOutDTOs = new ArrayList<>();
+            for (int i = 0; i < newsElements.size(); i++) {
+                for (NewsElement newsElement : newsElements) {
+                    if (newsElement.getOrder() != i + 1)
+                        continue;
+                    newsElementOutDTOs.add(NewsElementOutDTO.toOutDTO(newsElement));
+                }
+            }
+            return UpdateNewsOutDTO.builder()
+                    .newsId(news.getId())
+                    .newsElements(newsElementOutDTOs)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveNewsElementOutDTO {
         private Long newsElementId;
         private String image;

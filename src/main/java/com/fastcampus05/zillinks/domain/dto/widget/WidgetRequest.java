@@ -337,6 +337,16 @@ public class WidgetRequest {
      */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateNewsInDTO {
+        @Schema(description = "보도 자료 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "보도 자료 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveNewsElementInDTO {
         @Schema(description = "보도자료 이미지", example = "url 경로")
         private String image;
