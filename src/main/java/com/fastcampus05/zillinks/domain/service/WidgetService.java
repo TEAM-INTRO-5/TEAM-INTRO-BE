@@ -50,6 +50,8 @@ public class WidgetService {
     private final PatentElementQueryRepository patentElementQueryRepository;
     private final NewsElementRepository newsElementRepository;
     private final NewsElementQueryRepository newsElementQueryRepository;
+    private final PartnersElementRepository partnersElementRepository;
+    private final PartnersElementQueryRepository partnersElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -813,5 +815,85 @@ public class WidgetService {
             s3UploaderRepository.delete(image);
         }
         newsElementQueryRepository.deleteByDeleteList(deleteNewsElementsInDTO.getDeleteList());
+    }
+
+    /**
+     * 파트너스
+     */
+    @Transactional
+    public WidgetResponse.UpdatePartnersOutDTO updatePartners(WidgetRequest.UpdatePartnersInDTO updatePartnersInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Partners partnersPS = (Partners) introPagePS.getWidgets().stream().filter(s -> s instanceof Partners).findFirst().orElseThrow(
+                () -> new Exception500("Partners 위젯이 존재하지 않습니다.")
+        );
+
+        partnersPS.setWidgetStatus(updatePartnersInDTO.getWidgetStatus());
+
+        List<PartnersElement> partnersElements = partnersPS.getPartnersElements();
+        Long index = 1L;
+
+        List<Long> arr = new ArrayList<>();
+        for (int i = 0; i < updatePartnersInDTO.getOrderList().size(); i++)
+            arr.add(0L);
+
+        for (Long aLong : updatePartnersInDTO.getOrderList()) {
+            PartnersElement partnersElementPS = partnersElements.stream().filter(s -> s.getOrder() == aLong).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = partnersElements.indexOf(partnersElementPS);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            partnersElements.get(i).setOrder(arr.get(i));
+        }
+        return WidgetResponse.UpdatePartnersOutDTO.toOutDTO(partnersPS);
+    }
+
+    @Transactional
+    public WidgetResponse.SavePartnersElementOutDTO savePartnersElement(WidgetRequest.SavePartnersElementInDTO savePartnersElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Partners partnersPS = (Partners) introPagePS.getWidgets().stream().filter(s -> s instanceof Partners).findFirst().orElseThrow(
+                () -> new Exception500("Partners 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (PartnersElement partnersElement : partnersPS.getPartnersElements()) {
+            index = Math.max(index, partnersElement.getOrder());
+        }
+        PartnersElement partnersElement = PartnersElement.builder()
+                .partners(partnersPS)
+                .order(index + 1)
+                .partnersType(savePartnersElementInDTO.getPartnersType())
+                .companyName(savePartnersElementInDTO.getCompanyName())
+                .logo(savePartnersElementInDTO.getLogo())
+                .build();
+        PartnersElement partnersElementPS = partnersElementRepository.save(partnersElement);
+        return WidgetResponse.SavePartnersElementOutDTO.toOutDTO(partnersElementPS);
+    }
+
+    @Transactional
+    public void deletePartnersElements(WidgetRequest.DeletePartnersElementsInDTO deletePartnersElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        List<PartnersElement> partnersElements = partnersElementQueryRepository.findAllByDeleteList(deletePartnersElementsInDTO.getDeleteList());
+        for (PartnersElement partnersElement : partnersElements) {
+            String logo = partnersElement.getLogo();
+            if (logo == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(logo).orElseThrow(
+                    () -> new Exception500("deletePartnersElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(logo);
+        }
+        partnersElementQueryRepository.deleteByDeleteList(deletePartnersElementsInDTO.getDeleteList());
     }
 }

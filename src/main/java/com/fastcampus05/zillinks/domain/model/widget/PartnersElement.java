@@ -1,16 +1,17 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "partners_element_tb")
-public class PartnersElement {
+public class PartnersElement extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "partners_element_id")
@@ -24,6 +25,7 @@ public class PartnersElement {
     private Long order;
 
     @Column(name = "partners_type")
+    @Enumerated(EnumType.STRING)
     private PartnersType partnersType;
 
     @Column(name = "company_name")

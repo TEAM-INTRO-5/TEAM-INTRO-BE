@@ -1,12 +1,14 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
 import com.fastcampus05.zillinks.domain.model.widget.Filter;
+import com.fastcampus05.zillinks.domain.model.widget.PartnersType;
 import com.fastcampus05.zillinks.domain.model.widget.PatentType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
@@ -364,6 +366,37 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DeleteNewsElementsInDTO {
         @Schema(description = "보도 자료 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
+
+    /**
+     * 파트너스
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePartnersInDTO {
+        @Schema(description = "파트너스 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "파트너스 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SavePartnersElementInDTO {
+        @Schema(description = "구분", example = "PARTNERS")
+        private PartnersType partnersType;
+        @Schema(description = "회사 이름", example = "질링스")
+        private String companyName;
+        @Schema(description = "회사 로고", example = "url 주소")
+        private String logo;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeletePartnersElementsInDTO {
+        @Schema(description = "파트너스 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
     }
 }
