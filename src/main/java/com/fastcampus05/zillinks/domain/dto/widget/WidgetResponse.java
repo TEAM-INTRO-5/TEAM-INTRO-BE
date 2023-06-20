@@ -469,4 +469,28 @@ public class WidgetResponse {
         }
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class MissionAndVisionOutDTO {
+        private String mission;
+        private String missionDetail;
+        private String vision;
+        private String visionDetail;
+
+        public static MissionAndVisionOutDTO toOutDTO(
+                MissionAndVision keyVisualAndSlogan
+        ) {
+            return MissionAndVisionOutDTO.builder()
+                    .mission(keyVisualAndSlogan.getMission())
+                    .missionDetail(keyVisualAndSlogan.getMissionDetail())
+                    .vision(keyVisualAndSlogan.getVision())
+                    .visionDetail(keyVisualAndSlogan.getVisionDetail())
+                    .build();
+        }
+    }
+
+
 }
