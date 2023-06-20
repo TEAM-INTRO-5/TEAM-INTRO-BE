@@ -44,6 +44,8 @@ public class WidgetService {
     private final TeamCultureElementQueryRepository teamCultureElementQueryRepository;
     private final HistoryElementRepository historyElementRepository;
     private final HistoryElementQueryRepository historyElementQueryRepository;
+    private final ReviewElementRepository reviewElementRepository;
+    private final ReviewElementQueryRepository reviewElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -536,6 +538,35 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         historyElementQueryRepository.deleteByDeleteList(deleteHistoryElementsInDTO.getDeleteList());
+    }
+
+    /**
+     * 고객 리뷰
+     */
+    @Transactional
+    public WidgetResponse.SaveReviewElementOutDTO saveReviewElementInDTO(WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Review reviewPS = (Review) introPagePS.getWidgets().stream().filter(s -> s instanceof Review).findFirst().orElseThrow(
+                () -> new Exception500("Review 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (ReviewElement reviewElement : reviewPS.getReviewElement()) {
+            index = Math.max(index, reviewElement.getOrder());
+        }
+        ReviewElement reviewElement = ReviewElement.builder()
+                .review(reviewPS)
+                .order(index + 1)
+                .image(saveReviewElementInDTO.getImage())
+                .name(saveReviewElementInDTO.getName())
+                .group(saveReviewElementInDTO.getGroup())
+                .rating(saveReviewElementInDTO.getRating())
+                .details(saveReviewElementInDTO.getDetails())
+                .build();
+        ReviewElement reviewElementPS = reviewElementRepository.save(reviewElement);
+        return WidgetResponse.SaveReviewElementOutDTO.toOutDTO(reviewElementPS);
     }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {

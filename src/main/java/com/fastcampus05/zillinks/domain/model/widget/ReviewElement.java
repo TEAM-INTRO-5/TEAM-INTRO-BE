@@ -1,14 +1,14 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 @Table(name = "review_element_tb")
 public class ReviewElement {
     @Id
@@ -29,4 +29,8 @@ public class ReviewElement {
     private String group;
     private Integer rating;
     private String details;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }

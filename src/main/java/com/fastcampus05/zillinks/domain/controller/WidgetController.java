@@ -386,4 +386,25 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
+    /**
+     * 고객 리뷰
+     */
+    @Operation(summary = "고객 리뷰 요소 추가", description = "고객 리뷰 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveReviewElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "saveHistoryElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/review/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SaveReviewElementOutDTO>> saveReviewElement(
+            @RequestBody @Valid WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SaveReviewElementOutDTO saveReviewElementOutDTO = widgetService.saveReviewElementInDTO(saveReviewElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveReviewElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }
