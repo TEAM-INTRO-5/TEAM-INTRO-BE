@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
+import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
@@ -203,4 +204,29 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    @Operation(summary = "contact-Us", description = "map_status가 ture일 경우 full_address 값 필수, map_status가 false일 경우 " +
+            "나머지 값 null로 채움")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ContactUsOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "contactUsWidgetInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/contactUs")
+    public ResponseEntity<ResponseDTO> saveContactUs(
+            @RequestBody @Valid WidgetRequest.ContactUsInDTO contactUsWidgetInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        if (contactUsWidgetInDTO.getMapStatus() == Boolean.TRUE &&
+                contactUsWidgetInDTO.getFullAddress() == null) {  // 지도 사용여부 : true 일 때, 전체 주소 필수
+            throw new Exception400("full_address", "전체 주소를 입력해 주세요.");
+        }
+        WidgetResponse.ContactUsOutDTO contactUsWidgetOutDTO = widgetService.saveContactUs(contactUsWidgetInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(contactUsWidgetOutDTO);
+        return ResponseEntity.ok(responseBody);
+    }
+
 }

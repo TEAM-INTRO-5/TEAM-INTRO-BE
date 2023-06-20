@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.core.util;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.dto.map.KakaoAddress;
 import com.fastcampus05.zillinks.core.util.dto.zillinksapi.ZillinksApiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -127,5 +128,37 @@ public class Common {
         String fieldName = field.getName();
         String capitalized = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
         return "get" + capitalized;
+    }
+
+    private static final String KAKAO_REST_API_KEY = "5f0908cc84ddb23acbb2cf09654594d2";
+
+    public static KakaoAddress kakaoSearchAddress(String url, HttpMethod method, String location) {
+
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + KAKAO_REST_API_KEY);
+
+        URI endUri = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("query", location).build().encode().toUri();
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> addressEntity;
+
+        try {
+            addressEntity = rt.exchange(endUri, method, httpEntity, String.class);
+        } catch (Exception e) {
+            throw new Exception400("fullAddress", "주소를 찾을 수 없습니다.");
+        }
+
+        KakaoAddress kakaoAddress;
+        try {
+            ObjectMapper om = new ObjectMapper();
+            log.info("addressEntity={}", addressEntity.getBody());
+            kakaoAddress = om.readValue(addressEntity.getBody(), KakaoAddress.class);
+        } catch (JsonProcessingException e) {
+            throw new Exception500("지도 api 오류");
+        }
+        return kakaoAddress;
     }
 }
