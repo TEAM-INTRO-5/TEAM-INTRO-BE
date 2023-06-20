@@ -242,7 +242,7 @@ public class WidgetRequest {
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateHistoryInDTO {
-        @Schema(description = "팀 컬쳐 사용 여부", example = "true")
+        @Schema(description = "연혁 사용 여부", example = "true")
         private Boolean widgetStatus;
     }
 
@@ -269,6 +269,16 @@ public class WidgetRequest {
     /**
      * 고객 리뷰
      */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateReviewInDTO {
+        @Schema(description = "고객 리뷰 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "고객 리뷰 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveReviewElementInDTO {

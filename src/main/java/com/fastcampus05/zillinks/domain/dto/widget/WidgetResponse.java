@@ -577,6 +577,57 @@ public class WidgetResponse {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateReviewOutDTO {
+        private Long reviewId;
+        private List<ReviewElementOutDTO> reviewElements;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class ReviewElementOutDTO {
+            private Long reviewElementId;
+            private String image;
+            private String name;
+            private String group;
+            private Integer rating;
+            private String details;
+
+            private static ReviewElementOutDTO toOutDTO(ReviewElement reviewElement) {
+                return ReviewElementOutDTO.builder()
+                        .reviewElementId(reviewElement.getId())
+                        .image(reviewElement.getImage())
+                        .name(reviewElement.getName())
+                        .group(reviewElement.getGroup())
+                        .rating(reviewElement.getRating())
+                        .details(reviewElement.getDetails())
+                        .build();
+            }
+        }
+
+        public static UpdateReviewOutDTO toOutDTO(Review review) {
+            List<ReviewElement> reviewElements = review.getReviewElement();
+            List<ReviewElementOutDTO> reviewElementOutDTOs = new ArrayList<>();
+            for (int i = 0; i < reviewElements.size(); i++) {
+                for (ReviewElement reviewElement : reviewElements) {
+                    if (reviewElement.getOrder() != i + 1)
+                        continue;
+                    reviewElementOutDTOs.add(ReviewElementOutDTO.toOutDTO(reviewElement));
+                }
+            }
+            return UpdateReviewOutDTO.builder()
+                    .reviewId(review.getId())
+                    .reviewElements(reviewElementOutDTOs)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveReviewElementOutDTO {
         private Long reviewElementId;
         private String image;
