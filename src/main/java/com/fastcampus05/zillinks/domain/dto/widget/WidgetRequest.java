@@ -382,4 +382,11 @@ public class WidgetRequest {
         @Schema(description = "회사 로고", example = "url 주소")
         private String logo;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeletePartnersElementsInDTO {
+        @Schema(description = "파트너스 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }

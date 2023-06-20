@@ -820,6 +820,7 @@ public class WidgetService {
     /**
      * 파트너스
      */
+    @Transactional
     public WidgetResponse.SavePartnersElementOutDTO savePartnersElement(WidgetRequest.SavePartnersElementInDTO savePartnersElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
@@ -841,5 +842,25 @@ public class WidgetService {
                 .build();
         PartnersElement partnersElementPS = partnersElementRepository.save(partnersElement);
         return WidgetResponse.SavePartnersElementOutDTO.toOutDTO(partnersElementPS);
+    }
+
+    @Transactional
+    public void deletePartnersElements(WidgetRequest.DeletePartnersElementsInDTO deletePartnersElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        List<PartnersElement> partnersElements = partnersElementQueryRepository.findAllByDeleteList(deletePartnersElementsInDTO.getDeleteList());
+        for (PartnersElement partnersElement : partnersElements) {
+            String logo = partnersElement.getLogo();
+            if (logo == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(logo).orElseThrow(
+                    () -> new Exception500("deletePartnersElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(logo);
+        }
+        partnersElementQueryRepository.deleteByDeleteList(deletePartnersElementsInDTO.getDeleteList());
     }
 }

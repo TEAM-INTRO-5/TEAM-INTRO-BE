@@ -25,6 +25,7 @@ public class PartnersElement extends TimeBaseEntity {
     private Long order;
 
     @Column(name = "partners_type")
+    @Enumerated(EnumType.STRING)
     private PartnersType partnersType;
 
     @Column(name = "company_name")
