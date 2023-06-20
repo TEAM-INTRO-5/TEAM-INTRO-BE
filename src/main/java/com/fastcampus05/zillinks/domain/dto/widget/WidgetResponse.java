@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.domain.model.widget.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -719,6 +720,36 @@ public class WidgetResponse {
                     .patentType(patentElement.getPatentType())
                     .title(patentElement.getTitle())
                     .image(patentElement.getImage())
+                    .build();
+        }
+    }
+
+    /**
+     * 보도 자료
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveNewsElementOutDTO {
+        private Long newsElementId;
+        private String image;
+        private LocalDate date;
+        private String press;
+        private String title;
+        private String description;
+
+        public static SaveNewsElementOutDTO toOutDTO(
+                NewsElement newsElement
+        ) {
+            return SaveNewsElementOutDTO.builder()
+                    .newsElementId(newsElement.getId())
+                    .image(newsElement.getImage())
+                    .date(newsElement.getDate())
+                    .press(newsElement.getPress())
+                    .title(newsElement.getTitle())
+                    .description(newsElement.getDescription())
                     .build();
         }
     }

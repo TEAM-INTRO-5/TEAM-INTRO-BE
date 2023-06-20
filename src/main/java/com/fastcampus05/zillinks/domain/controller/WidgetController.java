@@ -505,4 +505,26 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    /**
+     * 보도 자료
+     */
+    @Operation(summary = "보도 자료 요소 추가", description = "보도 자료 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveNewsElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "saveNewsElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/news/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SaveNewsElementOutDTO>> saveNewsElement(
+            @RequestBody @Valid WidgetRequest.SaveNewsElementInDTO saveNewsElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SaveNewsElementOutDTO saveNewsElementOutDTO = widgetService.saveNewsElement(saveNewsElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveNewsElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }
