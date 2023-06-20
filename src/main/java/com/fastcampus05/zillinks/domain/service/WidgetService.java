@@ -321,11 +321,11 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-       performanceElementQueryRepository.deleteByDeleteList(deletePerformanceElementsInDTO.getDeleteList());
+        performanceElementQueryRepository.deleteByDeleteList(deletePerformanceElementsInDTO.getDeleteList());
     }
 
     @Transactional
-    public WidgetResponse.ContactUsOutDTO saveContactUs(WidgetRequest.ContactUsInDTO contactUsWidgetInDTO, User user) {
+    public WidgetResponse.ContactUsWidgetOutDTO saveContactUs(WidgetRequest.ContactUsWidgetInDTO contactUsWidgetInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
@@ -335,12 +335,15 @@ public class WidgetService {
         ContactUs contactUsPS = (ContactUs) introPagePS.getWidgets().stream().filter(s -> s instanceof ContactUs).findFirst().orElseThrow(
                 () -> new Exception500("ContactUs 위젯이 존재하지 않습니다."));
 
+        if (contactUsWidgetInDTO.getWidgetStatus() == Boolean.FALSE) {
+            contactUsPS.setWidgetStatus(false);
+            return null;
+        } else {
+            contactUsPS.setWidgetStatus(true);
+        }
+
         if (contactUsWidgetInDTO.getMapStatus() == Boolean.FALSE) {
-            contactUsPS.updateContactUsWidget(Boolean.FALSE,
-                    null,
-                    null,
-                    null,
-                    null);
+            contactUsPS.setMapStatus(false);
             return null;
         }
 
@@ -352,7 +355,7 @@ public class WidgetService {
                 kakaoAddress.getDocuments().get(0).getY(),
                 kakaoAddress.getDocuments().get(0).getX());
 
-        return WidgetResponse.ContactUsOutDTO.toOutDTO(contactUsPS);
+        return WidgetResponse.ContactUsWidgetOutDTO.toOutDTO(contactUsPS);
     }
 
 

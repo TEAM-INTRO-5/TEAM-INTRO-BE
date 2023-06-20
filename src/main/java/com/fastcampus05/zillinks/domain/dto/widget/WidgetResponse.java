@@ -358,15 +358,15 @@ public class WidgetResponse {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include. NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ContactUsOutDTO {
+    public static class ContactUsWidgetOutDTO {
         private Boolean mapStatus;
         private String fullAddress;
         private String detailedAddress;
         private String latitude; // 위도
         private String longitude; // 경도
 
-        public static ContactUsOutDTO toOutDTO(ContactUs contactUs) {
-            return ContactUsOutDTO.builder()
+        public static ContactUsWidgetOutDTO toOutDTO(ContactUs contactUs) {
+            return ContactUsWidgetOutDTO.builder()
                     .mapStatus(contactUs.getMapStatus())
                     .fullAddress(contactUs.getFullAddress())
                     .detailedAddress(contactUs.getDetailedAddress())

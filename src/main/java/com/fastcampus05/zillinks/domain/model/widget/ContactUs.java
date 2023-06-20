@@ -36,4 +36,7 @@ public class ContactUs extends Widget {
         this.longitude = longitude;
     }
 
+    public void setMapStatus(Boolean mapStatus) {
+        this.mapStatus = mapStatus;
+    }
 }

@@ -147,7 +147,9 @@ public class WidgetRequest {
 
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class ContactUsInDTO {
+    public static class ContactUsWidgetInDTO {
+        @Schema(description = "ContactUs 사용 여부", example = "true")
+        private Boolean widgetStatus;
         @Schema(description = "지도 사용 여부", example = "true")
         private Boolean mapStatus;
         @Schema(description = "전체 주소", example = "강남대로 364")
