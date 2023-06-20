@@ -658,6 +658,53 @@ public class WidgetResponse {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePatentOutDTO {
+        private Long patentId;
+        private List<PatentElementOutDTO> patentElements;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class PatentElementOutDTO {
+            private Long patentElementId;
+            private PatentType patentType;
+            private String title;
+            private String image;
+
+            private static PatentElementOutDTO toOutDTO(PatentElement patentElement) {
+                return PatentElementOutDTO.builder()
+                        .patentElementId(patentElement.getId())
+                        .patentType(patentElement.getPatentType())
+                        .title(patentElement.getTitle())
+                        .image(patentElement.getImage())
+                        .build();
+            }
+        }
+
+        public static UpdatePatentOutDTO toOutDTO(Patent patent) {
+            List<PatentElement> patentElements = patent.getPatentElements();
+            List<PatentElementOutDTO> patentElementOutDTOs = new ArrayList<>();
+            for (int i = 0; i < patentElements.size(); i++) {
+                for (PatentElement patentElement : patentElements) {
+                    if (patentElement.getOrder() != i + 1)
+                        continue;
+                    patentElementOutDTOs.add(PatentElementOutDTO.toOutDTO(patentElement));
+                }
+            }
+            return UpdatePatentOutDTO.builder()
+                    .patentId(patent.getId())
+                    .patentElements(patentElementOutDTOs)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePatentElementOutDTO {
         private Long patentElementId;
         private PatentType patentType;

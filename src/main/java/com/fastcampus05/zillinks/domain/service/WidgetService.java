@@ -655,6 +655,39 @@ public class WidgetService {
      * 특허/인증
      */
     @Transactional
+    public WidgetResponse.UpdatePatentOutDTO updatePatent(WidgetRequest.UpdatePatentInDTO updatePatentInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Patent patentPS = (Patent) introPagePS.getWidgets().stream().filter(s -> s instanceof Patent).findFirst().orElseThrow(
+                () -> new Exception500("Patent 위젯이 존재하지 않습니다.")
+        );
+
+        patentPS.setWidgetStatus(updatePatentInDTO.getWidgetStatus());
+
+        List<PatentElement> patentElements = patentPS.getPatentElements();
+        Long index = 1L;
+
+        List<Long> arr = new ArrayList<>();
+        for (int i = 0; i < updatePatentInDTO.getOrderList().size(); i++)
+            arr.add(0L);
+
+        for (Long aLong : updatePatentInDTO.getOrderList()) {
+            PatentElement patentElementPS = patentElements.stream().filter(s -> s.getOrder() == aLong).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = patentElements.indexOf(patentElementPS);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            patentElements.get(i).setOrder(arr.get(i));
+        }
+        return WidgetResponse.UpdatePatentOutDTO.toOutDTO(patentPS);
+    }
+
+    @Transactional
     public WidgetResponse.SavePatentElementOutDTO savePatentElement(WidgetRequest.SavePatentElementInDTO savePatentElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));

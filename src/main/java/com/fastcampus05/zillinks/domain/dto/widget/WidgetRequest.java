@@ -308,6 +308,16 @@ public class WidgetRequest {
      */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePatentInDTO {
+        @Schema(description = "인증/특허 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "인증/특허 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePatentElementInDTO {
         @Schema(description = "구분", example = "PATENT")
         private PatentType patentType;

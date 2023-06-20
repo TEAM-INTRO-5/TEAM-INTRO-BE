@@ -29,4 +29,8 @@ public class PatentElement {
 
     private String title;
     private String image;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }
