@@ -639,6 +639,42 @@ public class WidgetService {
         reviewElementQueryRepository.deleteByDeleteList(deleteReviewElementsInDTO.getDeleteList());
     }
 
+    @Transactional
+    public WidgetResponse.DownloadOutDTO saveDownload(WidgetRequest.DownloadInDTO downloadInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        Download downloadPS = (Download) introPagePS.getWidgets().stream().filter(s -> s instanceof Download).findFirst().orElseThrow(
+                () -> new Exception500("Download 위젯이 존재하지 않습니다."));
+
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+
+        downloadPS.setWidgetStatus(downloadInDTO.getWidgetStatus());
+        if (downloadInDTO.getWidgetStatus()) {
+
+            List<String> pathOrginList = new ArrayList<>();
+            pathOrginList.add(downloadPS.getMediaKitFile());
+            pathOrginList.add(downloadPS.getIntroFile());
+            List<String> pathList = new ArrayList<>();
+            pathList.add(downloadPS.getMediaKitFile());
+            pathList.add(downloadPS.getIntroFile());
+
+            manageS3Uploader(pathOrginList, pathList);
+
+            downloadPS.updateDownload(
+                    downloadInDTO.getDescription(),
+                    downloadInDTO.getMediaKitFile(),
+                    downloadInDTO.getIntroFile()
+            );
+        }
+
+        return WidgetResponse.DownloadOutDTO.toOutDTO(downloadPS);
+    }
+
+
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
         log.info("변경 전 pathOriginList={}", pathOrginList);
         log.info("변경 후 pathList={}", pathList);

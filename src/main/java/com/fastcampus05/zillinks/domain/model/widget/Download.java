@@ -21,4 +21,10 @@ public class Download extends Widget {
     private String mediaKitFile;
     @Column(name = "intro_file")
     private String introFile;
+
+    public void updateDownload(String description, String mediaKitFile, String introFile) {
+        this.description = description;
+        this.mediaKitFile = mediaKitFile;
+        this.introFile = introFile;
+    }
 }

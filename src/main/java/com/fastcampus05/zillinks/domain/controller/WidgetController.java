@@ -625,4 +625,27 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+
+    /**
+     * 다운로드
+     */
+    @Operation(summary = "다운로드", description = "미디어 키트, 회사소개서 다운로드")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.DownloadOutDTO.class)))
+    })
+    @Parameters({
+            @Parameter(name = "downloadInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/download")
+    public ResponseEntity<ResponseDTO> saveDownload(
+            @RequestBody @Valid WidgetRequest.DownloadInDTO downloadInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.DownloadOutDTO downloadOutDTO = widgetService.saveDownload(downloadInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", downloadOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }

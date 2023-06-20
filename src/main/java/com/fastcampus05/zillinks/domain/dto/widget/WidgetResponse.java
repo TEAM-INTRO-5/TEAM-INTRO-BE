@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -356,7 +355,7 @@ public class WidgetResponse {
     @Getter
     @Builder
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include. NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ContactUsOutDTO {
         private Boolean mapStatus;
@@ -876,4 +875,30 @@ public class WidgetResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DownloadOutDTO {
+        private String description;
+        private String mediaKitFile;
+        private String introFile;
+
+        public static DownloadOutDTO toOutDTO(
+                Download download
+        ) {
+            return DownloadOutDTO.builder()
+                    .description(download.getDescription())
+                    .mediaKitFile(download.getMediaKitFile())
+                    .introFile(download.getIntroFile())
+                    .build();
+
+        }
+    }
+
+
+
+
 }
