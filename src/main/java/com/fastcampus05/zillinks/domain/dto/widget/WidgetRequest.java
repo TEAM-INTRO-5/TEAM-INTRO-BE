@@ -349,4 +349,11 @@ public class WidgetRequest {
         @Schema(description = "기사 설명", example = "##년도 ##컨퍼런스")
         private String description;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteNewsElementsInDTO {
+        @Schema(description = "보도 자료 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }

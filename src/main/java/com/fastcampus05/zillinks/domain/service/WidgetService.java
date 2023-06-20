@@ -761,4 +761,24 @@ public class WidgetService {
         NewsElement newsElementPS = newsElementRepository.save(newsElement);
         return WidgetResponse.SaveNewsElementOutDTO.toOutDTO(newsElementPS);
     }
+
+    @Transactional
+    public void deleteNewsElements(WidgetRequest.DeleteNewsElementsInDTO deleteNewsElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        List<NewsElement> newsElements = newsElementQueryRepository.findAllByDeleteList(deleteNewsElementsInDTO.getDeleteList());
+        for (NewsElement newsElement : newsElements) {
+            String image = newsElement.getImage();
+            if (image == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(image).orElseThrow(
+                    () -> new Exception500("deletePatentElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(image);
+        }
+        newsElementQueryRepository.deleteByDeleteList(deleteNewsElementsInDTO.getDeleteList());
+    }
 }
