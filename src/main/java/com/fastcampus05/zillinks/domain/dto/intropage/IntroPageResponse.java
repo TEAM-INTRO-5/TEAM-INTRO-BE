@@ -608,7 +608,7 @@ public class IntroPageResponse {
             private static class NewsElementOutDTO {
                 private Long newsElementId;
                 private String image;
-                private LocalDateTime date;
+                private LocalDate date;
                 private String press;
                 private String title;
                 private String description;

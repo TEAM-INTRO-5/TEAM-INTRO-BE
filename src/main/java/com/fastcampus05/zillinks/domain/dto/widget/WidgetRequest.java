@@ -1,14 +1,12 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
 import com.fastcampus05.zillinks.domain.model.widget.Filter;
-import com.fastcampus05.zillinks.domain.model.widget.PartnersType;
 import com.fastcampus05.zillinks.domain.model.widget.PatentType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
@@ -331,6 +329,41 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DeletePatentElementsInDTO {
         @Schema(description = "특허/인증 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
+
+    /**
+     * 보도 자료
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateNewsInDTO {
+        @Schema(description = "보도 자료 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "보도 자료 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveNewsElementInDTO {
+        @Schema(description = "보도자료 이미지", example = "url 경로")
+        private String image;
+        @Schema(description = "보도날짜", example = "2023-06-07")
+        private LocalDate date;
+        @Schema(description = "보도매체", example = "중앙일보")
+        private String press;
+        @Schema(description = "기사 제목", example = "기사 제목")
+        private String title;
+        @Schema(description = "기사 설명", example = "##년도 ##컨퍼런스")
+        private String description;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteNewsElementsInDTO {
+        @Schema(description = "보도 자료 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
     }
 }
