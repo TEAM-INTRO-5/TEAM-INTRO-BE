@@ -1,12 +1,10 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import javax.persistence.Column;
 import java.util.List;
 
 public class WidgetRequest {

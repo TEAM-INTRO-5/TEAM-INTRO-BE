@@ -205,7 +205,6 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-<<<<<<< HEAD
     @Operation(summary = "contact-Us", description = "map_status가 ture일 경우 full_address 값 필수")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ContactUsOutDTO.class))),
@@ -232,12 +231,12 @@ public class WidgetController {
     /**
      * 팀 컬려
      */
-    @Operation(summary = "팀 컬려 수정", description = "팀 컬려 수정")
+    @Operation(summary = "팀 컬쳐 수정", description = "팀 컬쳐 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateTeamCultureOutDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "updatePerformanceInDTO"),
+            @Parameter(name = "updateTeamCultureInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PutMapping("/teamCulture")
