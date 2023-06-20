@@ -1,11 +1,9 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
@@ -15,7 +13,6 @@ import javax.persistence.*;
 @DiscriminatorValue("key_visual_and_slogan")
 @Table(name = "key_visual_and_slogan_tb")
 @SuperBuilder
-@Slf4j
 public class KeyVisualAndSlogan extends Widget {
     private String background;
     @Enumerated(EnumType.STRING)
@@ -23,4 +20,12 @@ public class KeyVisualAndSlogan extends Widget {
     private String slogan;
     @Column(name = "slogan_detail")
     private String sloganDetail;
+
+    public void updateKeyVisualAndSlogan(String background, Filter filter, String slogan, String sloganDetail) {
+        this.background = background;
+        this.filter = filter;
+        this.slogan = slogan;
+        this.sloganDetail = sloganDetail;
+    }
+
 }

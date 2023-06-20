@@ -287,4 +287,26 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+
+    @Operation(summary = "키 비주얼/슬로건", description = "키 비주얼/슬로건")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.KeyVisualAndSloganOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "keyVisualAndSloganInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/keyVisualAndSlogan")
+    public ResponseEntity<ResponseDTO> saveKeyVisualAndSlogan(
+            @RequestBody @Valid WidgetRequest.KeyVisualAndSloganInDTO keyVisualAndSloganInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.KeyVisualAndSloganOutDTO keyVisualAndSloganOutDTO = widgetService.saveKeyVisualAndSlogan(keyVisualAndSloganInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", keyVisualAndSloganOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+
 }

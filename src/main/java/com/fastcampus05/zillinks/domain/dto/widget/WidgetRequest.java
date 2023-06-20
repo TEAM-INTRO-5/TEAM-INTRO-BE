@@ -1,10 +1,12 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
+import com.fastcampus05.zillinks.domain.model.widget.Filter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 public class WidgetRequest {
@@ -143,6 +145,9 @@ public class WidgetRequest {
         private List<Long> deleteList;
     }
 
+    /**
+     * ContactUs
+     */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ContactUsInDTO {
@@ -186,4 +191,26 @@ public class WidgetRequest {
         @Schema(description = "팀 컬쳐 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
     }
+
+    /**
+     * 키 비주얼/슬로건
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class KeyVisualAndSloganInDTO {
+        @Schema(description = "키 비주얼/슬로건 사용 여부", example = "true")
+        private Boolean widgetStatus;
+        @Schema(description = "배경 이미지", example = "url 경로")
+        private String background;
+        @Schema(description = "필터", example = "BLACK")
+        private Filter filter;
+        @Schema(description = "슬로건", example = "슬로건을 8자에서 40자 이내로 작성")
+        @Pattern(regexp = "^.{8,40}$", message = "8자에서 40자 이내로 작성해 주세요.")
+        private String slogan;
+        @Schema(description = "슬로건 상세", example = "슬로건 상세를 최대 120자 이내로 작성")
+        @Pattern(regexp = "^.{0,120}$", message = "최대 120자 이내로 작성해 주세요.")
+        private String sloganDetail;
+    }
+
+
 }

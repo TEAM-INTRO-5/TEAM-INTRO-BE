@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -446,4 +445,28 @@ public class WidgetResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class KeyVisualAndSloganOutDTO {
+        private String background;
+        private Filter filter;
+        private String slogan;
+        private String sloganDetail;
+
+        public static KeyVisualAndSloganOutDTO toOutDTO(
+                KeyVisualAndSlogan keyVisualAndSlogan
+        ) {
+            return KeyVisualAndSloganOutDTO.builder()
+                    .background(keyVisualAndSlogan.getBackground())
+                    .filter(keyVisualAndSlogan.getFilter())
+                    .slogan(keyVisualAndSlogan.getSlogan())
+                    .sloganDetail(keyVisualAndSlogan.getSloganDetail())
+                    .build();
+        }
+    }
+
 }
