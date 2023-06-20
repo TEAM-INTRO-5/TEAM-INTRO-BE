@@ -283,4 +283,11 @@ public class WidgetRequest {
         @Schema(description = "리뷰 상세", example = "해당 제품이 시간 절약에 도움이 되므로 돈을 지불하고 사용하고 있습니다.")
         private String details;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteReviewElementsInDTO {
+        @Schema(description = "고객 리뷰 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }

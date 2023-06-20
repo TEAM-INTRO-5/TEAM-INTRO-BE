@@ -407,4 +407,23 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveReviewElementOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    @Operation(summary = "고객 리뷰 요소들 삭제", description = "고객 리뷰 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteReviewElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/review/detail")
+    public ResponseEntity<ResponseDTO> deleteReivewElements(
+            @RequestBody @Valid WidgetRequest.DeleteReviewElementsInDTO deleteReviewElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deleteReivewElements(deleteReviewElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }

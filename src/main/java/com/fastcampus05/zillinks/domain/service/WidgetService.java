@@ -569,6 +569,15 @@ public class WidgetService {
         return WidgetResponse.SaveReviewElementOutDTO.toOutDTO(reviewElementPS);
     }
 
+    @Transactional
+    public void deleteReivewElements(WidgetRequest.DeleteReviewElementsInDTO deleteReviewElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        reviewElementQueryRepository.deleteByDeleteList(deleteReviewElementsInDTO.getDeleteList());
+    }
+
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
         log.info("변경 전 pathOriginList={}", pathOrginList);
         log.info("변경 후 pathList={}", pathList);
