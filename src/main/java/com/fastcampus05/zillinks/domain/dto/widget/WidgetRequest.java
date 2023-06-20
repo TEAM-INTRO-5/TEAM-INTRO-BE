@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.List;
 
 public class WidgetRequest {
@@ -232,5 +233,21 @@ public class WidgetRequest {
         @Schema(description = "비전 설명", example = "비전 설명을 80자 이내로 작성")
         @Pattern(regexp = "^.{0,80}$", message = "최대 80자 이내로 작성해 주세요.")
         private String visionDetail;
+    }
+
+    /**
+     * 연혁
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveHistoryElementInDTO {
+        @Schema(description = "연혁 이미지", example = "URL 주소")
+        private String image;
+        @Schema(description = "날짜", example = "2023-07-07")
+        private LocalDate date;
+        @Schema(description = "연혁", example = "패스트캠퍼스 기업협력 프로젝트")
+        private String title;
+        @Schema(description = "연혁 설명", example = "패스트캠퍼스와 함께 진행한 MOU 프로젝트, 전체 곡객 수 30프로 이상 증가하는 프로젝트로 다양한 파트너사에 긍정적 피드백 받음")
+        private String description;
     }
 }

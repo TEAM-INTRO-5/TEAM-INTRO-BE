@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -446,6 +447,9 @@ public class WidgetResponse {
         }
     }
 
+    /**
+     * 연혁
+     */
     @Getter
     @Builder
     @AllArgsConstructor
@@ -492,5 +496,28 @@ public class WidgetResponse {
         }
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveHistoryElementOutDTO {
+        private Long historyElementId;
+        private String image;
+        private LocalDate date;
+        private String title;
+        private String description;
 
+        public static SaveHistoryElementOutDTO toOutDTO(
+                HistoryElement historyElement
+        ) {
+            return SaveHistoryElementOutDTO.builder()
+                    .historyElementId(historyElement.getId())
+                    .image(historyElement.getImage())
+                    .date(historyElement.getDate())
+                    .title(historyElement.getTitle())
+                    .description(historyElement.getDescription())
+                    .build();
+        }
+    }
 }

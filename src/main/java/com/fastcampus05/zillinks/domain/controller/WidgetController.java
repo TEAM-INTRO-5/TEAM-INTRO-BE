@@ -288,7 +288,6 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-
     @Operation(summary = "키 비주얼/슬로건", description = "키 비주얼/슬로건")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.KeyVisualAndSloganOutDTO.class))),
@@ -324,6 +323,28 @@ public class WidgetController {
     ) {
         WidgetResponse.MissionAndVisionOutDTO missionAndVisionOutDTO = widgetService.saveMissionAndVision(missionAndVisionInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", missionAndVisionOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    /**
+     * 연혁
+     */
+    @Operation(summary = "연혁 요소 추가", description = "연혁 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveHistoryElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "saveHistoryElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/history/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SaveHistoryElementOutDTO>> saveHistoryElement(
+            @RequestBody @Valid WidgetRequest.SaveHistoryElementInDTO saveHistoryElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SaveHistoryElementOutDTO saveHistoryElementOutDTO = widgetService.saveHistoryElement(saveHistoryElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveHistoryElementOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 

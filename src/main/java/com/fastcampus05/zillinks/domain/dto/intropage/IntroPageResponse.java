@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -455,7 +455,7 @@ public class IntroPageResponse {
             private static class HistoryElementOutDTO {
                 private Long historyElementId;
                 private String image;
-                private LocalDateTime date;
+                private LocalDate date;
                 private String title;
                 private String description;
 

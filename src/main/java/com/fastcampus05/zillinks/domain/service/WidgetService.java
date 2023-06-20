@@ -42,6 +42,8 @@ public class WidgetService {
     private final PerformanceElementQueryRepository performanceElementQueryRepository;
     private final TeamCultureElementRepository teamCultureElementRepository;
     private final TeamCultureElementQueryRepository teamCultureElementQueryRepository;
+    private final HistoryElementRepository historyElementRepository;
+    private final HistoryElementQueryRepository historyElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -465,6 +467,32 @@ public class WidgetService {
         return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
     }
 
+    /**
+     * 연혁
+     */
+    public WidgetResponse.SaveHistoryElementOutDTO saveHistoryElement(WidgetRequest.SaveHistoryElementInDTO saveHistoryElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        History historyPS = (History) introPagePS.getWidgets().stream().filter(s -> s instanceof History).findFirst().orElseThrow(
+                () -> new Exception500("History 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (HistoryElement historyElement : historyPS.getHistoryElements()) {
+            index = Math.max(index, historyElement.getOrder());
+        }
+        HistoryElement historyElement = HistoryElement.builder()
+                .history(historyPS)
+                .order(index + 1)
+                .image(saveHistoryElementInDTO.getImage())
+                .date(saveHistoryElementInDTO.getDate())
+                .title(saveHistoryElementInDTO.getTitle())
+                .description(saveHistoryElementInDTO.getDescription())
+                .build();
+        HistoryElement historyElementPS = historyElementRepository.save(historyElement);
+        return WidgetResponse.SaveHistoryElementOutDTO.toOutDTO(historyElementPS);
+    }
 
     @Transactional
     public WidgetResponse.MissionAndVisionOutDTO saveMissionAndVision(WidgetRequest.MissionAndVisionInDTO missionAndVisionInDTO, User user) {
@@ -491,14 +519,6 @@ public class WidgetService {
 
         return WidgetResponse.MissionAndVisionOutDTO.toOutDTO(missionAndVisionPS);
     }
-
-
-//    List<String> pathOrginList = new ArrayList<>();
-//        pathOrginList.add(introPagePS.getSiteInfo().getPavicon());
-//    List<String> pathList = new ArrayList<>();
-//        pathList.add(updateSiteInfoInDTO.getPavicon());
-//
-//    manageS3Uploader(pathOrginList, pathList);
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
         log.info("변경 전 pathOriginList={}", pathOrginList);
