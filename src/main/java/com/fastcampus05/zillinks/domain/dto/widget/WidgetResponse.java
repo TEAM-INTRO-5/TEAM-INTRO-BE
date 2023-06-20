@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -471,6 +472,29 @@ public class WidgetResponse {
         }
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class MissionAndVisionOutDTO {
+        private String mission;
+        private String missionDetail;
+        private String vision;
+        private String visionDetail;
+
+        public static MissionAndVisionOutDTO toOutDTO(
+                MissionAndVision keyVisualAndSlogan
+        ) {
+            return MissionAndVisionOutDTO.builder()
+                    .mission(keyVisualAndSlogan.getMission())
+                    .missionDetail(keyVisualAndSlogan.getMissionDetail())
+                    .vision(keyVisualAndSlogan.getVision())
+                    .visionDetail(keyVisualAndSlogan.getVisionDetail())
+                    .build();
+        }
+    }
+
     /**
      * 연혁
      */
@@ -525,29 +549,6 @@ public class WidgetResponse {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class MissionAndVisionOutDTO {
-        private String mission;
-        private String missionDetail;
-        private String vision;
-        private String visionDetail;
-
-        public static MissionAndVisionOutDTO toOutDTO(
-                MissionAndVision keyVisualAndSlogan
-        ) {
-            return MissionAndVisionOutDTO.builder()
-                    .mission(keyVisualAndSlogan.getMission())
-                    .missionDetail(keyVisualAndSlogan.getMissionDetail())
-                    .vision(keyVisualAndSlogan.getVision())
-                    .visionDetail(keyVisualAndSlogan.getVisionDetail())
-                    .build();
-        }
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveHistoryElementOutDTO {
         private Long historyElementId;
         private String image;
@@ -564,6 +565,36 @@ public class WidgetResponse {
                     .date(historyElement.getDate())
                     .title(historyElement.getTitle())
                     .description(historyElement.getDescription())
+                    .build();
+        }
+    }
+
+    /**
+     * 고객 리뷰
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveReviewElementOutDTO {
+        private Long reviewElementId;
+        private String image;
+        private String name;
+        private String group;
+        private Integer rating;
+        private String details;
+
+        public static SaveReviewElementOutDTO toOutDTO(
+                ReviewElement reviewElement
+        ) {
+            return SaveReviewElementOutDTO.builder()
+                    .reviewElementId(reviewElement.getId())
+                    .image(reviewElement.getImage())
+                    .name(reviewElement.getName())
+                    .group(reviewElement.getGroup())
+                    .rating(reviewElement.getRating())
+                    .details(reviewElement.getDetails())
                     .build();
         }
     }

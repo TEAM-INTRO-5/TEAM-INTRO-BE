@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
@@ -263,5 +264,23 @@ public class WidgetRequest {
     public static class DeleteHistoryElementsInDTO {
         @Schema(description = "연혁 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
+    }
+
+    /**
+     * 고객 리뷰
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveReviewElementInDTO {
+        @Schema(description = "이미지", example = "URL 주소")
+        private String image;
+        @Schema(description = "이름", example = "홍길동")
+        private String name;
+        @Schema(description = "소속", example = "블로그 체험단 소속")
+        private String group;
+        @Schema(description = "별점", example = "3")
+        private Integer rating;
+        @Schema(description = "리뷰 상세", example = "해당 제품이 시간 절약에 도움이 되므로 돈을 지불하고 사용하고 있습니다.")
+        private String details;
     }
 }
