@@ -1,12 +1,10 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import javax.persistence.Column;
 import java.util.List;
 
 public class WidgetRequest {
@@ -156,5 +154,36 @@ public class WidgetRequest {
         private String fullAddress;
         @Schema(description = "상세 주소", example = "11층")
         private String detailedAddress;
+    }
+
+    /**
+     * 팀 컬려
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateTeamCultureInDTO {
+        @Schema(description = "팀 컬쳐 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "팀 컬쳐 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveTeamCultureElementInDTO {
+        @Schema(description = "팀 컬쳐 이미지", example = "URL 주소")
+        private String image;
+        @Schema(description = "팀 컬쳐", example = "수평적인 커뮤니케이션")
+        private String culture;
+        @Schema(description = "팀 컬쳐 설명", example = "누구나 두려움 없이 아이디어를 발산할 수 있는 안전한 조직을 바랍니다. 단, 누구나 책임 blah~blah")
+        private String description;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteTeamCultureElementsInDTO {
+        @Schema(description = "팀 컬쳐 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
     }
 }

@@ -39,6 +39,8 @@ public class WidgetService {
     private final TeamMemberElementQueryRepository teamMemberElementQueryRepository;
     private final PerformanceElementRepository performanceElementRepository;
     private final PerformanceElementQueryRepository performanceElementQueryRepository;
+    private final TeamCultureElementRepository teamCultureElementRepository;
+    private final TeamCultureElementQueryRepository teamCultureElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -74,24 +76,27 @@ public class WidgetService {
         for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
             orderList.add(productsAndServicesElement.getOrder());
         }
+        productsAndServicesPS.setWidgetStatus(updateProductsAndServicesInDTO.getWidgetStatus());
         // Call To Action
-        productsAndServicesPS.setCallToActionStatus(updateProductsAndServicesInDTO.getCallToActionStatus());
-        if (updateProductsAndServicesInDTO.getCallToActionStatus()) {
-            if (productsAndServicesPS.getCallToAction() == null) {
-                productsAndServicesPS.setCallToAction(new CallToAction(
-                        updateProductsAndServicesInDTO.getDescription(),
-                        updateProductsAndServicesInDTO.getText(),
-                        updateProductsAndServicesInDTO.getLink()
-                ));
-            } else {
-                productsAndServicesPS.getCallToAction().updateCallToAction(
-                        updateProductsAndServicesInDTO.getDescription(),
-                        updateProductsAndServicesInDTO.getText(),
-                        updateProductsAndServicesInDTO.getLink()
-                );
+        if (updateProductsAndServicesInDTO.getWidgetStatus()) {
+            productsAndServicesPS.setCallToActionStatus(updateProductsAndServicesInDTO.getCallToActionStatus());
+            if (updateProductsAndServicesInDTO.getCallToActionStatus()) {
+                if (productsAndServicesPS.getCallToAction() == null) {
+                    productsAndServicesPS.setCallToAction(new CallToAction(
+                            updateProductsAndServicesInDTO.getDescription(),
+                            updateProductsAndServicesInDTO.getText(),
+                            updateProductsAndServicesInDTO.getLink()
+                    ));
+                } else {
+                    productsAndServicesPS.getCallToAction().updateCallToAction(
+                            updateProductsAndServicesInDTO.getDescription(),
+                            updateProductsAndServicesInDTO.getText(),
+                            updateProductsAndServicesInDTO.getLink()
+                    );
+                }
             }
         }
-        return WidgetResponse.UpdateProductsAndServicesOutDTO.toOutDTO(productsAndServicesPS, orderList);
+        return WidgetResponse.UpdateProductsAndServicesOutDTO.toOutDTO(productsAndServicesPS);
     }
 
     @Transactional
@@ -171,10 +176,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             teamMemberElements.get(i).setOrder(arr.get(i));
         }
-        List<Long> orderList = new ArrayList<>();
-        for (TeamMemberElement teamMemberElement : teamMemberElements) {
-            orderList.add(teamMemberElement.getOrder());
-        }
+        teamMemberPS.setWidgetStatus(updateTeamMemberInDTO.getWidgetStatus());
         return WidgetResponse.UpdateTeamMemberOutDTO.toOutDTO(teamMemberPS);
     }
 
@@ -286,6 +288,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             performanceElements.get(i).setOrder(arr.get(i));
         }
+        performancePS.setWidgetStatus(updatePerformanceInDTO.getWidgetStatus());
         return WidgetResponse.UpdatePerformanceOutDTO.toOutDTO(performancePS);
     }
 
@@ -353,6 +356,79 @@ public class WidgetService {
         }
 
         return WidgetResponse.ContactUsOutDTO.toOutDTO(contactUsPS);
+    }
+
+    /**
+     * 팀 컬려
+     */
+    @Transactional
+    public WidgetResponse.UpdateTeamCultureOutDTO updateTeamCulture(WidgetRequest.UpdateTeamCultureInDTO updateTeamCultureInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        TeamCulture teamCulturePS = (TeamCulture) introPagePS.getWidgets().stream().filter(s -> s instanceof TeamCulture).findFirst().orElseThrow(
+                () -> new Exception500("TeamCulture 위젯이 존재하지 않습니다.")
+        );
+
+        teamCulturePS.setWidgetStatus(updateTeamCultureInDTO.getWidgetStatus());
+
+        List<TeamCultureElement> teamCultureElements = teamCulturePS.getTeamCultureElements();
+        Long index = 1L;
+
+        List<Long> arr = new ArrayList<>();
+        for (int i = 0; i < updateTeamCultureInDTO.getOrderList().size(); i++)
+            arr.add(0L);
+
+        for (Long aLong : updateTeamCultureInDTO.getOrderList()) {
+            TeamCultureElement teamCultureElementPS = teamCultureElements.stream().filter(s -> s.getOrder() == aLong).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = teamCultureElements.indexOf(teamCultureElementPS);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            teamCultureElements.get(i).setOrder(arr.get(i));
+        }
+        return WidgetResponse.UpdateTeamCultureOutDTO.toOutDTO(teamCulturePS);
+    }
+
+    @Transactional
+    public WidgetResponse.SaveTeamCultureElementOutDTO saveTeamCultureElement(WidgetRequest.SaveTeamCultureElementInDTO saveTeamCultureElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        TeamCulture teamCulturePS = (TeamCulture) introPagePS.getWidgets().stream().filter(s -> s instanceof TeamCulture).findFirst().orElseThrow(
+                () -> new Exception500("TeamCulture 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (TeamCultureElement teamCultureElement : teamCulturePS.getTeamCultureElements()) {
+            index = Math.max(index, teamCultureElement.getOrder());
+        }
+        TeamCultureElement teamCultureElement = TeamCultureElement.builder()
+                .teamCulture(teamCulturePS)
+                .order(index + 1)
+                .image(saveTeamCultureElementInDTO.getImage())
+                .culture(saveTeamCultureElementInDTO.getCulture())
+                .desciption(saveTeamCultureElementInDTO.getDescription())
+                .build();
+        TeamCultureElement teamCultureElementPS = teamCultureElementRepository.save(teamCultureElement);
+        return WidgetResponse.SaveTeamCultureElementOutDTO.toOutDTO(teamCultureElementPS);
+    }
+
+    @Transactional
+    public void deleteTeamCultureElements(WidgetRequest.DeleteTeamCultureElementsInDTO deleteTeamCultureElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        teamCultureElementQueryRepository.deleteByDeleteList(deleteTeamCultureElementsInDTO.getDeleteList());
     }
 
 

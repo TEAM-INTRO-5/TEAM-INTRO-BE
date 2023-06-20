@@ -228,4 +228,63 @@ public class WidgetController {
         return ResponseEntity.ok(responseBody);
     }
 
+    /**
+     * 팀 컬려
+     */
+    @Operation(summary = "팀 컬쳐 수정", description = "팀 컬쳐 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateTeamCultureOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateTeamCultureInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/teamCulture")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateTeamCultureOutDTO>> updateTeamCulture(
+            @RequestBody @Valid WidgetRequest.UpdateTeamCultureInDTO updateTeamCultureInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateTeamCultureOutDTO updateTeamCultureOutDTO = widgetService.updateTeamCulture(updateTeamCultureInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateTeamCultureOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "팀 컬려 요소 추가", description = "팀 컬려 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveTeamCultureElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "saveTeamCultureElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/teamCulture/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SavePerformanceElementOutDTO>> saveTeamCultureElement(
+            @RequestBody @Valid WidgetRequest.SaveTeamCultureElementInDTO saveTeamCultureElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SaveTeamCultureElementOutDTO saveTeamCultureElementOutDTO = widgetService.saveTeamCultureElement(saveTeamCultureElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveTeamCultureElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "팀 컬려 요소들 삭제", description = "팀 컬려 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteTeamCultureElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/teamCulture/detail")
+    public ResponseEntity<ResponseDTO> deleteTeamCultureElements(
+            @RequestBody @Valid WidgetRequest.DeleteTeamCultureElementsInDTO deleteTeamCultureElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deleteTeamCultureElements(deleteTeamCultureElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }
