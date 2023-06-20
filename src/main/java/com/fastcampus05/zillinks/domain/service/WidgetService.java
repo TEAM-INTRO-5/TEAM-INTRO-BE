@@ -467,9 +467,35 @@ public class WidgetService {
         return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
     }
 
+    @Transactional
+    public WidgetResponse.MissionAndVisionOutDTO saveMissionAndVision(WidgetRequest.MissionAndVisionInDTO missionAndVisionInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        MissionAndVision missionAndVisionPS = (MissionAndVision) introPagePS.getWidgets().stream().filter(s -> s instanceof MissionAndVision).findFirst().orElseThrow(
+                () -> new Exception500("MissionAndVision 위젯이 존재하지 않습니다."));
+
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+
+        missionAndVisionPS.setWidgetStatus(missionAndVisionInDTO.getWidgetStatus());
+        if (missionAndVisionInDTO.getWidgetStatus()) {
+            missionAndVisionPS.updateMissionAndVision(
+                    missionAndVisionInDTO.getMission(),
+                    missionAndVisionInDTO.getMissionDetail(),
+                    missionAndVisionInDTO.getVision(),
+                    missionAndVisionInDTO.getVisionDetail()
+            );
+        }
+        return WidgetResponse.MissionAndVisionOutDTO.toOutDTO(missionAndVisionPS);
+    }
+
     /**
      * 연혁
      */
+    @Transactional
     public WidgetResponse.SaveHistoryElementOutDTO saveHistoryElement(WidgetRequest.SaveHistoryElementInDTO saveHistoryElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
@@ -494,30 +520,13 @@ public class WidgetService {
         return WidgetResponse.SaveHistoryElementOutDTO.toOutDTO(historyElementPS);
     }
 
-    @Transactional
-    public WidgetResponse.MissionAndVisionOutDTO saveMissionAndVision(WidgetRequest.MissionAndVisionInDTO missionAndVisionInDTO, User user) {
+    public void deleteHistoryElements(WidgetRequest.DeleteHistoryElementsInDTO deleteHistoryElementsInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        MissionAndVision missionAndVisionPS = (MissionAndVision) introPagePS.getWidgets().stream().filter(s -> s instanceof MissionAndVision).findFirst().orElseThrow(
-                () -> new Exception500("MissionAndVision 위젯이 존재하지 않습니다."));
-
-        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
-
-        missionAndVisionPS.setWidgetStatus(missionAndVisionInDTO.getWidgetStatus());
-        if (missionAndVisionInDTO.getWidgetStatus()) {
-            missionAndVisionPS.updateMissionAndVision(
-                    missionAndVisionInDTO.getMission(),
-                    missionAndVisionInDTO.getMissionDetail(),
-                    missionAndVisionInDTO.getVision(),
-                    missionAndVisionInDTO.getVisionDetail()
-            );
-        }
-
-        return WidgetResponse.MissionAndVisionOutDTO.toOutDTO(missionAndVisionPS);
+        historyElementQueryRepository.deleteByDeleteList(deleteHistoryElementsInDTO.getDeleteList());
     }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {

@@ -250,4 +250,11 @@ public class WidgetRequest {
         @Schema(description = "연혁 설명", example = "패스트캠퍼스와 함께 진행한 MOU 프로젝트, 전체 곡객 수 30프로 이상 증가하는 프로젝트로 다양한 파트너사에 긍정적 피드백 받음")
         private String description;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteHistoryElementsInDTO {
+        @Schema(description = "연혁 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }
