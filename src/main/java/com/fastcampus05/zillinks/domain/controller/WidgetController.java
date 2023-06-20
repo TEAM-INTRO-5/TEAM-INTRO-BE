@@ -232,6 +232,25 @@ public class WidgetController {
     /**
      * 팀 컬려
      */
+    @Operation(summary = "팀 컬려 수정", description = "팀 컬려 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateTeamCultureOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updatePerformanceInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/teamCulture")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateTeamCultureOutDTO>> updateTeamCulture(
+            @RequestBody @Valid WidgetRequest.UpdateTeamCultureInDTO updateTeamCultureInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateTeamCultureOutDTO updateTeamCultureOutDTO = widgetService.updateTeamCulture(updateTeamCultureInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateTeamCultureOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "팀 컬려 요소 추가", description = "팀 컬려 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveTeamCultureElementOutDTO.class))),

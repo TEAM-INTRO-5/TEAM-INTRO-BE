@@ -27,4 +27,8 @@ public class TeamCultureElement extends TimeBaseEntity {
     private String image;
     private String culture;
     private String desciption;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }

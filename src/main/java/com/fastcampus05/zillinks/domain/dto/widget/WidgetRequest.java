@@ -163,6 +163,16 @@ public class WidgetRequest {
      */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateTeamCultureInDTO {
+        @Schema(description = "팀 컬쳐 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "팀 컬쳐 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveTeamCultureElementInDTO {
         @Schema(description = "팀 컬쳐 이미지", example = "URL 주소")
         private String image;
