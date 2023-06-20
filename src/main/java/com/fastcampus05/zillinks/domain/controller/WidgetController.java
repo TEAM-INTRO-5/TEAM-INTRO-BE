@@ -389,7 +389,7 @@ public class WidgetController {
     /**
      * 고객 리뷰
      */
-    @Operation(summary = "팀 컬쳐 수정", description = "팀 컬쳐 수정")
+    @Operation(summary = "고객 리뷰 수정", description = "고객 리뷰 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateReviewOutDTO.class))),
     })
@@ -422,7 +422,7 @@ public class WidgetController {
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        WidgetResponse.SaveReviewElementOutDTO saveReviewElementOutDTO = widgetService.saveReviewElementInDTO(saveReviewElementInDTO, myUserDetails.getUser());
+        WidgetResponse.SaveReviewElementOutDTO saveReviewElementOutDTO = widgetService.saveReviewElement(saveReviewElementInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveReviewElementOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
@@ -442,6 +442,66 @@ public class WidgetController {
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
         widgetService.deleteReivewElements(deleteReviewElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    /**
+     * 특허/인증
+     */
+    @Operation(summary = "인증/특허 수정", description = "인증/특허 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdatePatentOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateReviewInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/patent")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdatePatentOutDTO>> updatePatent(
+            @RequestBody @Valid WidgetRequest.UpdatePatentInDTO updatePatentInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdatePatentOutDTO updatePatentOutDTO = widgetService.updatePatent(updatePatentInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updatePatentOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "인증/특허 요소 추가", description = "인증/특허 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SavePatentElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "savePatentElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/patent/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SavePatentElementOutDTO>> savePatentElement(
+            @RequestBody @Valid WidgetRequest.SavePatentElementInDTO savePatentElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SavePatentElementOutDTO savePatentElementOutDTO = widgetService.savePatentElement(savePatentElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", savePatentElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "인증/특허 요소들 삭제", description = "인증/특허 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteReviewElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/patent/detail")
+    public ResponseEntity<ResponseDTO> deletePatentElements(
+            @RequestBody @Valid WidgetRequest.DeletePatentElementsInDTO deletePatentElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deletePatentElements(deletePatentElementsInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }

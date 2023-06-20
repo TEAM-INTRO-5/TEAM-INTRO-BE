@@ -1,13 +1,13 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "patent_element_tb")
 public class PatentElement {
@@ -29,4 +29,8 @@ public class PatentElement {
 
     private String title;
     private String image;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }

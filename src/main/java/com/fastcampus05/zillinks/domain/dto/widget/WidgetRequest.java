@@ -1,6 +1,8 @@
 package com.fastcampus05.zillinks.domain.dto.widget;
 
 import com.fastcampus05.zillinks.domain.model.widget.Filter;
+import com.fastcampus05.zillinks.domain.model.widget.PartnersType;
+import com.fastcampus05.zillinks.domain.model.widget.PatentType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -298,6 +300,37 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DeleteReviewElementsInDTO {
         @Schema(description = "고객 리뷰 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
+
+    /**
+     * 인증/특허
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdatePatentInDTO {
+        @Schema(description = "인증/특허 사용 여부", example = "true")
+        private Boolean widgetStatus;
+
+        @Schema(description = "인증/특허 순서 리스트", example = "[10, 9, 2, 4, 8, 6]")
+        private List<Long> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SavePatentElementInDTO {
+        @Schema(description = "구분", example = "PATENT")
+        private PatentType patentType;
+        @Schema(description = "특허/인증 이름", example = "특허/인증 발급 정보")
+        private String title;
+        @Schema(description = "특허/인증 이미지", example = "URL 주소")
+        private String image;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeletePatentElementsInDTO {
+        @Schema(description = "특허/인증 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
     }
 }

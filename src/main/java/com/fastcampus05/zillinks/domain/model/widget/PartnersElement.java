@@ -29,4 +29,8 @@ public class PartnersElement {
     @Column(name = "company_name")
     private String companyName;
     private String logo;
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
 }

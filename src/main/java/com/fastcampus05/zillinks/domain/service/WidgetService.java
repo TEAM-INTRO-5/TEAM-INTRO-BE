@@ -46,6 +46,8 @@ public class WidgetService {
     private final HistoryElementQueryRepository historyElementQueryRepository;
     private final ReviewElementRepository reviewElementRepository;
     private final ReviewElementQueryRepository reviewElementQueryRepository;
+    private final PatentElementRepository patentElementRepository;
+    private final PatentElementQueryRepository patentElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -433,6 +435,17 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
+        List<TeamCultureElement> teamCultureElements = teamCultureElementQueryRepository.findAllByDeleteList(deleteTeamCultureElementsInDTO.getDeleteList());
+        for (TeamCultureElement teamCultureElement : teamCultureElements) {
+            String image = teamCultureElement.getImage();
+            if (image == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(image).orElseThrow(
+                    () -> new Exception500("deleteTeamCultureElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(image);
+        }
+
         teamCultureElementQueryRepository.deleteByDeleteList(deleteTeamCultureElementsInDTO.getDeleteList());
     }
 
@@ -577,7 +590,7 @@ public class WidgetService {
     }
 
     @Transactional
-    public WidgetResponse.SaveReviewElementOutDTO saveReviewElementInDTO(WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO, User user) {
+    public WidgetResponse.SaveReviewElementOutDTO saveReviewElement(WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
@@ -608,6 +621,17 @@ public class WidgetService {
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        List<ReviewElement> reviewElements = reviewElementQueryRepository.findAllByDeleteList(deleteReviewElementsInDTO.getDeleteList());
+        for (ReviewElement reviewElement : reviewElements) {
+            String image = reviewElement.getImage();
+            if (image == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(image).orElseThrow(
+                    () -> new Exception500("deleteReivewElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(image);
+        }
         reviewElementQueryRepository.deleteByDeleteList(deleteReviewElementsInDTO.getDeleteList());
     }
 
@@ -625,5 +649,85 @@ public class WidgetService {
                 s3UploaderRepository.delete(pathOrigin);
             }
         }
+    }
+
+    /**
+     * 특허/인증
+     */
+    @Transactional
+    public WidgetResponse.UpdatePatentOutDTO updatePatent(WidgetRequest.UpdatePatentInDTO updatePatentInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Patent patentPS = (Patent) introPagePS.getWidgets().stream().filter(s -> s instanceof Patent).findFirst().orElseThrow(
+                () -> new Exception500("Patent 위젯이 존재하지 않습니다.")
+        );
+
+        patentPS.setWidgetStatus(updatePatentInDTO.getWidgetStatus());
+
+        List<PatentElement> patentElements = patentPS.getPatentElements();
+        Long index = 1L;
+
+        List<Long> arr = new ArrayList<>();
+        for (int i = 0; i < updatePatentInDTO.getOrderList().size(); i++)
+            arr.add(0L);
+
+        for (Long aLong : updatePatentInDTO.getOrderList()) {
+            PatentElement patentElementPS = patentElements.stream().filter(s -> s.getOrder() == aLong).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = patentElements.indexOf(patentElementPS);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            patentElements.get(i).setOrder(arr.get(i));
+        }
+        return WidgetResponse.UpdatePatentOutDTO.toOutDTO(patentPS);
+    }
+
+    @Transactional
+    public WidgetResponse.SavePatentElementOutDTO savePatentElement(WidgetRequest.SavePatentElementInDTO savePatentElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Patent patentPS = (Patent) introPagePS.getWidgets().stream().filter(s -> s instanceof Patent).findFirst().orElseThrow(
+                () -> new Exception500("Patent 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (PatentElement patentElement : patentPS.getPatentElements()) {
+            index = Math.max(index, patentElement.getOrder());
+        }
+        PatentElement patentElement = PatentElement.builder()
+                .patent(patentPS)
+                .order(index + 1)
+                .patentType(savePatentElementInDTO.getPatentType())
+                .title(savePatentElementInDTO.getTitle())
+                .image(savePatentElementInDTO.getImage())
+                .build();
+        PatentElement patentElementPS = patentElementRepository.save(patentElement);
+        return WidgetResponse.SavePatentElementOutDTO.toOutDTO(patentElementPS);
+    }
+
+    @Transactional
+    public void deletePatentElements(WidgetRequest.DeletePatentElementsInDTO deletePatentElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        List<PatentElement> patentElements = patentElementQueryRepository.findAllByDeleteList(deletePatentElementsInDTO.getDeleteList());
+        for (PatentElement patentElement : patentElements) {
+            String image = patentElement.getImage();
+            if (image == null)
+                continue;
+            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(image).orElseThrow(
+                    () -> new Exception500("deletePatentElements: 파일 관리 실패")
+            ));
+            s3UploaderRepository.delete(image);
+        }
+        patentElementQueryRepository.deleteByDeleteList(deletePatentElementsInDTO.getDeleteList());
     }
 }
