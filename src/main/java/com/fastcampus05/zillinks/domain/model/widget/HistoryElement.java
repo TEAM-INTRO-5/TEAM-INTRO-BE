@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 @Entity
 @Getter
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Table(name = "history_element_tb")
-public class HistoryElement extends TimeBaseEntity {
+public class HistoryElement extends TimeBaseEntity implements Comparable<HistoryElement> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "history_element_id")
@@ -22,15 +23,13 @@ public class HistoryElement extends TimeBaseEntity {
     @JoinColumn(name = "history_id")
     private History history;
 
-    @Column(name = "orders")
-    private Long order;
-
     private String image;
     private LocalDate date;
     private String title;
     private String description;
 
-    public void setOrder(Long order) {
-        this.order = order;
+    @Override
+    public int compareTo(HistoryElement o) {
+        return this.date.compareTo(o.getDate());
     }
 }

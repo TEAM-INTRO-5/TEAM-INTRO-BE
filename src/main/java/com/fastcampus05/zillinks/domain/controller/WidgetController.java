@@ -329,6 +329,25 @@ public class WidgetController {
     /**
      * 연혁
      */
+    @Operation(summary = "연혁 수정", description = "연혁 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateHistoryOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateHistoryInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/history")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateHistoryOutDTO>> updateHistory(
+            @RequestBody @Valid WidgetRequest.UpdateHistoryInDTO updateHistoryInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateHistoryOutDTO updateHistoryOutDTO = widgetService.updateHistory(updateHistoryInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateHistoryOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "연혁 요소 추가", description = "연혁 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveHistoryElementOutDTO.class))),

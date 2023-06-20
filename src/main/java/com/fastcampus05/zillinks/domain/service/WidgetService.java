@@ -496,6 +496,20 @@ public class WidgetService {
      * 연혁
      */
     @Transactional
+    public WidgetResponse.UpdateHistoryOutDTO updateHistory(WidgetRequest.UpdateHistoryInDTO updateHistoryInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        History historyPS = (History) introPagePS.getWidgets().stream().filter(s -> s instanceof History).findFirst().orElseThrow(
+                () -> new Exception500("History 위젯이 존재하지 않습니다.")
+        );
+
+        historyPS.setWidgetStatus(updateHistoryInDTO.getWidgetStatus());
+        return WidgetResponse.UpdateHistoryOutDTO.toOutDTO(historyPS);
+    }
+
+    @Transactional
     public WidgetResponse.SaveHistoryElementOutDTO saveHistoryElement(WidgetRequest.SaveHistoryElementInDTO saveHistoryElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
@@ -504,13 +518,9 @@ public class WidgetService {
         History historyPS = (History) introPagePS.getWidgets().stream().filter(s -> s instanceof History).findFirst().orElseThrow(
                 () -> new Exception500("History 위젯이 존재하지 않습니다.")
         );
-        long index = 0;
-        for (HistoryElement historyElement : historyPS.getHistoryElements()) {
-            index = Math.max(index, historyElement.getOrder());
-        }
+
         HistoryElement historyElement = HistoryElement.builder()
                 .history(historyPS)
-                .order(index + 1)
                 .image(saveHistoryElementInDTO.getImage())
                 .date(saveHistoryElementInDTO.getDate())
                 .title(saveHistoryElementInDTO.getTitle())
@@ -525,7 +535,6 @@ public class WidgetService {
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-
         historyElementQueryRepository.deleteByDeleteList(deleteHistoryElementsInDTO.getDeleteList());
     }
 

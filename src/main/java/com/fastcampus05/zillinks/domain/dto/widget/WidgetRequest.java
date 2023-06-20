@@ -240,6 +240,13 @@ public class WidgetRequest {
      */
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateHistoryInDTO {
+        @Schema(description = "팀 컬쳐 사용 여부", example = "true")
+        private Boolean widgetStatus;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveHistoryElementInDTO {
         @Schema(description = "연혁 이미지", example = "URL 주소")
         private String image;
