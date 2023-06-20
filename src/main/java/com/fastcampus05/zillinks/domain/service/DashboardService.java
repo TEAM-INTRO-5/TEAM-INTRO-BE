@@ -42,15 +42,15 @@ public class DashboardService {
     private final S3UploaderFileRepository s3UploaderFileRepository;
 
     @Transactional
-    public void saveContactUs(DashboardRequest.ContactUsInDTO contactUsInDTO) {
-        IntroPage introPagePS = introPageRepository.findById(contactUsInDTO.getIntroPageId())
+    public void saveContactUs(DashboardRequest.ContactUsLogInDTO contactUsLogInDTO) {
+        IntroPage introPagePS = introPageRepository.findById(contactUsLogInDTO.getIntroPageId())
                 .orElseThrow(() -> new Exception400("intro_page_id", "존재하지 않는 회사 소개 페이지입니다."));
         contactUsLogRepository.save(ContactUsLog.builder()
                 .introPage(introPagePS)
-                .name(contactUsInDTO.getName())
-                .email(contactUsInDTO.getEmail())
-                .content(contactUsInDTO.getContent())
-                .type(contactUsInDTO.getType())
+                .name(contactUsLogInDTO.getName())
+                .email(contactUsLogInDTO.getEmail())
+                .content(contactUsLogInDTO.getContent())
+                .type(contactUsLogInDTO.getType())
                 .contactUsStatus(ContactUsStatus.UNCONFIRMED)
                 .build());
     }
@@ -85,8 +85,8 @@ public class DashboardService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         Page<ContactUsLog> contactUsLogPG = contactUsLogQueryRepository.findPGAllByStatus(status, introPagePS.getId(), page);
-        List<FindContactUsOutDTO.ContactUsOutDTO> contactUsOutDTOList = contactUsLogPG.stream()
-                .map(s -> FindContactUsOutDTO.ContactUsOutDTO.builder()
+        List<FindContactUsOutDTO.ContactUsLogOutDTO> contactUsLogOutDTOList = contactUsLogPG.stream()
+                .map(s -> FindContactUsOutDTO.ContactUsLogOutDTO.builder()
                         .contactUsLogId(s.getId())
                         .name(s.getName())
                         .email(s.getEmail())
@@ -95,7 +95,7 @@ public class DashboardService {
                         .date(s.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-        return FindContactUsOutDTO.toOutDTO(introPagePS, contactUsLogPG, contactUsOutDTOList, status);
+        return FindContactUsOutDTO.toOutDTO(introPagePS, contactUsLogPG, contactUsLogOutDTOList, status);
     }
 
     public FindContactUsDetailOutDTO findContactUsDetail(Long contactUsId, User user) {

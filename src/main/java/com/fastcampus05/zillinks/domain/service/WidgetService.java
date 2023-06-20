@@ -2,17 +2,21 @@ package com.fastcampus05.zillinks.domain.service;
 
 import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
+import com.fastcampus05.zillinks.core.util.Common;
+import com.fastcampus05.zillinks.core.util.dto.map.KakaoAddress;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPageStatus;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fastcampus05.zillinks.domain.model.widget.*;
 import com.fastcampus05.zillinks.domain.model.widget.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +39,8 @@ public class WidgetService {
     private final TeamMemberElementQueryRepository teamMemberElementQueryRepository;
     private final PerformanceElementRepository performanceElementRepository;
     private final PerformanceElementQueryRepository performanceElementQueryRepository;
+
+    private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
     @Transactional
     public WidgetResponse.UpdateProductsAndServicesOutDTO updateProductsAndServices(WidgetRequest.UpdateProductsAndServicesInDTO updateProductsAndServicesInDTO, User user) {
@@ -317,7 +323,36 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-       performanceElementQueryRepository.deleteByDeleteList(deletePerformanceElementsInDTO.getDeleteList());
+        performanceElementQueryRepository.deleteByDeleteList(deletePerformanceElementsInDTO.getDeleteList());
+    }
+
+    @Transactional
+    public WidgetResponse.ContactUsOutDTO saveContactUs(WidgetRequest.ContactUsInDTO contactUsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        ContactUs contactUsPS = (ContactUs) introPagePS.getWidgets().stream().filter(s -> s instanceof ContactUs).findFirst().orElseThrow(
+                () -> new Exception500("ContactUs 위젯이 존재하지 않습니다."));
+
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+
+        contactUsPS.setWidgetStatus(contactUsInDTO.getWidgetStatus());
+        if (contactUsInDTO.getWidgetStatus()) {
+            contactUsPS.setMapStatus(contactUsInDTO.getMapStatus());
+            if (contactUsInDTO.getMapStatus()) {
+                KakaoAddress kakaoAddress = Common.kakaoSearchAddress(KAKAO_MAP_URL, HttpMethod.GET, contactUsInDTO.getFullAddress());
+                contactUsPS.updateContactUsWidget(contactUsInDTO.getMapStatus(),
+                        contactUsInDTO.getFullAddress(),
+                        contactUsInDTO.getDetailedAddress(),
+                        kakaoAddress.getDocuments().get(0).getY(),
+                        kakaoAddress.getDocuments().get(0).getX());
+            }
+        }
+
+        return WidgetResponse.ContactUsOutDTO.toOutDTO(contactUsPS);
     }
 
 

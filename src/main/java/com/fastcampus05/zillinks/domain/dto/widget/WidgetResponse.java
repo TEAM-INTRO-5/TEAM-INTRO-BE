@@ -351,4 +351,29 @@ public class WidgetResponse {
                     .build();
         }
     }
+
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include. NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ContactUsOutDTO {
+        private Boolean mapStatus;
+        private String fullAddress;
+        private String detailedAddress;
+        private String latitude; // 위도
+        private String longitude; // 경도
+
+        public static ContactUsOutDTO toOutDTO(ContactUs contactUs) {
+            return ContactUsOutDTO.builder()
+                    .mapStatus(contactUs.getMapStatus())
+                    .fullAddress(contactUs.getFullAddress())
+                    .detailedAddress(contactUs.getDetailedAddress())
+                    .latitude(contactUs.getLatitude())
+                    .longitude(contactUs.getLongitude())
+                    .build();
+        }
+    }
+
 }

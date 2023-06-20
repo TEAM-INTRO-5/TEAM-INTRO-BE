@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 public class DashboardRequest {
 
     @Getter
-    public static class ContactUsInDTO {
+    public static class ContactUsLogInDTO {
         @Schema(description = "요청할 회사의 ID", example = "1")
         @JsonProperty("intro_page_id")
         private Long introPageId;
