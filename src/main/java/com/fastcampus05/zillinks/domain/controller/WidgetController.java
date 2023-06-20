@@ -250,4 +250,23 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveTeamCultureElementOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    @Operation(summary = "팀 컬려 요소들 삭제", description = "팀 컬려 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteTeamCultureElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/teamCulture/detail")
+    public ResponseEntity<ResponseDTO> deleteTeamCultureElements(
+            @RequestBody @Valid WidgetRequest.DeleteTeamCultureElementsInDTO deleteTeamCultureElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deleteTeamCultureElements(deleteTeamCultureElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }

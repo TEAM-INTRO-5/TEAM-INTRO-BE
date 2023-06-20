@@ -171,4 +171,11 @@ public class WidgetRequest {
         @Schema(description = "팀 컬쳐 설명", example = "누구나 두려움 없이 아이디어를 발산할 수 있는 안전한 조직을 바랍니다. 단, 누구나 책임 blah~blah")
         private String description;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteTeamCultureElementsInDTO {
+        @Schema(description = "팀 컬쳐 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }
