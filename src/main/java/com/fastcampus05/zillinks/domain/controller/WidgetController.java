@@ -308,5 +308,23 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
+    @Operation(summary = "미션/비전", description = "미션/비전")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.MissionAndVisionOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "missionAndVisionInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/missionAndVision")
+    public ResponseEntity<ResponseDTO> saveMissionAndVision(
+            @RequestBody @Valid WidgetRequest.MissionAndVisionInDTO missionAndVisionInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.MissionAndVisionOutDTO missionAndVisionOutDTO = widgetService.saveMissionAndVision(missionAndVisionInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", missionAndVisionOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 
 }

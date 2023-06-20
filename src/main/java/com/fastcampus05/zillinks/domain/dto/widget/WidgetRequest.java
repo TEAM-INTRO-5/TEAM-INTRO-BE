@@ -212,5 +212,25 @@ public class WidgetRequest {
         private String sloganDetail;
     }
 
-
+    /**
+     * 미션/비전
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class MissionAndVisionInDTO {
+        @Schema(description = "미션/비전", example = "true")
+        private Boolean widgetStatus;
+        @Schema(description = "미션", example = "미션을 25자 이내로 작성")
+        @Pattern(regexp = "^.{0,25}$", message = "최대 25자 이내로 작성해 주세요.")
+        private String mission;
+        @Schema(description = "미션 설명", example = "미션 설명을 80자 이내로 작성")
+        @Pattern(regexp = "^.{0,80}$", message = "최대 80자 이내로 작성해 주세요.")
+        private String missionDetail;
+        @Schema(description = "비전", example = "비전을 25자 이내로 작성")
+        @Pattern(regexp = "^.{0,25}$", message = "최대 25자 이내로 작성해 주세요.")
+        private String vision;
+        @Schema(description = "비전 설명", example = "비전 설명을 80자 이내로 작성")
+        @Pattern(regexp = "^.{0,80}$", message = "최대 80자 이내로 작성해 주세요.")
+        private String visionDetail;
+    }
 }

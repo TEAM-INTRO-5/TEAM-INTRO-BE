@@ -22,4 +22,11 @@ public class MissionAndVision extends Widget {
     private String vision;
     @Column(name = "vision_detail")
     private String visionDetail;
+
+    public void updateMissionAndVision(String mission, String missionDetail, String vision, String visionDetail) {
+        this.mission = mission;
+        this.missionDetail = missionDetail;
+        this.vision = vision;
+        this.visionDetail = visionDetail;
+    }
 }
