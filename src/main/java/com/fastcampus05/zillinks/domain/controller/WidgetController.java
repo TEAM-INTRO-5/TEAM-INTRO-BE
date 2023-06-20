@@ -447,7 +447,7 @@ public class WidgetController {
     }
 
     /**
-     * 인증/특허
+     * 특허/인증
      */
     @Operation(summary = "인증/특허 요소 추가", description = "인증/특허 요소 추가")
     @ApiResponses({
@@ -465,6 +465,25 @@ public class WidgetController {
     ) {
         WidgetResponse.SavePatentElementOutDTO savePatentElementOutDTO = widgetService.savePatentElement(savePatentElementInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", savePatentElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
+    @Operation(summary = "인증/특허 요소들 삭제", description = "인증/특허 요소들 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "deleteReviewElementsInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @DeleteMapping("/patent/detail")
+    public ResponseEntity<ResponseDTO> deletePatentElements(
+            @RequestBody @Valid WidgetRequest.DeletePatentElementsInDTO deletePatentElementsInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        widgetService.deletePatentElements(deletePatentElementsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }

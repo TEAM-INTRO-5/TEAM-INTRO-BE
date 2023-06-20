@@ -316,4 +316,11 @@ public class WidgetRequest {
         @Schema(description = "특허/인증 이미지", example = "URL 주소")
         private String image;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeletePatentElementsInDTO {
+        @Schema(description = "특허/인증 삭제 리스트", example = "[1, 2, 3]")
+        private List<Long> deleteList;
+    }
 }
