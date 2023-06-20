@@ -544,6 +544,39 @@ public class WidgetService {
      * 고객 리뷰
      */
     @Transactional
+    public WidgetResponse.UpdateReviewOutDTO updateReview(WidgetRequest.UpdateReviewInDTO updateReviewInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Review reviewPS = (Review) introPagePS.getWidgets().stream().filter(s -> s instanceof Review).findFirst().orElseThrow(
+                () -> new Exception500("Review 위젯이 존재하지 않습니다.")
+        );
+
+        reviewPS.setWidgetStatus(updateReviewInDTO.getWidgetStatus());
+
+        List<ReviewElement> reviewElements = reviewPS.getReviewElement();
+        Long index = 1L;
+
+        List<Long> arr = new ArrayList<>();
+        for (int i = 0; i < updateReviewInDTO.getOrderList().size(); i++)
+            arr.add(0L);
+
+        for (Long aLong : updateReviewInDTO.getOrderList()) {
+            ReviewElement reviewElementPS = reviewElements.stream().filter(s -> s.getOrder() == aLong).findFirst().orElseThrow(
+                    () -> new Exception400("order_list", "해당 order에 맞는 요소가 없습니다.")
+            );
+            int pos = reviewElements.indexOf(reviewElementPS);
+            arr.set(pos, index);
+            index++;
+        }
+        for (int i = 0; i < arr.size(); i++) {
+            reviewElements.get(i).setOrder(arr.get(i));
+        }
+        return WidgetResponse.UpdateReviewOutDTO.toOutDTO(reviewPS);
+    }
+
+    @Transactional
     public WidgetResponse.SaveReviewElementOutDTO saveReviewElementInDTO(WidgetRequest.SaveReviewElementInDTO saveReviewElementInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));

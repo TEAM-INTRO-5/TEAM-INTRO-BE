@@ -389,6 +389,25 @@ public class WidgetController {
     /**
      * 고객 리뷰
      */
+    @Operation(summary = "팀 컬쳐 수정", description = "팀 컬쳐 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateReviewOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateReviewInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PutMapping("/review")
+    public ResponseEntity<ResponseDTO<WidgetResponse.UpdateReviewOutDTO>> updateReview(
+            @RequestBody @Valid WidgetRequest.UpdateReviewInDTO updateReviewInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.UpdateReviewOutDTO updateReviewOutDTO = widgetService.updateReview(updateReviewInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", updateReviewOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "고객 리뷰 요소 추가", description = "고객 리뷰 요소 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveReviewElementOutDTO.class))),
