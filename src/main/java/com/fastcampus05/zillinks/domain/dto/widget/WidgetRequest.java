@@ -157,4 +157,18 @@ public class WidgetRequest {
         @Schema(description = "상세 주소", example = "11층")
         private String detailedAddress;
     }
+
+    /**
+     * 팀 컬려
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveTeamCultureElementInDTO {
+        @Schema(description = "팀 컬쳐 이미지", example = "URL 주소")
+        private String image;
+        @Schema(description = "팀 컬쳐", example = "수평적인 커뮤니케이션")
+        private String culture;
+        @Schema(description = "팀 컬쳐 설명", example = "누구나 두려움 없이 아이디어를 발산할 수 있는 안전한 조직을 바랍니다. 단, 누구나 책임 blah~blah")
+        private String description;
+    }
 }

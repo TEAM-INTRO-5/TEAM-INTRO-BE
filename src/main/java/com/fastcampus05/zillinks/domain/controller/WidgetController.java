@@ -205,6 +205,7 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
+<<<<<<< HEAD
     @Operation(summary = "contact-Us", description = "map_status가 ture일 경우 full_address 값 필수")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ContactUsOutDTO.class))),
@@ -228,4 +229,25 @@ public class WidgetController {
         return ResponseEntity.ok(responseBody);
     }
 
+    /**
+     * 팀 컬려
+     */
+    @Operation(summary = "팀 컬려 요소 추가", description = "팀 컬려 요소 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.SaveTeamCultureElementOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "saveTeamCultureElementInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PostMapping("/teamCulture/detail")
+    public ResponseEntity<ResponseDTO<WidgetResponse.SavePerformanceElementOutDTO>> saveTeamCultureElement(
+            @RequestBody @Valid WidgetRequest.SaveTeamCultureElementInDTO saveTeamCultureElementInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.SaveTeamCultureElementOutDTO saveTeamCultureElementOutDTO = widgetService.saveTeamCultureElement(saveTeamCultureElementInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", saveTeamCultureElementOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
 }

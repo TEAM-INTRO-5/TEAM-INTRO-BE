@@ -88,12 +88,11 @@ public class WidgetResponse {
         }
 
         public static UpdateProductsAndServicesOutDTO toOutDTO(
-                ProductsAndServices productsAndServices,
-                List<Long> orderList
+                ProductsAndServices productsAndServices
         ) {
             List<ProductsAndServicesElement> productsAndServicesElements = productsAndServices.getProductsAndServicesElements();
             List<ProductsAndServicesElementOutDTO> productsAndServicesElementOutDTOs = new ArrayList<>();
-            for (int i = 0; i < orderList.size(); i++) {
+            for (int i = 0; i < productsAndServicesElements.size(); i++) {
                 for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
                     if (productsAndServicesElement.getOrder() != i + 1)
                         continue;
@@ -352,7 +351,6 @@ public class WidgetResponse {
         }
     }
 
-
     @Getter
     @Builder
     @AllArgsConstructor
@@ -376,4 +374,29 @@ public class WidgetResponse {
         }
     }
 
+    /**
+     * 팀 컬쳐
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveTeamCultureElementOutDTO {
+        private Long teamCultureElementId;
+        private String image;
+        private String culture;
+        private String desciption;
+
+        public static SaveTeamCultureElementOutDTO toOutDTO(
+                TeamCultureElement teamCultureElement
+        ) {
+            return SaveTeamCultureElementOutDTO.builder()
+                    .teamCultureElementId(teamCultureElement.getId())
+                    .image(teamCultureElement.getImage())
+                    .culture(teamCultureElement.getCulture())
+                    .desciption(teamCultureElement.getDesciption())
+                    .build();
+        }
+    }
 }
