@@ -291,7 +291,7 @@ public class WidgetController {
 
     @Operation(summary = "키 비주얼/슬로건", description = "키 비주얼/슬로건")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.KeyVisualAndSloganOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "keyVisualAndSloganInDTO"),

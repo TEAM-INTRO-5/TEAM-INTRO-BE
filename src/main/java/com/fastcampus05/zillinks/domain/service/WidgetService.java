@@ -443,25 +443,24 @@ public class WidgetService {
         KeyVisualAndSlogan keyVisualAndSloganPS = (KeyVisualAndSlogan) introPagePS.getWidgets().stream().filter(s -> s instanceof KeyVisualAndSlogan).findFirst().orElseThrow(
                 () -> new Exception500("KeyVisualAndSlogan 위젯이 존재하지 않습니다."));
 
-        if (keyVisualAndSloganInDTO.getWidgetStatus() == Boolean.FALSE) {
-            keyVisualAndSloganPS.setWidgetStatus(false);
-            return null;
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+
+        keyVisualAndSloganPS.setWidgetStatus(keyVisualAndSloganInDTO.getWidgetStatus());
+        if (keyVisualAndSloganInDTO.getWidgetStatus()) {
+            List<String> pathOrginList = new ArrayList<>();
+            pathOrginList.add(keyVisualAndSloganPS.getBackground());
+            List<String> pathList = new ArrayList<>();
+            pathList.add(keyVisualAndSloganInDTO.getBackground());
+
+            manageS3Uploader(pathOrginList, pathList);
+
+            keyVisualAndSloganPS.updateKeyVisualAndSlogan(
+                    keyVisualAndSloganInDTO.getBackground(),
+                    keyVisualAndSloganInDTO.getFilter(),
+                    keyVisualAndSloganInDTO.getSlogan(),
+                    keyVisualAndSloganInDTO.getSloganDetail()
+            );
         }
-
-        List<String> pathOrginList = new ArrayList<>();
-        pathOrginList.add(keyVisualAndSloganPS.getBackground());
-        List<String> pathList = new ArrayList<>();
-        pathList.add(keyVisualAndSloganInDTO.getBackground());
-
-        manageS3Uploader(pathOrginList, pathList);
-
-        keyVisualAndSloganPS.setWidgetStatus(true);
-        keyVisualAndSloganPS.updateKeyVisualAndSlogan(
-                keyVisualAndSloganInDTO.getBackground(),
-                keyVisualAndSloganInDTO.getFilter(),
-                keyVisualAndSloganInDTO.getSlogan(),
-                keyVisualAndSloganInDTO.getSloganDetail()
-        );
 
         return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
     }
