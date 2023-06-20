@@ -13,9 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -455,7 +457,7 @@ public class IntroPageResponse {
             private static class HistoryElementOutDTO {
                 private Long historyElementId;
                 private String image;
-                private LocalDateTime date;
+                private LocalDate date;
                 private String title;
                 private String description;
 
@@ -472,13 +474,11 @@ public class IntroPageResponse {
 
             private static HistoryOutDTO toOutDTO(History history) {
                 List<HistoryElement> historyElements = history.getHistoryElements();
+                Collections.sort(historyElements, Collections.reverseOrder());
                 List<HistoryElementOutDTO> historyElementOutDTOs = new ArrayList<>();
-                for (int i = 0; i < historyElements.size(); i++) {
-                    for (HistoryElement historyElement : historyElements) {
-                        if (historyElement.getOrder() != i + 1)
-                            continue;
-                        historyElementOutDTOs.add(HistoryElementOutDTO.toOutDTO(historyElement));
-                    }
+                // check-point 날짜 순으로 출력
+                for (HistoryElement historyElement : historyElements) {
+                    historyElementOutDTOs.add(HistoryElementOutDTO.toOutDTO(historyElement));
                 }
                 return HistoryOutDTO.builder()
                         .widgetId(history.getId())

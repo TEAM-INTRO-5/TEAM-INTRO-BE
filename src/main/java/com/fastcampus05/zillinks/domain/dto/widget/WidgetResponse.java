@@ -9,7 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -469,6 +471,55 @@ public class WidgetResponse {
         }
     }
 
+    /**
+     * 연혁
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateHistoryOutDTO {
+        private Long historyId;
+        private List<HistoryElementOutDTO> histroyElements;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class HistoryElementOutDTO {
+            private Long historyElementId;
+            private String image;
+            private LocalDate date;
+            private String title;
+            private String description;
+
+            private static HistoryElementOutDTO toOutDTO(HistoryElement historyElement) {
+                return HistoryElementOutDTO.builder()
+                        .historyElementId(historyElement.getId())
+                        .image(historyElement.getImage())
+                        .date(historyElement.getDate())
+                        .title(historyElement.getImage())
+                        .description(historyElement.getDescription())
+                        .build();
+            }
+        }
+
+        public static UpdateHistoryOutDTO toOutDTO(History history) {
+            List<HistoryElement> historyElements = history.getHistoryElements();
+            Collections.sort(historyElements, Collections.reverseOrder());
+            List<HistoryElementOutDTO> historyElementOutDTOs = new ArrayList<>();
+            for (HistoryElement historyElement : historyElements) {
+                historyElementOutDTOs.add(HistoryElementOutDTO.toOutDTO(historyElement));
+            }
+            return UpdateHistoryOutDTO.builder()
+                    .historyId(history.getId())
+                    .histroyElements(historyElementOutDTOs)
+                    .build();
+        }
+    }
+
     @Getter
     @Builder
     @AllArgsConstructor
@@ -492,5 +543,28 @@ public class WidgetResponse {
         }
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveHistoryElementOutDTO {
+        private Long historyElementId;
+        private String image;
+        private LocalDate date;
+        private String title;
+        private String description;
 
+        public static SaveHistoryElementOutDTO toOutDTO(
+                HistoryElement historyElement
+        ) {
+            return SaveHistoryElementOutDTO.builder()
+                    .historyElementId(historyElement.getId())
+                    .image(historyElement.getImage())
+                    .date(historyElement.getDate())
+                    .title(historyElement.getTitle())
+                    .description(historyElement.getDescription())
+                    .build();
+        }
+    }
 }

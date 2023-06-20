@@ -42,6 +42,8 @@ public class WidgetService {
     private final PerformanceElementQueryRepository performanceElementQueryRepository;
     private final TeamCultureElementRepository teamCultureElementRepository;
     private final TeamCultureElementQueryRepository teamCultureElementQueryRepository;
+    private final HistoryElementRepository historyElementRepository;
+    private final HistoryElementQueryRepository historyElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -465,7 +467,6 @@ public class WidgetService {
         return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
     }
 
-
     @Transactional
     public WidgetResponse.MissionAndVisionOutDTO saveMissionAndVision(WidgetRequest.MissionAndVisionInDTO missionAndVisionInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
@@ -488,17 +489,54 @@ public class WidgetService {
                     missionAndVisionInDTO.getVisionDetail()
             );
         }
-
         return WidgetResponse.MissionAndVisionOutDTO.toOutDTO(missionAndVisionPS);
     }
 
+    /**
+     * 연혁
+     */
+    @Transactional
+    public WidgetResponse.UpdateHistoryOutDTO updateHistory(WidgetRequest.UpdateHistoryInDTO updateHistoryInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        History historyPS = (History) introPagePS.getWidgets().stream().filter(s -> s instanceof History).findFirst().orElseThrow(
+                () -> new Exception500("History 위젯이 존재하지 않습니다.")
+        );
 
-//    List<String> pathOrginList = new ArrayList<>();
-//        pathOrginList.add(introPagePS.getSiteInfo().getPavicon());
-//    List<String> pathList = new ArrayList<>();
-//        pathList.add(updateSiteInfoInDTO.getPavicon());
-//
-//    manageS3Uploader(pathOrginList, pathList);
+        historyPS.setWidgetStatus(updateHistoryInDTO.getWidgetStatus());
+        return WidgetResponse.UpdateHistoryOutDTO.toOutDTO(historyPS);
+    }
+
+    @Transactional
+    public WidgetResponse.SaveHistoryElementOutDTO saveHistoryElement(WidgetRequest.SaveHistoryElementInDTO saveHistoryElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        History historyPS = (History) introPagePS.getWidgets().stream().filter(s -> s instanceof History).findFirst().orElseThrow(
+                () -> new Exception500("History 위젯이 존재하지 않습니다.")
+        );
+
+        HistoryElement historyElement = HistoryElement.builder()
+                .history(historyPS)
+                .image(saveHistoryElementInDTO.getImage())
+                .date(saveHistoryElementInDTO.getDate())
+                .title(saveHistoryElementInDTO.getTitle())
+                .description(saveHistoryElementInDTO.getDescription())
+                .build();
+        HistoryElement historyElementPS = historyElementRepository.save(historyElement);
+        return WidgetResponse.SaveHistoryElementOutDTO.toOutDTO(historyElementPS);
+    }
+
+    public void deleteHistoryElements(WidgetRequest.DeleteHistoryElementsInDTO deleteHistoryElementsInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        historyElementQueryRepository.deleteByDeleteList(deleteHistoryElementsInDTO.getDeleteList());
+    }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
         log.info("변경 전 pathOriginList={}", pathOrginList);
