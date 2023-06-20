@@ -9,15 +9,16 @@ import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPageStatus;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
 import com.fastcampus05.zillinks.domain.model.widget.*;
 import com.fastcampus05.zillinks.domain.model.widget.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.http.HttpMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class WidgetService {
     private final PerformanceElementQueryRepository performanceElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
+
     @Transactional
     public WidgetResponse.UpdateProductsAndServicesOutDTO updateProductsAndServices(WidgetRequest.UpdateProductsAndServicesInDTO updateProductsAndServicesInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
@@ -325,7 +327,7 @@ public class WidgetService {
     }
 
     @Transactional
-    public WidgetResponse.ContactUsWidgetOutDTO saveContactUs(WidgetRequest.ContactUsWidgetInDTO contactUsWidgetInDTO, User user) {
+    public WidgetResponse.ContactUsOutDTO saveContactUs(WidgetRequest.ContactUsInDTO contactUsInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
@@ -335,27 +337,22 @@ public class WidgetService {
         ContactUs contactUsPS = (ContactUs) introPagePS.getWidgets().stream().filter(s -> s instanceof ContactUs).findFirst().orElseThrow(
                 () -> new Exception500("ContactUs 위젯이 존재하지 않습니다."));
 
-        if (contactUsWidgetInDTO.getWidgetStatus() == Boolean.FALSE) {
-            contactUsPS.setWidgetStatus(false);
-            return null;
-        } else {
-            contactUsPS.setWidgetStatus(true);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+
+        contactUsPS.setWidgetStatus(contactUsInDTO.getWidgetStatus());
+        if (contactUsInDTO.getWidgetStatus()) {
+            contactUsPS.setMapStatus(contactUsInDTO.getMapStatus());
+            if (contactUsInDTO.getMapStatus()) {
+                KakaoAddress kakaoAddress = Common.kakaoSearchAddress(KAKAO_MAP_URL, HttpMethod.GET, contactUsInDTO.getFullAddress());
+                contactUsPS.updateContactUsWidget(contactUsInDTO.getMapStatus(),
+                        contactUsInDTO.getFullAddress(),
+                        contactUsInDTO.getDetailedAddress(),
+                        kakaoAddress.getDocuments().get(0).getY(),
+                        kakaoAddress.getDocuments().get(0).getX());
+            }
         }
 
-        if (contactUsWidgetInDTO.getMapStatus() == Boolean.FALSE) {
-            contactUsPS.setMapStatus(false);
-            return null;
-        }
-
-        KakaoAddress kakaoAddress = Common.kakaoSearchAddress(KAKAO_MAP_URL, HttpMethod.GET, contactUsWidgetInDTO.getFullAddress());
-
-        contactUsPS.updateContactUsWidget(contactUsWidgetInDTO.getMapStatus(),
-                contactUsWidgetInDTO.getFullAddress(),
-                contactUsWidgetInDTO.getDetailedAddress(),
-                kakaoAddress.getDocuments().get(0).getY(),
-                kakaoAddress.getDocuments().get(0).getX());
-
-        return WidgetResponse.ContactUsWidgetOutDTO.toOutDTO(contactUsPS);
+        return WidgetResponse.ContactUsOutDTO.toOutDTO(contactUsPS);
     }
 
 

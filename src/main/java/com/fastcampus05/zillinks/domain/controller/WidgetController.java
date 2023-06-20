@@ -207,7 +207,7 @@ public class WidgetController {
 
     @Operation(summary = "contact-Us", description = "map_status가 ture일 경우 full_address 값 필수")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ContactUsWidgetOutDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ContactUsOutDTO.class))),
     })
     @Parameters({
             @Parameter(name = "contactUsInDTO"),
@@ -215,16 +215,16 @@ public class WidgetController {
     })
     @PatchMapping("/contactUs")
     public ResponseEntity<ResponseDTO> saveContactUs(
-            @RequestBody @Valid WidgetRequest.ContactUsWidgetInDTO contactUsWidgetInDTO,
+            @RequestBody @Valid WidgetRequest.ContactUsInDTO contactUsInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
     ) {
-        if (contactUsWidgetInDTO.getMapStatus() == Boolean.TRUE &&
-                contactUsWidgetInDTO.getFullAddress() == null) {  // 지도 사용여부 : true 일 때, 전체 주소 필수
+        if (contactUsInDTO.getMapStatus() == Boolean.TRUE &&
+                contactUsInDTO.getFullAddress() == null) {  // 지도 사용여부 : true 일 때, 전체 주소 필수
             throw new Exception400("full_address", "전체 주소를 입력해 주세요.");
         }
-        WidgetResponse.ContactUsWidgetOutDTO contactUsWidgetOutDTO = widgetService.saveContactUs(contactUsWidgetInDTO, myUserDetails.getUser());
-        ResponseDTO responseBody = new ResponseDTO(contactUsWidgetOutDTO);
+        WidgetResponse.ContactUsOutDTO contactUsOutDTO = widgetService.saveContactUs(contactUsInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(contactUsOutDTO);
         return ResponseEntity.ok(responseBody);
     }
 

@@ -25,7 +25,7 @@ public class DashboardResponse {
     public static class FindContactUsOutDTO {
         private Long introPageId;
         private String status;
-        private List<ContactUsOutDTO> content;
+        private List<ContactUsLogOutDTO> content;
         private Long totalElements;
         private Integer totalPage;
         private Integer size;
@@ -40,7 +40,7 @@ public class DashboardResponse {
         @Builder
         @AllArgsConstructor
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class ContactUsOutDTO {
+        public static class ContactUsLogOutDTO {
             private Long contactUsLogId;
             private String email;
             private String name;
@@ -53,13 +53,13 @@ public class DashboardResponse {
         public static FindContactUsOutDTO toOutDTO(
                 IntroPage introPage,
                 Page<ContactUsLog> contactUsLog,
-                List<DashboardResponse.FindContactUsOutDTO.ContactUsOutDTO> contactUsOutDTOList,
+                List<ContactUsLogOutDTO> contactUsLogOutDTOList,
                 ContactUsStatus status
         ) {
             return FindContactUsOutDTO.builder()
                     .introPageId(introPage.getId())
                     .status(String.valueOf(status))
-                    .content(contactUsOutDTOList)
+                    .content(contactUsLogOutDTOList)
                     .totalElements(contactUsLog.getTotalElements())
                     .totalPage(contactUsLog.getTotalPages())
                     .size(contactUsLog.getSize())

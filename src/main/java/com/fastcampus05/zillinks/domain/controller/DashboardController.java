@@ -43,14 +43,14 @@ public class DashboardController {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "contactUsInDTO")
+            @Parameter(name = "contactUsLogInDTO")
     })
     @PostMapping("/dashboard/contactUs")
     public ResponseEntity<ResponseDTO> saveContactUs(
-            @RequestBody @Valid DashboardRequest.ContactUsInDTO contactUsInDTO,
+            @RequestBody @Valid DashboardRequest.ContactUsLogInDTO contactUsLogInDTO,
             Errors errors
     ) {
-        dashboardService.saveContactUs(contactUsInDTO);
+        dashboardService.saveContactUs(contactUsLogInDTO);
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
