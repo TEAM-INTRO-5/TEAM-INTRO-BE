@@ -804,4 +804,30 @@ public class WidgetResponse {
                     .build();
         }
     }
+
+    /**
+     * 파트너스
+     */
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SavePartnersElementOutDTO {
+        private Long partnersElementId;
+        private PartnersType partnersType;
+        private String companyName;
+        private String logo;
+
+        public static SavePartnersElementOutDTO toOutDTO(
+                PartnersElement partnersElement
+        ) {
+            return SavePartnersElementOutDTO.builder()
+                    .partnersElementId(partnersElement.getId())
+                    .partnersType(partnersElement.getPartnersType())
+                    .companyName(partnersElement.getCompanyName())
+                    .logo(partnersElement.getLogo())
+                    .build();
+        }
+    }
 }

@@ -50,6 +50,8 @@ public class WidgetService {
     private final PatentElementQueryRepository patentElementQueryRepository;
     private final NewsElementRepository newsElementRepository;
     private final NewsElementQueryRepository newsElementQueryRepository;
+    private final PartnersElementRepository partnersElementRepository;
+    private final PartnersElementQueryRepository partnersElementQueryRepository;
 
     private final String KAKAO_MAP_URL = "https://dapi.kakao.com/v2/local/search/address.json";
 
@@ -813,5 +815,31 @@ public class WidgetService {
             s3UploaderRepository.delete(image);
         }
         newsElementQueryRepository.deleteByDeleteList(deleteNewsElementsInDTO.getDeleteList());
+    }
+
+    /**
+     * 파트너스
+     */
+    public WidgetResponse.SavePartnersElementOutDTO savePartnersElement(WidgetRequest.SavePartnersElementInDTO savePartnersElementInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+        Partners partnersPS = (Partners) introPagePS.getWidgets().stream().filter(s -> s instanceof Partners).findFirst().orElseThrow(
+                () -> new Exception500("Partners 위젯이 존재하지 않습니다.")
+        );
+        long index = 0;
+        for (PartnersElement partnersElement : partnersPS.getPartnersElements()) {
+            index = Math.max(index, partnersElement.getOrder());
+        }
+        PartnersElement partnersElement = PartnersElement.builder()
+                .partners(partnersPS)
+                .order(index + 1)
+                .partnersType(savePartnersElementInDTO.getPartnersType())
+                .companyName(savePartnersElementInDTO.getCompanyName())
+                .logo(savePartnersElementInDTO.getLogo())
+                .build();
+        PartnersElement partnersElementPS = partnersElementRepository.save(partnersElement);
+        return WidgetResponse.SavePartnersElementOutDTO.toOutDTO(partnersElementPS);
     }
 }
