@@ -416,4 +416,42 @@ public class WidgetRequest {
         private String introFile;
     }
 
+    /**
+     * 채널
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ChannelInDTO {
+        @Schema(description = "채널 사용 여부", example = "true")
+        private Boolean widgetStatus;
+        @Schema(description = "인스타그램 사용 여부", example = "true")
+        private Boolean instagramStatus;
+        @Schema(description = "인스타그램 아이디", example = "instagram_zillinks")
+        private String instagram;
+        @Schema(description = "링크드인 사용 여부", example = "true")
+        private Boolean linkedInStatus;
+        @Schema(description = "링크드인 아이디", example = "linkedIn_zillinks")
+        private String linkedIn;
+        @Schema(description = "유튜브 사용 여부", example = "true")
+        private Boolean youtubeStatus;
+        @Schema(description = "유튜브 아이디", example = "youtube_zillinks")
+        private String youtube;
+        @Schema(description = "노션 사용 여부", example = "true")
+        private Boolean notionStatus;
+        @Schema(description = "노션 아이디", example = "notion_zillinks")
+        private String notion;
+        @Schema(description = "네이버블로그 사용 여부", example = "true")
+        private Boolean naverBlogStatus;
+        @Schema(description = "네이버블로그 아이디", example = "naverBlog_zillinks")
+        private String naverBlog;
+        @Schema(description = "브런치스토리 사용 여부", example = "true")
+        private Boolean brunchStroyStatus;
+        @Schema(description = "브런치스토리 아이디", example = "brunchStroy_zillinks")
+        private String brunchStroy;
+        @Schema(description = "페이스북 사용 여부", example = "true")
+        private Boolean facebookStatus;
+        @Schema(description = "페이스북 아이디", example = "facebook_zillinks")
+        private String facebook;
+    }
+
 }

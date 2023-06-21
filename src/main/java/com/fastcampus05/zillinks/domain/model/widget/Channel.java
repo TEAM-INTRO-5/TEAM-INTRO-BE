@@ -18,4 +18,8 @@ import javax.persistence.Table;
 public class Channel extends Widget {
     @Embedded
     private SnsList snsList;
+
+    public void updateChannel(SnsList snsList) {
+        this.snsList = snsList;
+    }
 }

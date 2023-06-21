@@ -648,4 +648,27 @@ public class WidgetController {
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", downloadOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
+
+    /**
+     * 채널
+     */
+    @Operation(summary = "채널", description = "채널")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ChannelOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "channelInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/channel")
+    public ResponseEntity<ResponseDTO> saveChannel(
+            @RequestBody @Valid WidgetRequest.ChannelInDTO channelInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.ChannelOutDTO channelOutDTO = widgetService.saveChannel(channelInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", channelOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
 }

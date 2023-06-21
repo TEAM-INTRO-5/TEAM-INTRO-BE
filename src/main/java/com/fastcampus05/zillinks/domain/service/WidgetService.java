@@ -233,14 +233,14 @@ public class WidgetService {
                         .facebook(saveTeamMemberElement.getFacebook())
                         .build() :
                         SnsList.builder()
-                        .instagramStatus(false)
-                        .linkedInStatus(false)
-                        .youtubeStatus(false)
-                        .notionStatus(false)
-                        .naverBlogStatus(false)
-                        .brunchStroyStatus(false)
-                        .facebookStatus(false)
-                        .build()
+                                .instagramStatus(false)
+                                .linkedInStatus(false)
+                                .youtubeStatus(false)
+                                .notionStatus(false)
+                                .naverBlogStatus(false)
+                                .brunchStroyStatus(false)
+                                .facebookStatus(false)
+                                .build()
         );
         TeamMemberElement teamMemberElementPS = teamMemberElementRepository.save(teamMemberElement);
         return WidgetResponse.SaveTeamMemberElementOutDTO.toOutDTO(teamMemberElementPS);
@@ -932,4 +932,43 @@ public class WidgetService {
         }
         partnersElementQueryRepository.deleteByDeleteList(deletePartnersElementsInDTO.getDeleteList());
     }
+
+    @Transactional
+    public WidgetResponse.ChannelOutDTO saveChannel(WidgetRequest.ChannelInDTO channelInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        Channel channelPS = (Channel) introPagePS.getWidgets().stream().filter(s -> s instanceof Channel).findFirst().orElseThrow(
+                () -> new Exception500("Channel 위젯이 존재하지 않습니다."));
+
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+
+        SnsList snsList = new SnsList(
+                channelInDTO.getInstagramStatus(),
+                channelInDTO.getInstagram(),
+                channelInDTO.getLinkedInStatus(),
+                channelInDTO.getLinkedIn(),
+                channelInDTO.getYoutubeStatus(),
+                channelInDTO.getYoutube(),
+                channelInDTO.getNotionStatus(),
+                channelInDTO.getNotion(),
+                channelInDTO.getNaverBlogStatus(),
+                channelInDTO.getNaverBlog(),
+                channelInDTO.getBrunchStroyStatus(),
+                channelInDTO.getBrunchStroy(),
+                channelInDTO.getFacebookStatus(),
+                channelInDTO.getFacebook()
+        );
+
+        channelPS.setWidgetStatus(channelInDTO.getWidgetStatus());
+        if (channelInDTO.getWidgetStatus()) {
+            channelPS.updateChannel(snsList);
+        }
+
+        return WidgetResponse.ChannelOutDTO.toOutDTO(channelPS.getSnsList());
+    }
+
 }
