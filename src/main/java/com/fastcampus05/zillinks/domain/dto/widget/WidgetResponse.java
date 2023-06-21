@@ -24,6 +24,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveProductsAndServicesElementOutDTO {
         private Long productsAndServicesElementId;
+        private Long order;
         private String image;
         private String name;
         private String title;
@@ -34,6 +35,7 @@ public class WidgetResponse {
         ) {
             return SaveProductsAndServicesElementOutDTO.builder()
                     .productsAndServicesElementId(productsAndServicesElement.getId())
+                    .order(productsAndServicesElement.getOrder())
                     .image(productsAndServicesElement.getImage())
                     .name(productsAndServicesElement.getName())
                     .title(productsAndServicesElement.getTitle())
@@ -49,7 +51,6 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateProductsAndServicesOutDTO {
         private Long productsAndServicesId;
-        //        private List<Long> orderList;
         private List<ProductsAndServicesElementOutDTO> productsAndServicesElements;
         private Boolean callToActionStatus;
         private CallToActionOutDTO callToAction;
@@ -61,6 +62,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class ProductsAndServicesElementOutDTO {
             private Long productsAndServicesElementId;
+            private Long order;
             private String image;
             private String name;
             private String title;
@@ -69,6 +71,7 @@ public class WidgetResponse {
             private static ProductsAndServicesElementOutDTO toOutDTO(ProductsAndServicesElement productsAndServicesElement) {
                 return ProductsAndServicesElementOutDTO.builder()
                         .productsAndServicesElementId(productsAndServicesElement.getId())
+                        .order(productsAndServicesElement.getOrder())
                         .image(productsAndServicesElement.getImage())
                         .name(productsAndServicesElement.getName())
                         .title(productsAndServicesElement.getTitle())
@@ -129,6 +132,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class TeamMemberElementOutDTO {
             private Long teamMemberElementId;
+            private Long order;
             private String profile;
             private String name;
             private String group;
@@ -163,6 +167,7 @@ public class WidgetResponse {
             private static TeamMemberElementOutDTO toOutDTO(TeamMemberElement teamMemberElement) {
                 return TeamMemberElementOutDTO.builder()
                         .teamMemberElementId(teamMemberElement.getId())
+                        .order(teamMemberElement.getOrder())
                         .profile(teamMemberElement.getProfile())
                         .name(teamMemberElement.getName())
                         .group(teamMemberElement.getGroup())
@@ -216,6 +221,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveTeamMemberElementOutDTO {
         private Long teamMemberElementId;
+        private Long order;
         private String profile;
         private String name;
         private String group;
@@ -252,6 +258,7 @@ public class WidgetResponse {
         ) {
             return SaveTeamMemberElementOutDTO.builder()
                     .teamMemberElementId(teamMemberElement.getId())
+                    .order(teamMemberElement.getOrder())
                     .profile(teamMemberElement.getProfile())
                     .name(teamMemberElement.getName())
                     .group(teamMemberElement.getGroup())
@@ -298,6 +305,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class PerformanceElementOutDTO {
             private Long performanceElementId;
+            private Long order;
             private String descrition;
             private String additionalDescrition;
             private String indicator;
@@ -305,6 +313,7 @@ public class WidgetResponse {
             private static PerformanceElementOutDTO toOutDTO(PerformanceElement performanceElement) {
                 return PerformanceElementOutDTO.builder()
                         .performanceElementId(performanceElement.getId())
+                        .order(performanceElement.getOrder())
                         .descrition(performanceElement.getDescrition())
                         .additionalDescrition(performanceElement.getAdditionalDescrition())
                         .indicator(performanceElement.getIndicator())
@@ -336,6 +345,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePerformanceElementOutDTO {
         private Long performanceElementId;
+        private Long order;
         private String descrition;
         private String additionalDescrition;
         private String indicator;
@@ -345,6 +355,7 @@ public class WidgetResponse {
         ) {
             return SavePerformanceElementOutDTO.builder()
                     .performanceElementId(performanceElement.getId())
+                    .order(performanceElement.getOrder())
                     .descrition(performanceElement.getDescrition())
                     .additionalDescrition(performanceElement.getAdditionalDescrition())
                     .indicator(performanceElement.getIndicator())
@@ -394,6 +405,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class TeamCultureElementOutDTO {
             private Long teamCultureElementId;
+            private Long order;
             private String image;
             private String culture;
             private String desciption;
@@ -401,6 +413,7 @@ public class WidgetResponse {
             private static TeamCultureElementOutDTO toOutDTO(TeamCultureElement teamCultureElement) {
                 return TeamCultureElementOutDTO.builder()
                         .teamCultureElementId(teamCultureElement.getId())
+                        .order(teamCultureElement.getOrder())
                         .image(teamCultureElement.getImage())
                         .culture(teamCultureElement.getCulture())
                         .desciption(teamCultureElement.getDesciption())
@@ -432,6 +445,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveTeamCultureElementOutDTO {
         private Long teamCultureElementId;
+        private Long order;
         private String image;
         private String culture;
         private String desciption;
@@ -441,6 +455,7 @@ public class WidgetResponse {
         ) {
             return SaveTeamCultureElementOutDTO.builder()
                     .teamCultureElementId(teamCultureElement.getId())
+                    .order(teamCultureElement.getOrder())
                     .image(teamCultureElement.getImage())
                     .culture(teamCultureElement.getCulture())
                     .desciption(teamCultureElement.getDesciption())
@@ -587,6 +602,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class ReviewElementOutDTO {
             private Long reviewElementId;
+            private Long order;
             private String image;
             private String name;
             private String group;
@@ -596,6 +612,7 @@ public class WidgetResponse {
             private static ReviewElementOutDTO toOutDTO(ReviewElement reviewElement) {
                 return ReviewElementOutDTO.builder()
                         .reviewElementId(reviewElement.getId())
+                        .order(reviewElement.getOrder())
                         .image(reviewElement.getImage())
                         .name(reviewElement.getName())
                         .group(reviewElement.getGroup())
@@ -629,6 +646,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveReviewElementOutDTO {
         private Long reviewElementId;
+        private Long order;
         private String image;
         private String name;
         private String group;
@@ -640,6 +658,7 @@ public class WidgetResponse {
         ) {
             return SaveReviewElementOutDTO.builder()
                     .reviewElementId(reviewElement.getId())
+                    .order(reviewElement.getOrder())
                     .image(reviewElement.getImage())
                     .name(reviewElement.getName())
                     .group(reviewElement.getGroup())
@@ -668,6 +687,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class PatentElementOutDTO {
             private Long patentElementId;
+            private Long order;
             private PatentType patentType;
             private String title;
             private String image;
@@ -675,6 +695,7 @@ public class WidgetResponse {
             private static PatentElementOutDTO toOutDTO(PatentElement patentElement) {
                 return PatentElementOutDTO.builder()
                         .patentElementId(patentElement.getId())
+                        .order(patentElement.getOrder())
                         .patentType(patentElement.getPatentType())
                         .title(patentElement.getTitle())
                         .image(patentElement.getImage())
@@ -706,6 +727,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePatentElementOutDTO {
         private Long patentElementId;
+        private Long order;
         private PatentType patentType;
         private String title;
         private String image;
@@ -715,6 +737,7 @@ public class WidgetResponse {
         ) {
             return SavePatentElementOutDTO.builder()
                     .patentElementId(patentElement.getId())
+                    .order(patentElement.getOrder())
                     .patentType(patentElement.getPatentType())
                     .title(patentElement.getTitle())
                     .image(patentElement.getImage())
@@ -741,6 +764,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class NewsElementOutDTO {
             private Long newsElementId;
+            private Long order;
             private String image;
             private LocalDate date;
             private String press;
@@ -750,6 +774,7 @@ public class WidgetResponse {
             private static NewsElementOutDTO toOutDTO(NewsElement newsElement) {
                 return NewsElementOutDTO.builder()
                         .newsElementId(newsElement.getId())
+                        .order(newsElement.getOrder())
                         .image(newsElement.getImage())
                         .date(newsElement.getDate())
                         .press(newsElement.getPress())
@@ -783,6 +808,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveNewsElementOutDTO {
         private Long newsElementId;
+        private Long order;
         private String image;
         private LocalDate date;
         private String press;
@@ -794,6 +820,7 @@ public class WidgetResponse {
         ) {
             return SaveNewsElementOutDTO.builder()
                     .newsElementId(newsElement.getId())
+                    .order(newsElement.getOrder())
                     .image(newsElement.getImage())
                     .date(newsElement.getDate())
                     .press(newsElement.getPress())
@@ -822,6 +849,7 @@ public class WidgetResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class PartnersElementOutDTO {
             private Long partnersElementId;
+            private Long order;
             private PartnersType partnersType;
             private String companyName;
             private String logo;
@@ -829,6 +857,7 @@ public class WidgetResponse {
             private static PartnersElementOutDTO toOutDTO(PartnersElement partnersElement) {
                 return PartnersElementOutDTO.builder()
                         .partnersElementId(partnersElement.getId())
+                        .order(partnersElement.getOrder())
                         .partnersType(partnersElement.getPartnersType())
                         .companyName(partnersElement.getCompanyName())
                         .logo(partnersElement.getLogo())
@@ -860,6 +889,7 @@ public class WidgetResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePartnersElementOutDTO {
         private Long partnersElementId;
+        private Long order;
         private PartnersType partnersType;
         private String companyName;
         private String logo;
@@ -869,6 +899,7 @@ public class WidgetResponse {
         ) {
             return SavePartnersElementOutDTO.builder()
                     .partnersElementId(partnersElement.getId())
+                    .order(partnersElement.getOrder())
                     .partnersType(partnersElement.getPartnersType())
                     .companyName(partnersElement.getCompanyName())
                     .logo(partnersElement.getLogo())

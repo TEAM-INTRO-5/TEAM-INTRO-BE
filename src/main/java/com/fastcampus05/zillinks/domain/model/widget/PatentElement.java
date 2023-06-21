@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "patent_element_tb")
-public class PatentElement {
+public class PatentElement extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "patent_element_id")
