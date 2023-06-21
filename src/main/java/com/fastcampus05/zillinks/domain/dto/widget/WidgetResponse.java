@@ -929,7 +929,48 @@ public class WidgetResponse {
         }
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ChannelOutDTO {
+        private Boolean instagramStatus;
+        private String instagram;
+        private Boolean linkedInStatus;
+        private String linkedIn;
+        private Boolean youtubeStatus;
+        private String youtube;
+        private Boolean notionStatus;
+        private String notion;
+        private Boolean naverBlogStatus;
+        private String naverBlog;
+        private Boolean brunchStroyStatus;
+        private String brunchStroy;
+        private Boolean facebookStatus;
+        private String facebook;
 
+        public static ChannelOutDTO toOutDTO(
+                SnsList snsList
+        ) {
+            return ChannelOutDTO.builder()
+                    .instagramStatus(snsList.getInstagramStatus())
+                    .instagram(snsList.getInstagram())
+                    .linkedInStatus(snsList.getLinkedInStatus())
+                    .linkedIn(snsList.getLinkedIn())
+                    .youtubeStatus(snsList.getYoutubeStatus())
+                    .youtube(snsList.getYoutube())
+                    .notionStatus(snsList.getNotionStatus())
+                    .notion(snsList.getNotion())
+                    .naverBlogStatus(snsList.getNaverBlogStatus())
+                    .naverBlog(snsList.getNaverBlog())
+                    .brunchStroyStatus(snsList.getBrunchStroyStatus())
+                    .brunchStroy(snsList.getBrunchStroy())
+                    .facebookStatus(snsList.getFacebookStatus())
+                    .facebook(snsList.getFacebook())
+                    .build();
+        }
+    }
 
 
 }
