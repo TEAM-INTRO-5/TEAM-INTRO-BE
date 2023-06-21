@@ -1,6 +1,9 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
+import com.fastcampus05.zillinks.domain.model.widget.WidgetType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -10,6 +13,25 @@ import java.util.List;
 public class IntroPageRequest {
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindIntroPageInDTO {
+        @Schema(description = "기본 주소", example = "zillinks")
+        private String subDomain;
+        @Schema(description = "검색 키워드", example = "질링스 회사소개")
+        private String keyword;
+        @Schema(description = "공개 번호", example = "_code")
+        private String share;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class SaveIntroPageInDTO {
+        @Schema(description = "사용되는 위젯 리스트 순서대로 기입", example = "[MISSIONANDVISION, PRODUCTSANDSERVICES, CONTACTUS, REVIEW]")
+        private List<WidgetType> widgetTypeList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateInDTO {
         @Schema(description = "공개 여부", example = "false")
         private Boolean status;
@@ -26,6 +48,7 @@ public class IntroPageRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateSiteInfoInDTO {
 
         @Schema(description = "pavicon 저장 경로", example = "https://taeheoki-bucket.s3.ap-northeast-2.amazonaws.com/upload/506b4c3a-53de-4cee-b571-ffa074f73ea9.jpg")
@@ -43,6 +66,7 @@ public class IntroPageRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateCompanyInfoInDTO {
         @Schema(description = "대표 성명", example = "홍길동")
         private String representative;
@@ -60,6 +84,7 @@ public class IntroPageRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateHeaderAndFooter {
         @Schema(description = "위젯들의 공개 여부", example = "[true, false, true, false, true, false, true, false, true, false, true, false, true]")
         @Size(min = 13, max = 13, message = "상태의 개수 12개")

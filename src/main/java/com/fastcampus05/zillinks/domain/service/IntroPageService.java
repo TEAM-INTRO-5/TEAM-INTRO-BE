@@ -6,6 +6,7 @@ import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
+import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
@@ -33,9 +34,26 @@ public class IntroPageService {
     private final UserRepository userRepository;
     private final S3UploaderFileRepository s3UploaderFileRepository;
     private final S3UploaderRepository s3UploaderRepository;
+    private final SiteInfoRepository siteInfoRepository;
 
     @Transactional
-    public void saveIntroPage(User user) {
+    public IntroPageResponse.FindIntroPageOutDTO getIntroPage(IntroPageRequest.FindIntroPageInDTO findIntroPageInDTO) {
+        SiteInfo siteInfoPS = siteInfoRepository.findBySubDomain(findIntroPageInDTO.getSubDomain())
+                .orElseThrow(() -> new Exception400("sub_domain", "존재하지 sub_domain입니다."));
+        IntroPage introPagePS = siteInfoPS.getIntroPage();
+        if (introPagePS.getIntroPageStatus().equals(IntroPageStatus.PRIVATE))
+            throw new Exception400("intro_page_status", "비공개 상태의 회사 소개 페이지입니다.");
+
+        List<Integer> orderList = new ArrayList<>();
+        for (Widget widget : introPagePS.getWidgets()) {
+            orderList.add(widget.getOrder());
+        }
+
+        return IntroPageResponse.FindIntroPageOutDTO.toOutDTO(introPagePS, orderList);
+    }
+
+    @Transactional
+    public void saveIntroPage(IntroPageRequest.SaveIntroPageInDTO saveIntroPageInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
@@ -43,20 +61,96 @@ public class IntroPageService {
         introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
         introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
         introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
-        introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(1).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
-        introPagePS.addWidgets(MissionAndVision.builder().order(2).widgetType(WidgetType.MISSIONANDVISION).build());
-        introPagePS.addWidgets(ProductsAndServices.builder().order(3).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
-        introPagePS.addWidgets(TeamMember.builder().order(4).widgetType(WidgetType.TEAMMEMBER).build());
-        introPagePS.addWidgets(ContactUs.builder().order(5).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
-        introPagePS.addWidgets(Performance.builder().order(6).widgetType(WidgetType.PERFORMANCE).build());
-        introPagePS.addWidgets(TeamCulture.builder().order(7).widgetType(WidgetType.TEAMCULTURE).build());
-        introPagePS.addWidgets(History.builder().order(8).widgetType(WidgetType.HISTORY).build());
-        introPagePS.addWidgets(Review.builder().order(9).widgetType(WidgetType.REVIEW).build());
-        introPagePS.addWidgets(Patent.builder().order(10).widgetType(WidgetType.PATENT).build());
-        introPagePS.addWidgets(News.builder().order(11).widgetType(WidgetType.NEWS).build());
-        introPagePS.addWidgets(Download.builder().order(12).widgetType(WidgetType.DOWNLOAD).build());
-        introPagePS.addWidgets(Partners.builder().order(13).widgetType(WidgetType.PARTNERS).build());
-        introPagePS.addWidgets(Channel.builder().order(14).widgetType(WidgetType.CHANNEL).build());
+
+        List<WidgetType> widgetTypeList = saveIntroPageInDTO.getWidgetTypeList();
+        System.out.println("widgetTypeList=" + widgetTypeList);
+        int i = 1;
+        for (WidgetType widgetType : widgetTypeList) {
+            if (widgetType.equals(WidgetType.KEYVISUALANDSLOGAN))
+                introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(i).widgetStatus(true).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
+            else if (widgetType.equals(WidgetType.MISSIONANDVISION))
+                introPagePS.addWidgets(MissionAndVision.builder().order(i).widgetStatus(true).widgetType(WidgetType.MISSIONANDVISION).build());
+            else if (widgetType.equals(WidgetType.PRODUCTSANDSERVICES))
+                introPagePS.addWidgets(ProductsAndServices.builder().order(i).widgetStatus(true).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
+            else if (widgetType.equals(WidgetType.TEAMMEMBER))
+                introPagePS.addWidgets(TeamMember.builder().order(i).widgetStatus(true).widgetType(WidgetType.TEAMMEMBER).build());
+            else if (widgetType.equals(WidgetType.CONTACTUS))
+                introPagePS.addWidgets(ContactUs.builder().order(i).widgetStatus(true).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
+            else if (widgetType.equals(WidgetType.PERFORMANCE))
+                introPagePS.addWidgets(Performance.builder().order(i).widgetStatus(true).widgetType(WidgetType.PERFORMANCE).build());
+            else if (widgetType.equals(WidgetType.TEAMCULTURE))
+                introPagePS.addWidgets(TeamCulture.builder().order(i).widgetStatus(true).widgetType(WidgetType.TEAMCULTURE).build());
+            else if (widgetType.equals(WidgetType.HISTORY))
+                introPagePS.addWidgets(History.builder().order(i).widgetStatus(true).widgetType(WidgetType.HISTORY).build());
+            else if (widgetType.equals(WidgetType.REVIEW))
+                introPagePS.addWidgets(Review.builder().order(i).widgetStatus(true).widgetType(WidgetType.REVIEW).build());
+            else if (widgetType.equals(WidgetType.PATENT))
+                introPagePS.addWidgets(Patent.builder().order(i).widgetStatus(true).widgetType(WidgetType.PATENT).build());
+            else if (widgetType.equals(WidgetType.NEWS))
+                introPagePS.addWidgets(News.builder().order(i).widgetStatus(true).widgetType(WidgetType.NEWS).build());
+            else if (widgetType.equals(WidgetType.DOWNLOAD))
+                introPagePS.addWidgets(Download.builder().order(i).widgetStatus(true).widgetType(WidgetType.DOWNLOAD).build());
+            else if (widgetType.equals(WidgetType.PARTNERS))
+                introPagePS.addWidgets(Partners.builder().order(i).widgetStatus(true).widgetType(WidgetType.PARTNERS).build());
+            else if (widgetType.equals(WidgetType.CHANNEL))
+                introPagePS.addWidgets(Channel.builder().order(i).widgetStatus(true).widgetType(WidgetType.CHANNEL).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.KEYVISUALANDSLOGAN)) {
+            introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(i).widgetStatus(false).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.MISSIONANDVISION)) {
+            introPagePS.addWidgets(MissionAndVision.builder().order(i).widgetStatus(false).widgetType(WidgetType.MISSIONANDVISION).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.PRODUCTSANDSERVICES)) {
+            introPagePS.addWidgets(ProductsAndServices.builder().order(i).widgetStatus(false).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.TEAMMEMBER)) {
+            introPagePS.addWidgets(TeamMember.builder().order(i).widgetStatus(false).widgetType(WidgetType.TEAMMEMBER).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.CONTACTUS)) {
+            introPagePS.addWidgets(ContactUs.builder().order(i).widgetStatus(false).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.PERFORMANCE)) {
+            introPagePS.addWidgets(Performance.builder().order(i).widgetStatus(false).widgetType(WidgetType.PERFORMANCE).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.TEAMCULTURE)) {
+            introPagePS.addWidgets(TeamCulture.builder().order(i).widgetStatus(false).widgetType(WidgetType.TEAMCULTURE).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.HISTORY)) {
+            introPagePS.addWidgets(History.builder().order(i).widgetStatus(false).widgetType(WidgetType.HISTORY).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.REVIEW)) {
+            introPagePS.addWidgets(Review.builder().order(i).widgetStatus(false).widgetType(WidgetType.REVIEW).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.PATENT)) {
+            introPagePS.addWidgets(Patent.builder().order(i).widgetStatus(false).widgetType(WidgetType.PATENT).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.NEWS)) {
+            introPagePS.addWidgets(News.builder().order(i).widgetStatus(false).widgetType(WidgetType.NEWS).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.DOWNLOAD)) {
+            introPagePS.addWidgets(Download.builder().order(i).widgetStatus(false).widgetType(WidgetType.DOWNLOAD).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.PARTNERS)) {
+            introPagePS.addWidgets(Partners.builder().order(i).widgetStatus(false).widgetType(WidgetType.PARTNERS).build());
+            i++;
+        }
+        if (!widgetTypeList.contains(WidgetType.CHANNEL)) {
+            introPagePS.addWidgets(Channel.builder().order(i).widgetStatus(false).widgetType(WidgetType.CHANNEL).build());
+        }
     }
 
     public IntroPageOutDTO findIntroPage(User user) {

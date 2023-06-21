@@ -70,7 +70,6 @@ public class IntroPage extends TimeBaseEntity {
 
     public void addWidgets(Widget widget) {
         this.widgets.add(widget);
-        widget.setWidgetStatus(false);
         widget.setIntroPage(this);
     }
 
