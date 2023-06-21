@@ -971,6 +971,4 @@ public class WidgetResponse {
                     .build();
         }
     }
-
-
 }
