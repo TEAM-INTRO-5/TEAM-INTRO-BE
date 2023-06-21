@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @Table(name = "review_element_tb")
-public class ReviewElement {
+public class ReviewElement extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_element_id")

@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
+import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "products_and_services_element_tb")
-public class ProductsAndServicesElement {
+public class ProductsAndServicesElement extends TimeBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "products_and_services_element_id")
