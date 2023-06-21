@@ -221,12 +221,12 @@ public class IntroPageResponse {
                         .widgetType(String.valueOf(productsAndServices.getWidgetType()))
                         .widgetStatus(productsAndServices.getWidgetStatus())
                         .productsAndServicesElements(productsAndServices.getWidgetStatus() ? productsAndServicesElementOutDTOs : null)
-                        .callToActionStatus(productsAndServices.getCallToActionStatus())
-                        .callToAction(productsAndServices.getCallToAction() != null ? ProductsAndServicesOutDTO.CallToAction.builder()
+                        .callToActionStatus(productsAndServices.getWidgetStatus() ? productsAndServices.getCallToActionStatus() : null)
+                        .callToAction(productsAndServices.getCallToAction() != null ? (productsAndServices.getCallToActionStatus() ? ProductsAndServicesOutDTO.CallToAction.builder()
                                 .description(productsAndServices.getCallToAction().getDescription())
                                 .text(productsAndServices.getCallToAction().getText())
                                 .link(productsAndServices.getCallToAction().getLink())
-                                .build() : null)
+                                .build() : null) : null)
                         .build();
             }
         }
@@ -330,7 +330,7 @@ public class IntroPageResponse {
                         .order(teamMember.getOrder())
                         .widgetType(String.valueOf(teamMember.getWidgetType()))
                         .widgetStatus(teamMember.getWidgetStatus())
-                        .teamMemberElements(teamMemberElementOutDTOs)
+                        .teamMemberElements(teamMember.getWidgetStatus() ? teamMemberElementOutDTOs : null)
                         .build();
             }
         }
@@ -353,11 +353,11 @@ public class IntroPageResponse {
                         .order(contactUs.getOrder())
                         .widgetType(String.valueOf(contactUs.getWidgetType()))
                         .widgetStatus(contactUs.getWidgetStatus())
-                        .mapStatus(contactUs.getMapStatus())
-                        .fullAddress(contactUs.getFullAddress())
-                        .detailedAddress(contactUs.getDetailedAddress())
-                        .latitude(contactUs.getLatitude())
-                        .longitude(contactUs.getLongitude())
+                        .mapStatus(contactUs.getWidgetStatus() ? contactUs.getMapStatus() : null)
+                        .fullAddress(contactUs.getWidgetStatus() ? (contactUs.getMapStatus() ? contactUs.getFullAddress() : null) : null)
+                        .detailedAddress(contactUs.getWidgetStatus() ? (contactUs.getMapStatus() ? contactUs.getDetailedAddress() : null) : null)
+                        .latitude(contactUs.getWidgetStatus() ? (contactUs.getMapStatus() ? contactUs.getLatitude() : null) : null)
+                        .longitude(contactUs.getWidgetStatus() ? (contactUs.getMapStatus() ? contactUs.getLongitude() : null) : null)
                         .build();
             }
         }
@@ -409,7 +409,7 @@ public class IntroPageResponse {
                         .order(performance.getOrder())
                         .widgetType(String.valueOf(performance.getWidgetType()))
                         .widgetStatus(performance.getWidgetStatus())
-                        .performanceElements(performanceElementOutDTOs)
+                        .performanceElements(performance.getWidgetStatus() ? performanceElementOutDTOs : null)
                         .build();
             }
         }
@@ -461,7 +461,7 @@ public class IntroPageResponse {
                         .order(teamCulture.getOrder())
                         .widgetType(String.valueOf(teamCulture.getWidgetType()))
                         .widgetStatus(teamCulture.getWidgetStatus())
-                        .teamCultureElements(teamCultureElementOutDTOs)
+                        .teamCultureElements(teamCulture.getWidgetStatus() ? teamCultureElementOutDTOs : null)
                         .build();
             }
         }
@@ -512,7 +512,7 @@ public class IntroPageResponse {
                         .order(history.getOrder())
                         .widgetType(String.valueOf(history.getWidgetType()))
                         .widgetStatus(history.getWidgetStatus())
-                        .historyElements(historyElementOutDTOs)
+                        .historyElements(history.getWidgetStatus() ? historyElementOutDTOs : null)
                         .build();
             }
         }
@@ -568,7 +568,7 @@ public class IntroPageResponse {
                         .order(review.getOrder())
                         .widgetType(String.valueOf(review.getWidgetType()))
                         .widgetStatus(review.getWidgetStatus())
-                        .reviewElements(reviewElementOutDTOs)
+                        .reviewElements(review.getWidgetStatus() ? reviewElementOutDTOs : null)
                         .build();
             }
         }
@@ -620,7 +620,7 @@ public class IntroPageResponse {
                         .order(patent.getOrder())
                         .widgetType(String.valueOf(patent.getWidgetType()))
                         .widgetStatus(patent.getWidgetStatus())
-                        .patentElements(patentElementOutDTOs)
+                        .patentElements(patent.getWidgetStatus() ? patentElementOutDTOs : null)
                         .build();
             }
         }
@@ -676,7 +676,7 @@ public class IntroPageResponse {
                         .order(news.getOrder())
                         .widgetType(String.valueOf(news.getWidgetType()))
                         .widgetStatus(news.getWidgetStatus())
-                        .newsElements(newsElementOutDTOs)
+                        .newsElements(news.getWidgetStatus() ? newsElementOutDTOs : null)
                         .build();
             }
         }
@@ -697,9 +697,9 @@ public class IntroPageResponse {
                         .order(download.getOrder())
                         .widgetType(String.valueOf(download.getWidgetType()))
                         .widgetStatus(download.getWidgetStatus())
-                        .description(download.getDescription())
-                        .mediaKitFile(download.getMediaKitFile())
-                        .introFile(download.getIntroFile())
+                        .description(download.getWidgetStatus() ? download.getDescription() : null)
+                        .mediaKitFile(download.getWidgetStatus() ? download.getMediaKitFile() : null)
+                        .introFile(download.getWidgetStatus() ? download.getIntroFile() : null)
                         .build();
             }
         }
@@ -751,7 +751,7 @@ public class IntroPageResponse {
                         .order(partners.getOrder())
                         .widgetType(String.valueOf(partners.getWidgetType()))
                         .widgetStatus(partners.getWidgetStatus())
-                        .partnersElements(partnersElementOutDTOs)
+                        .partnersElements(partners.getWidgetStatus() ? partnersElementOutDTOs : null)
                         .build();
             }
         }
@@ -792,7 +792,7 @@ public class IntroPageResponse {
                         .widgetId(channel.getId())
                         .widgetType(String.valueOf(channel.getWidgetType()))
                         .widgetStatus(channel.getWidgetStatus())
-                        .snsList(channel.getSnsList() != null ? ChannelOutDTO.SnsList.builder()
+                        .snsList(channel.getWidgetStatus() ? (channel.getSnsList() != null ? ChannelOutDTO.SnsList.builder()
                                 .instagramStatus(channel.getSnsList().getInstagramStatus())
                                 .instagram(channel.getSnsList().getInstagram())
                                 .linkedInStatus(channel.getSnsList().getLinkedInStatus())
@@ -807,7 +807,7 @@ public class IntroPageResponse {
                                 .brunchStroy(channel.getSnsList().getBrunchStroy())
                                 .facebookStatus(channel.getSnsList().getFacebookStatus())
                                 .facebook(channel.getSnsList().getFacebook())
-                                .build() : null)
+                                .build() : null) : null)
                         .build();
             }
         }
