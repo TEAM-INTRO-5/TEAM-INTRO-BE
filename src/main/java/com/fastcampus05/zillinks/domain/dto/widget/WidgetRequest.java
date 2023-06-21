@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
@@ -399,4 +398,22 @@ public class WidgetRequest {
         @Schema(description = "파트너스 삭제 리스트", example = "[1, 2, 3]")
         private List<Long> deleteList;
     }
+
+    /**
+     * 다운로드
+     */
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DownloadInDTO {
+        @Schema(description = "다운로드 사용 여부", example = "true")
+        private Boolean widgetStatus;
+        @Schema(description = "설명", example = "DOWNLOAD / 자세한 소개")
+        @Pattern(regexp = "^.{0,30}$", message = "최대 30자 이내로 작성해 주세요.")
+        private String description;
+        @Schema(description = "미디어 키트", example = "url 주소 경로")
+        private String mediaKitFile;
+        @Schema(description = "회사소개서", example = "url 주소 경로")
+        private String introFile;
+    }
+
 }
