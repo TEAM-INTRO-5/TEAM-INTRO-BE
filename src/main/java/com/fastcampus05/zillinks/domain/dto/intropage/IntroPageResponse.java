@@ -14,10 +14,8 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -105,6 +103,7 @@ public class IntroPageResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class WidgetOutDTO {
             private Long widgetId;
+            private Integer order;
             private String widgetType;
             private Boolean widgetStatus;
         }
@@ -123,6 +122,7 @@ public class IntroPageResponse {
             private static KeyVisualAndSloganOutDTO toOutDTO(KeyVisualAndSlogan keyVisualAndSlogan) {
                 return KeyVisualAndSloganOutDTO.builder()
                         .widgetId(keyVisualAndSlogan.getId())
+                        .order(keyVisualAndSlogan.getOrder())
                         .widgetType(String.valueOf(keyVisualAndSlogan.getWidgetType()))
                         .widgetStatus(keyVisualAndSlogan.getWidgetStatus())
                         .background(keyVisualAndSlogan.getBackground())
@@ -147,6 +147,7 @@ public class IntroPageResponse {
             private static MissionAndVisionOutDTO toOutDTO(MissionAndVision missionAndVision) {
                 return MissionAndVisionOutDTO.builder()
                         .widgetId(missionAndVision.getId())
+                        .order(missionAndVision.getOrder())
                         .widgetType(String.valueOf(missionAndVision.getWidgetType()))
                         .widgetStatus(missionAndVision.getWidgetStatus())
                         .mission(missionAndVision.getMission())
@@ -175,6 +176,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class ProductsAndServicesElementOutDTO {
                 private Long productsAndServicesElementId;
+                private Long order;
                 private String image;
                 private String name;
                 private String title;
@@ -183,6 +185,7 @@ public class IntroPageResponse {
                 private static ProductsAndServicesElementOutDTO toOutDTO(ProductsAndServicesElement productsAndServicesElement) {
                     return ProductsAndServicesElementOutDTO.builder()
                             .productsAndServicesElementId(productsAndServicesElement.getId())
+                            .order(productsAndServicesElement.getOrder())
                             .image(productsAndServicesElement.getImage())
                             .name(productsAndServicesElement.getName())
                             .title(productsAndServicesElement.getTitle())
@@ -215,6 +218,7 @@ public class IntroPageResponse {
                 }
                 return ProductsAndServicesOutDTO.builder()
                         .widgetId(productsAndServices.getId())
+                        .order(productsAndServices.getOrder())
                         .widgetType(String.valueOf(productsAndServices.getWidgetType()))
                         .widgetStatus(productsAndServices.getWidgetStatus())
                         .productsAndServicesElements(productsAndServicesElementOutDTOs)
@@ -244,6 +248,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class TeamMemberElementOutDTO {
                 private Long teamMemberElementId;
+                private Long order;
                 private String profile;
                 private String name;
                 private String group;
@@ -260,22 +265,36 @@ public class IntroPageResponse {
                 @JsonInclude(JsonInclude.Include.NON_NULL)
                 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
                 private static class SnsListOutDTO {
+                    private Boolean instagramStatus;
                     private String instagram;
+                    private Boolean linkedInStatus;
                     private String linkedIn;
+                    private Boolean youtubeStatus;
                     private String youtube;
+                    private Boolean notionStatus;
                     private String notion;
+                    private Boolean naverBlogStatus;
                     private String naverBlog;
+                    private Boolean brunchStroyStatus;
                     private String brunchStroy;
+                    private Boolean facebookStatus;
                     private String facebook;
 
                     private static SnsListOutDTO toOutDTO(SnsList snsList) {
                         return SnsListOutDTO.builder()
+                                .instagramStatus(snsList.getInstagramStatus())
                                 .instagram(snsList.getInstagram())
+                                .linkedInStatus(snsList.getLinkedInStatus())
                                 .linkedIn(snsList.getLinkedIn())
+                                .youtubeStatus(snsList.getYoutubeStatus())
                                 .youtube(snsList.getYoutube())
+                                .notionStatus(snsList.getNotionStatus())
                                 .notion(snsList.getNotion())
+                                .naverBlogStatus(snsList.getNaverBlogStatus())
                                 .naverBlog(snsList.getNaverBlog())
+                                .brunchStroyStatus(snsList.getBrunchStroyStatus())
                                 .brunchStroy(snsList.getBrunchStroy())
+                                .facebookStatus(snsList.getFacebookStatus())
                                 .facebook(snsList.getFacebook())
                                 .build();
                     }
@@ -284,6 +303,7 @@ public class IntroPageResponse {
                 private static TeamMemberElementOutDTO toOutDTO(TeamMemberElement teamMemberElement) {
                     return TeamMemberElementOutDTO.builder()
                             .teamMemberElementId(teamMemberElement.getId())
+                            .order(teamMemberElement.getOrder())
                             .profile(teamMemberElement.getProfile())
                             .name(teamMemberElement.getName())
                             .group(teamMemberElement.getGroup())
@@ -308,6 +328,7 @@ public class IntroPageResponse {
                 }
                 return TeamMemberOutDTO.builder()
                         .widgetId(teamMember.getId())
+                        .order(teamMember.getOrder())
                         .widgetType(String.valueOf(teamMember.getWidgetType()))
                         .widgetStatus(teamMember.getWidgetStatus())
                         .teamMemberElements(teamMemberElementOutDTOs)
@@ -330,6 +351,7 @@ public class IntroPageResponse {
             private static ContactUsOutDTO toOutDTO(ContactUs contactUs) {
                 return ContactUsOutDTO.builder()
                         .widgetId(contactUs.getId())
+                        .order(contactUs.getOrder())
                         .widgetType(String.valueOf(contactUs.getWidgetType()))
                         .widgetStatus(contactUs.getWidgetStatus())
                         .mapStatus(contactUs.getMapStatus())
@@ -357,6 +379,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class PerformanceElementOutDTO {
                 private Long performanceElementId;
+                private Long order;
                 private String descrition;
                 private String additionalDescrition;
                 private String indicator;
@@ -364,6 +387,7 @@ public class IntroPageResponse {
                 private static PerformanceElementOutDTO toOutDTO(PerformanceElement performanceElement) {
                     return PerformanceElementOutDTO.builder()
                             .performanceElementId(performanceElement.getId())
+                            .order(performanceElement.getOrder())
                             .descrition(performanceElement.getDescrition())
                             .additionalDescrition(performanceElement.getAdditionalDescrition())
                             .indicator(performanceElement.getIndicator())
@@ -383,6 +407,7 @@ public class IntroPageResponse {
                 }
                 return PerformanceOutDTO.builder()
                         .widgetId(performance.getId())
+                        .order(performance.getOrder())
                         .widgetType(String.valueOf(performance.getWidgetType()))
                         .widgetStatus(performance.getWidgetStatus())
                         .performanceElements(performanceElementOutDTOs)
@@ -406,6 +431,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class TeamCultureElementOutDTO {
                 private Long teamCultureElementId;
+                private Long order;
                 private String image;
                 private String culture;
                 private String desciption;
@@ -413,6 +439,7 @@ public class IntroPageResponse {
                 private static TeamCultureElementOutDTO toOutDTO(TeamCultureElement teamCultureElement) {
                     return TeamCultureElementOutDTO.builder()
                             .teamCultureElementId(teamCultureElement.getId())
+                            .order(teamCultureElement.getOrder())
                             .image(teamCultureElement.getImage())
                             .culture(teamCultureElement.getCulture())
                             .desciption(teamCultureElement.getDesciption())
@@ -432,6 +459,7 @@ public class IntroPageResponse {
                 }
                 return TeamCultureOutDTO.builder()
                         .widgetId(teamCulture.getId())
+                        .order(teamCulture.getOrder())
                         .widgetType(String.valueOf(teamCulture.getWidgetType()))
                         .widgetStatus(teamCulture.getWidgetStatus())
                         .teamCultureElements(teamCultureElementOutDTOs)
@@ -482,6 +510,7 @@ public class IntroPageResponse {
                 }
                 return HistoryOutDTO.builder()
                         .widgetId(history.getId())
+                        .order(history.getOrder())
                         .widgetType(String.valueOf(history.getWidgetType()))
                         .widgetStatus(history.getWidgetStatus())
                         .historyElements(historyElementOutDTOs)
@@ -505,6 +534,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class ReviewElementOutDTO {
                 private Long reviewElementId;
+                private Long order;
                 private String image;
                 private String name;
                 private String group;
@@ -514,6 +544,7 @@ public class IntroPageResponse {
                 private static ReviewElementOutDTO toOutDTO(ReviewElement reviewElement) {
                     return ReviewElementOutDTO.builder()
                             .reviewElementId(reviewElement.getId())
+                            .order(reviewElement.getOrder())
                             .image(reviewElement.getImage())
                             .name(reviewElement.getName())
                             .group(reviewElement.getGroup())
@@ -535,6 +566,7 @@ public class IntroPageResponse {
                 }
                 return ReviewOutDTO.builder()
                         .widgetId(review.getId())
+                        .order(review.getOrder())
                         .widgetType(String.valueOf(review.getWidgetType()))
                         .widgetStatus(review.getWidgetStatus())
                         .reviewElements(reviewElementOutDTOs)
@@ -558,6 +590,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class PatentElementOutDTO {
                 private Long patentElementId;
+                private Long order;
                 private String patentType;
                 private String title;
                 private String image;
@@ -565,6 +598,7 @@ public class IntroPageResponse {
                 private static PatentElementOutDTO toOutDTO(PatentElement patentElement) {
                     return PatentElementOutDTO.builder()
                             .patentElementId(patentElement.getId())
+                            .order(patentElement.getOrder())
                             .patentType(String.valueOf(patentElement.getPatentType()))
                             .title(patentElement.getTitle())
                             .image(patentElement.getImage())
@@ -584,6 +618,7 @@ public class IntroPageResponse {
                 }
                 return PatentOutDTO.builder()
                         .widgetId(patent.getId())
+                        .order(patent.getOrder())
                         .widgetType(String.valueOf(patent.getWidgetType()))
                         .widgetStatus(patent.getWidgetStatus())
                         .patentElements(patentElementOutDTOs)
@@ -607,6 +642,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class NewsElementOutDTO {
                 private Long newsElementId;
+                private Long order;
                 private String image;
                 private LocalDate date;
                 private String press;
@@ -616,6 +652,7 @@ public class IntroPageResponse {
                 private static NewsElementOutDTO toOutDTO(NewsElement newsElement) {
                     return NewsElementOutDTO.builder()
                             .newsElementId(newsElement.getId())
+                            .order(newsElement.getOrder())
                             .image(newsElement.getImage())
                             .date(newsElement.getDate())
                             .press(newsElement.getPress())
@@ -637,6 +674,7 @@ public class IntroPageResponse {
                 }
                 return NewsOutDTO.builder()
                         .widgetId(news.getId())
+                        .order(news.getOrder())
                         .widgetType(String.valueOf(news.getWidgetType()))
                         .widgetStatus(news.getWidgetStatus())
                         .newsElements(newsElementOutDTOs)
@@ -657,6 +695,7 @@ public class IntroPageResponse {
             private static DownloadOutDTO toOutDTO(Download download) {
                 return DownloadOutDTO.builder()
                         .widgetId(download.getId())
+                        .order(download.getOrder())
                         .widgetType(String.valueOf(download.getWidgetType()))
                         .widgetStatus(download.getWidgetStatus())
                         .description(download.getDescription())
@@ -682,6 +721,7 @@ public class IntroPageResponse {
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class PartnersElementOutDTO {
                 private Long partnersElementId;
+                private Long order;
                 private String partnersType;
                 private String companyName;
                 private String logo;
@@ -689,6 +729,7 @@ public class IntroPageResponse {
                 private static PartnersElementOutDTO toOutDTO(PartnersElement partnersElement) {
                     return PartnersElementOutDTO.builder()
                             .partnersElementId(partnersElement.getId())
+                            .order(partnersElement.getOrder())
                             .partnersType(String.valueOf(partnersElement.getPartnersType()))
                             .companyName(partnersElement.getCompanyName())
                             .logo(partnersElement.getLogo())
@@ -708,6 +749,7 @@ public class IntroPageResponse {
                 }
                 return PartnersOutDTO.builder()
                         .widgetId(partners.getId())
+                        .order(partners.getOrder())
                         .widgetType(String.valueOf(partners.getWidgetType()))
                         .widgetStatus(partners.getWidgetStatus())
                         .partnersElements(partnersElementOutDTOs)
@@ -730,12 +772,19 @@ public class IntroPageResponse {
             @JsonInclude(JsonInclude.Include.NON_NULL)
             @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
             private static class SnsList {
+                private Boolean instagramStatus;
                 private String instagram;
+                private Boolean linkedInStatus;
                 private String linkedIn;
+                private Boolean youtubeStatus;
                 private String youtube;
+                private Boolean notionStatus;
                 private String notion;
+                private Boolean naverBlogStatus;
                 private String naverBlog;
+                private Boolean brunchStroyStatus;
                 private String brunchStroy;
+                private Boolean facebookStatus;
                 private String facebook;
             }
 
@@ -745,12 +794,19 @@ public class IntroPageResponse {
                         .widgetType(String.valueOf(channel.getWidgetType()))
                         .widgetStatus(channel.getWidgetStatus())
                         .snsList(channel.getSnsList() != null ? SnsList.builder()
+                                .instagramStatus(channel.getSnsList().getInstagramStatus())
                                 .instagram(channel.getSnsList().getInstagram())
+                                .linkedInStatus(channel.getSnsList().getLinkedInStatus())
                                 .linkedIn(channel.getSnsList().getLinkedIn())
+                                .youtubeStatus(channel.getSnsList().getYoutubeStatus())
                                 .youtube(channel.getSnsList().getYoutube())
+                                .notionStatus(channel.getSnsList().getNotionStatus())
                                 .notion(channel.getSnsList().getNotion())
+                                .naverBlogStatus(channel.getSnsList().getNaverBlogStatus())
                                 .naverBlog(channel.getSnsList().getNaverBlog())
+                                .brunchStroyStatus(channel.getSnsList().getBrunchStroyStatus())
                                 .brunchStroy(channel.getSnsList().getBrunchStroy())
+                                .facebookStatus(channel.getSnsList().getFacebookStatus())
                                 .facebook(channel.getSnsList().getFacebook())
                                 .build() : null)
                         .build();
