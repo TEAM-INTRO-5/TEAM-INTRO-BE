@@ -29,7 +29,7 @@ public class SiteInfo extends TimeBaseEntity {
     @Column(unique = true)
     private String pavicon; // 경로
 
-    @Column(unique = true)
+    @Column(name = "sub_domain", unique = true)
     private String subDomain;
 
     private String title;

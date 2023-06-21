@@ -3,6 +3,7 @@ package com.fastcampus05.zillinks.domain.controller;
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
+import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.service.IntroPageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,18 +40,18 @@ public class IntroPageController {
      */
     @Operation(summary = "회사 소개 메인 페이지 조회 - 일반 유저 조회", description = "회사 소개 메인 페이지 조회 - 일반 유저 조회")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = FindIntroPageOutDTO.class))),
     })
     @Parameters({
-            @Parameter(name = "contactUsInDTO")
+            @Parameter(name = "findIntroPageInDTO"),
     })
     @PostMapping("/introPage")
-    public ResponseEntity<ResponseDTO> findIntroPage(
-            @RequestParam String subDomain,
-            @RequestParam String share
+    public ResponseEntity<ResponseDTO<FindIntroPageOutDTO>> getIntroPage(
+            @RequestBody @Valid IntroPageRequest.FindIntroPageInDTO findIntroPageInDTO,
+            Errors errors
     ) {
-        // check-point
-        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        FindIntroPageOutDTO findIntroPageOutDTO = introPageService.getIntroPage(findIntroPageInDTO);
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findIntroPageOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
@@ -67,8 +68,10 @@ public class IntroPageController {
     })
     @PostMapping("/s/user/introPage")
     public ResponseEntity<ResponseDTO> saveIntroPage(
+            @RequestBody @Valid IntroPageRequest.SaveIntroPageInDTO saveIntroPageInDTO,
+            Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        introPageService.saveIntroPage(myUserDetails.getUser());
+        introPageService.saveIntroPage(saveIntroPageInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
         return ResponseEntity.ok(responseBody);
     }
