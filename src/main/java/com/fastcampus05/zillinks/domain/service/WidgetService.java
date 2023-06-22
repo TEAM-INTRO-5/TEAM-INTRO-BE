@@ -107,6 +107,7 @@ public class WidgetService {
                 }
             }
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdateProductsAndServicesOutDTO.toOutDTO(productsAndServicesPS);
     }
 
@@ -134,6 +135,7 @@ public class WidgetService {
                 saveProductsAndServicesElement.getDescription()
         );
         ProductsAndServicesElement productsAndServicesElementPS = productsAndServicesElementRepository.save(productsAndServicesElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SaveProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElementPS);
     }
 
@@ -157,6 +159,7 @@ public class WidgetService {
         }
 
         productsAndServicesElementQueryRepository.deleteByDeleteList(deleteProductsAndServicesElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     @Transactional
@@ -188,6 +191,7 @@ public class WidgetService {
             teamMemberElements.get(i).setOrder(arr.get(i));
         }
         teamMemberPS.setWidgetStatus(updateTeamMemberInDTO.getWidgetStatus());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdateTeamMemberOutDTO.toOutDTO(teamMemberPS);
     }
 
@@ -243,6 +247,7 @@ public class WidgetService {
                                 .build()
         );
         TeamMemberElement teamMemberElementPS = teamMemberElementRepository.save(teamMemberElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SaveTeamMemberElementOutDTO.toOutDTO(teamMemberElementPS);
     }
 
@@ -266,6 +271,7 @@ public class WidgetService {
         }
 
         teamMemberElementQueryRepository.deleteByDeleteList(deleteTeamMemberElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     /**
@@ -300,6 +306,7 @@ public class WidgetService {
             performanceElements.get(i).setOrder(arr.get(i));
         }
         performancePS.setWidgetStatus(updatePerformanceInDTO.getWidgetStatus());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdatePerformanceOutDTO.toOutDTO(performancePS);
     }
 
@@ -326,6 +333,7 @@ public class WidgetService {
                 .indicator(savePerformanceElementInDTO.getIndicator())
                 .build();
         PerformanceElement performanceElementPS = performanceElementRepository.save(performanceElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SavePerformanceElementOutDTO.toOutDTO(performanceElementPS);
     }
 
@@ -338,6 +346,7 @@ public class WidgetService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         performanceElementQueryRepository.deleteByDeleteList(deletePerformanceElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     @Transactional
@@ -365,7 +374,7 @@ public class WidgetService {
                         kakaoAddress.getDocuments().get(0).getX());
             }
         }
-
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.ContactUsOutDTO.toOutDTO(contactUsPS);
     }
 
@@ -402,6 +411,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             teamCultureElements.get(i).setOrder(arr.get(i));
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdateTeamCultureOutDTO.toOutDTO(teamCulturePS);
     }
 
@@ -428,6 +438,7 @@ public class WidgetService {
                 .desciption(saveTeamCultureElementInDTO.getDescription())
                 .build();
         TeamCultureElement teamCultureElementPS = teamCultureElementRepository.save(teamCultureElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SaveTeamCultureElementOutDTO.toOutDTO(teamCultureElementPS);
     }
 
@@ -451,6 +462,7 @@ public class WidgetService {
         }
 
         teamCultureElementQueryRepository.deleteByDeleteList(deleteTeamCultureElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     @Transactional
@@ -482,7 +494,7 @@ public class WidgetService {
                     keyVisualAndSloganInDTO.getSloganDetail()
             );
         }
-
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
     }
 
@@ -508,6 +520,7 @@ public class WidgetService {
                     missionAndVisionInDTO.getVisionDetail()
             );
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.MissionAndVisionOutDTO.toOutDTO(missionAndVisionPS);
     }
 
@@ -525,6 +538,7 @@ public class WidgetService {
         );
 
         historyPS.setWidgetStatus(updateHistoryInDTO.getWidgetStatus());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdateHistoryOutDTO.toOutDTO(historyPS);
     }
 
@@ -546,6 +560,7 @@ public class WidgetService {
                 .description(saveHistoryElementInDTO.getDescription())
                 .build();
         HistoryElement historyElementPS = historyElementRepository.save(historyElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SaveHistoryElementOutDTO.toOutDTO(historyElementPS);
     }
 
@@ -555,6 +570,7 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
         historyElementQueryRepository.deleteByDeleteList(deleteHistoryElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     /**
@@ -590,6 +606,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             reviewElements.get(i).setOrder(arr.get(i));
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdateReviewOutDTO.toOutDTO(reviewPS);
     }
 
@@ -616,6 +633,7 @@ public class WidgetService {
                 .details(saveReviewElementInDTO.getDetails())
                 .build();
         ReviewElement reviewElementPS = reviewElementRepository.save(reviewElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SaveReviewElementOutDTO.toOutDTO(reviewElementPS);
     }
 
@@ -637,6 +655,7 @@ public class WidgetService {
             s3UploaderRepository.delete(image);
         }
         reviewElementQueryRepository.deleteByDeleteList(deleteReviewElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     @Transactional
@@ -670,7 +689,7 @@ public class WidgetService {
                     downloadInDTO.getIntroFile()
             );
         }
-
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.DownloadOutDTO.toOutDTO(downloadPS);
     }
 
@@ -724,6 +743,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             patentElements.get(i).setOrder(arr.get(i));
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdatePatentOutDTO.toOutDTO(patentPS);
     }
 
@@ -748,6 +768,7 @@ public class WidgetService {
                 .image(savePatentElementInDTO.getImage())
                 .build();
         PatentElement patentElementPS = patentElementRepository.save(patentElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SavePatentElementOutDTO.toOutDTO(patentElementPS);
     }
 
@@ -769,6 +790,7 @@ public class WidgetService {
             s3UploaderRepository.delete(image);
         }
         patentElementQueryRepository.deleteByDeleteList(deletePatentElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     /**
@@ -804,6 +826,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             newsElements.get(i).setOrder(arr.get(i));
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdateNewsOutDTO.toOutDTO(newsPS);
     }
 
@@ -830,6 +853,7 @@ public class WidgetService {
                 .description(saveNewsElementInDTO.getDescription())
                 .build();
         NewsElement newsElementPS = newsElementRepository.save(newsElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SaveNewsElementOutDTO.toOutDTO(newsElementPS);
     }
 
@@ -851,6 +875,7 @@ public class WidgetService {
             s3UploaderRepository.delete(image);
         }
         newsElementQueryRepository.deleteByDeleteList(deleteNewsElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     /**
@@ -886,6 +911,7 @@ public class WidgetService {
         for (int i = 0; i < arr.size(); i++) {
             partnersElements.get(i).setOrder(arr.get(i));
         }
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.UpdatePartnersOutDTO.toOutDTO(partnersPS);
     }
 
@@ -910,6 +936,7 @@ public class WidgetService {
                 .logo(savePartnersElementInDTO.getLogo())
                 .build();
         PartnersElement partnersElementPS = partnersElementRepository.save(partnersElement);
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.SavePartnersElementOutDTO.toOutDTO(partnersElementPS);
     }
 
@@ -931,6 +958,7 @@ public class WidgetService {
             s3UploaderRepository.delete(logo);
         }
         partnersElementQueryRepository.deleteByDeleteList(deletePartnersElementsInDTO.getDeleteList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     @Transactional
@@ -967,8 +995,7 @@ public class WidgetService {
         if (channelInDTO.getWidgetStatus()) {
             channelPS.updateChannel(snsList);
         }
-
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.ChannelOutDTO.toOutDTO(channelPS.getSnsList());
     }
-
 }
