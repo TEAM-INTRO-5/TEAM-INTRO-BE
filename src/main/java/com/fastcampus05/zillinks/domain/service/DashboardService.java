@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,6 +78,39 @@ public class DashboardService {
                 .introPage(introPagePS)
                 .downloadType(DownloadType.valueOf(downloadInDTO.getType()))
                 .build());
+    }
+
+
+    public FindDashboardOutDTO findDashboard(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        // 주간 조회수, 주간 공유회수 생성
+        List<VisitorLog> visitorLogs = visitorLogQueryRepository.findAllInWeek(introPagePS.getId());
+        List<Integer> viewList = new ArrayList<>();
+        List<Integer> sharingList = new ArrayList<>();
+        // 주간 연락 건수
+        List<ContactUsLog> contactUsLogs = contactUsLogQueryRepository.findAllInWeek(introPagePS.getId());
+        List<Integer> contactUsLogList = new ArrayList<>();
+        // 주간 다운로드 횟수
+        List<DownloadLog> downloadLogs = downloadLogQueryRepository.findAllInWeek(introPagePS.getId());
+        List<Integer> downloadLogList = new ArrayList<>();
+        int size = 0;
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            size = visitorLogs.stream().filter(s -> s.getCreatedAt().toLocalDate().compareTo(date) == 0).collect(Collectors.toList()).size();
+            viewList.add(size);
+            size = visitorLogs.stream().filter(s -> (s.getCreatedAt().toLocalDate().compareTo(date) == 0) && (s.getSharingCode() != null)).collect(Collectors.toList()).size();
+            sharingList.add(size);
+            size = contactUsLogs.stream().filter(s -> s.getCreatedAt().toLocalDate().compareTo(date) == 0).collect(Collectors.toList()).size();
+            contactUsLogList.add(size);
+            size = downloadLogs.stream().filter(s -> s.getCreatedAt().toLocalDate().compareTo(date) == 0).collect(Collectors.toList()).size();
+            downloadLogList.add(size);
+        }
+        return FindDashboardOutDTO.toOutDTO(introPagePS, viewList, sharingList, contactUsLogList, downloadLogList);
     }
 
     public FindContactUsOutDTO findContactUs(ContactUsStatus status, Integer page, User user) {

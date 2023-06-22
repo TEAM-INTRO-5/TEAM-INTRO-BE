@@ -64,7 +64,6 @@ public class DownloadLogQueryRepository {
         return query
                 .selectFrom(downloadLog)
                 .where(eqIntroPageId(introPageId), goeOneMonthAgo(oneWeekAgo))
-                .orderBy(downloadLog.createdAt.desc())
                 .fetch();
     }
 

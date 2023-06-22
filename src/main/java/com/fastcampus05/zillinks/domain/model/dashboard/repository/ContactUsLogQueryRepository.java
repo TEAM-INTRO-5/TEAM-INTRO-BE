@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.domain.model.dashboard.repository;
 
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
 import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsStatus;
+import com.fastcampus05.zillinks.domain.model.dashboard.DownloadLog;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fastcampus05.zillinks.domain.model.dashboard.QContactUsLog.contactUsLog;
+import static com.fastcampus05.zillinks.domain.model.dashboard.QDownloadLog.downloadLog;
 
 
 @Repository
@@ -55,6 +57,15 @@ public class ContactUsLogQueryRepository {
                 .selectFrom(contactUsLog)
                 .where(eqIntroPageId(introPageId), eqStatus(contactUsStatus), goeOneMonthAgo(oneMonthAgo))
                 .orderBy(contactUsLog.createdAt.desc())
+                .fetch();
+    }
+
+    public List<ContactUsLog> findAllInWeek(Long introPageId) {
+        LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
+
+        return query
+                .selectFrom(contactUsLog)
+                .where(eqIntroPageId(introPageId), goeOneMonthAgo(oneWeekAgo))
                 .fetch();
     }
 
