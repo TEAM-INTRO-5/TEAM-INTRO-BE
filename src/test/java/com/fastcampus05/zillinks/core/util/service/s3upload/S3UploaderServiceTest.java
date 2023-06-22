@@ -84,7 +84,7 @@ class S3UploaderServiceTest extends DummyEntity {
         when(s3UploaderRepository.upload(any(), any(), any())).thenReturn("test.jpg");
 
         // when
-        S3UploadResponse.PathResponse pathResponse = s3UploaderService.uploadImage(image, "zillinks", "logo", taeheoki);
+        S3UploadResponse.PathResponse pathResponse = s3UploaderService.uploadImage(image, taeheoki);
 
         // then
         Assertions.assertThat(pathResponse.getUploadPath()).isEqualTo("test.jpg");

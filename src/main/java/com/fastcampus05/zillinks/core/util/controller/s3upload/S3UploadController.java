@@ -45,20 +45,16 @@ public class S3UploadController {
     })
     @Parameters({
             @Parameter(name = "image", description = "이미지 파일"),
-            @Parameter(name = "name", description = "회사명", example = "zillinks"),
-            @Parameter(name = "type", description = "이미지 종류", example = "logo"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PostMapping("/uploadImage")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadImage(
             @RequestPart("image") MultipartFile image,
-            @RequestParam String name,
-            @RequestParam String type,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
         if (!isImageFile(image)) {
             throw new Exception400("image", "image 파일이 아닙니다.");
         }
-        S3UploadResponse.PathResponse uploadPath = s3UploaderService.uploadImage(image, name, type, myUserDetails.getUser());
+        S3UploadResponse.PathResponse uploadPath = s3UploaderService.uploadImage(image, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.CREATED, "성공", uploadPath);
         return new ResponseEntity(responseBody, HttpStatus.CREATED);
     }
@@ -69,20 +65,16 @@ public class S3UploadController {
     })
     @Parameters({
             @Parameter(name = "file", description = "pdf 파일"),
-            @Parameter(name = "name", description = "회사명", example = "zillinks"),
-            @Parameter(name = "type", description = "파일 종류", example = "회사 소개서"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PostMapping("/uploadFile")
     public ResponseEntity<S3UploadResponse.PathResponse> uploadFile(
             @RequestPart("file") MultipartFile file,
-            @RequestParam String name,
-            @RequestParam String type,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
         if (!isPdfFile(file)) {
             throw new Exception400("pdf", "pdf가 아닙니다.");
         }
-        S3UploadResponse.PathResponse uploadPath = s3UploaderService.uploadFile(file, name, type, myUserDetails.getUser());
+        S3UploadResponse.PathResponse uploadPath = s3UploaderService.uploadFile(file, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.CREATED, "성공", uploadPath);
         return new ResponseEntity(responseBody, HttpStatus.CREATED);
     }

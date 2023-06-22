@@ -38,17 +38,17 @@ public class S3UploaderService {
     }
 
     @Transactional
-    public S3UploadResponse.PathResponse uploadImage(MultipartFile image, String name, String type, User user) {
+    public S3UploadResponse.PathResponse uploadImage(MultipartFile image, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
 
 //        delete(getUrlByName(introPageOP, type));
 
-        String dir = name + "/" + type;
+        String dir = String.valueOf(user.getId());
         String uploadPath = DEFAULT_IMAGE;
         if (image != null) {
-            String fileName = makeFilePath(image, dir, "jpg");
+            String fileName = makeFilePath(image, dir, "png");
             uploadPath = s3UploaderRepository.upload(image, fileName, "image");
         }
         S3UploaderFile s3UploaderFile = S3UploaderFile.builder()
@@ -63,13 +63,13 @@ public class S3UploaderService {
     }
 
     @Transactional
-    public S3UploadResponse.PathResponse uploadFile(MultipartFile file, String name, String type, User user) {
+    public S3UploadResponse.PathResponse uploadFile(MultipartFile file, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
 
 //        delete(getUrlByName(introPageOP, type));
-        String dir = name + "/" + type;
+        String dir = String.valueOf(user.getId());
         String uploadPath = null;
         if (file != null) {
             String fileName = makeFilePath(file, dir, "pdf");

@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.domain.dto.dashboard;
 
 import com.fastcampus05.zillinks.domain.model.dashboard.*;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
+import com.fastcampus05.zillinks.domain.model.intropage.IntroPageStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -38,6 +39,7 @@ public class DashboardResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class IntroPageInfoOutDTO {
             private Long introPageId;
+            private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
@@ -49,6 +51,7 @@ public class DashboardResponse {
                     isUpdate = true;
                 return IntroPageInfoOutDTO.builder()
                         .introPageId(introPage.getId())
+                        .introPageStatus(introPage.getIntroPageStatus())
                         .subDomain(introPage.getSiteInfo().getSubDomain())
                         .isUpdate(isUpdate)
                         .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
@@ -99,6 +102,7 @@ public class DashboardResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class IntroPageInfoOutDTO {
             private Long introPageId;
+            private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
@@ -110,6 +114,7 @@ public class DashboardResponse {
                     isUpdate = true;
                 return IntroPageInfoOutDTO.builder()
                         .introPageId(introPage.getId())
+                        .introPageStatus(introPage.getIntroPageStatus())
                         .subDomain(introPage.getSiteInfo().getSubDomain())
                         .isUpdate(isUpdate)
                         .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
@@ -199,6 +204,7 @@ public class DashboardResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class IntroPageInfoOutDTO {
             private Long introPageId;
+            private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
@@ -210,6 +216,7 @@ public class DashboardResponse {
                     isUpdate = true;
                 return IntroPageInfoOutDTO.builder()
                         .introPageId(introPage.getId())
+                        .introPageStatus(introPage.getIntroPageStatus())
                         .subDomain(introPage.getSiteInfo().getSubDomain())
                         .isUpdate(isUpdate)
                         .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
@@ -299,6 +306,7 @@ public class DashboardResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class IntroPageInfoOutDTO {
             private Long introPageId;
+            private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
@@ -310,6 +318,7 @@ public class DashboardResponse {
                     isUpdate = true;
                 return IntroPageInfoOutDTO.builder()
                         .introPageId(introPage.getId())
+                        .introPageStatus(introPage.getIntroPageStatus())
                         .subDomain(introPage.getSiteInfo().getSubDomain())
                         .isUpdate(isUpdate)
                         .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
