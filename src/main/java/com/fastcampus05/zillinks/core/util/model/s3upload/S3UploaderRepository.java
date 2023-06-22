@@ -50,8 +50,9 @@ public class S3UploaderRepository {
 
         // uploadFile JPEG 파일로 변환후 resize 진행
         if (type.equals("image")) {
-            File image = transform(file);
-            return upload(image, fileName);
+//            File image = transform(file);
+//            return upload(image, fileName);
+            return upload(file, fileName);
         } else {
             return upload(file, fileName);
         }
