@@ -61,7 +61,6 @@ public class IntroPageController {
     /**
      * 회사 페이지 편집 영역
      */
-    // check-point, 초기값 세팅에 대한 논의
     @Operation(summary = "회사 소개 페이지 만들기", description = "회사 소개 페이지 정보 만들기")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -95,8 +94,6 @@ public class IntroPageController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
-
-    // check-point, mediaKitFile, trackingCode 저장시 기존 데이터 삭제 후 연결
     @Operation(summary = "회사 소개 페이지 수정", description = "회사 소개 페이지 정보 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
@@ -190,36 +187,4 @@ public class IntroPageController {
         ResponseDTO responseBody = new ResponseDTO(null);
         return ResponseEntity.ok(responseBody);
     }
-
-//    @Operation(summary = "회사 정보 조회", description = "회사 정보 조회")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = CompanyInfoOutDTO.class))),
-//    })
-//    @Parameters({
-//            @Parameter(name = "myUserDetails", hidden = true)
-//    })
-//    @GetMapping("/s/user/companyInfo")
-//    public ResponseEntity<ResponseDTO<CompanyInfoOutDTO>> findCompanyInfo(
-//            @AuthenticationPrincipal MyUserDetails myUserDetails
-//    ) {
-//        CompanyInfoOutDTO companyInfoOutDTO = introPageService.findCompanyInfo(myUserDetails.getUser());
-//        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", companyInfoOutDTO);
-//        return new ResponseEntity(responseBody, HttpStatus.OK);
-//    }
-
-//    @Operation(summary = "사이트 정보 조회", description = "사이트 정보 조회")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = InfoOutDTO.class))),
-//    })
-//    @Parameters({
-//            @Parameter(name = "myUserDetails", hidden = true)
-//    })
-//    @GetMapping("/s/user/introPage/info")
-//    public ResponseEntity<ResponseDTO<InfoOutDTO>> findInfo(
-//            @AuthenticationPrincipal MyUserDetails myUserDetails
-//    ) {
-//        InfoOutDTO infoOutDTO = introPageService.findInfo(myUserDetails.getUser());
-//        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", infoOutDTO);
-//        return new ResponseEntity(responseBody, HttpStatus.OK);
-//    }
 }

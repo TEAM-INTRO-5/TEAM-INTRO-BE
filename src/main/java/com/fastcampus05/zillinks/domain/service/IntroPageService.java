@@ -18,9 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BiFunction;
 
 import static com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse.IntroPageOutDTO;
 
@@ -73,126 +72,39 @@ public class IntroPageService {
         introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
 
         List<WidgetType> widgetTypeList = saveIntroPageInDTO.getWidgetTypeList();
-        System.out.println("widgetTypeList=" + widgetTypeList);
-        int i = 1;
+
+        Map<WidgetType, BiFunction<Boolean, Integer, Widget>> widgetBuilders = new LinkedHashMap<>();
+        widgetBuilders.put(WidgetType.KEYVISUALANDSLOGAN, (status, order) -> KeyVisualAndSlogan.builder().order(order).widgetStatus(status).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
+        widgetBuilders.put(WidgetType.MISSIONANDVISION, (status, order) -> MissionAndVision.builder().order(order).widgetStatus(status).widgetType(WidgetType.MISSIONANDVISION).build());
+        widgetBuilders.put(WidgetType.PRODUCTSANDSERVICES, (status, order) -> ProductsAndServices.builder().order(order).widgetStatus(status).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
+        widgetBuilders.put(WidgetType.TEAMMEMBER, (status, order) -> TeamMember.builder().order(order).widgetStatus(status).widgetType(WidgetType.TEAMMEMBER).build());
+        widgetBuilders.put(WidgetType.CONTACTUS, (status, order) -> ContactUs.builder().order(order).widgetStatus(status).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
+        widgetBuilders.put(WidgetType.PERFORMANCE, (status, order) -> Performance.builder().order(order).widgetStatus(status).widgetType(WidgetType.PERFORMANCE).build());
+        widgetBuilders.put(WidgetType.TEAMCULTURE, (status, order) -> TeamCulture.builder().order(order).widgetStatus(status).widgetType(WidgetType.TEAMCULTURE).build());
+        widgetBuilders.put(WidgetType.HISTORY, (status, order) -> History.builder().order(order).widgetStatus(status).widgetType(WidgetType.HISTORY).build());
+        widgetBuilders.put(WidgetType.REVIEW, (status, order) -> Review.builder().order(order).widgetStatus(status).widgetType(WidgetType.REVIEW).build());
+        widgetBuilders.put(WidgetType.PATENT, (status, order) -> Patent.builder().order(order).widgetStatus(status).widgetType(WidgetType.PATENT).build());
+        widgetBuilders.put(WidgetType.NEWS, (status, order) -> News.builder().order(order).widgetStatus(status).widgetType(WidgetType.NEWS).build());
+        widgetBuilders.put(WidgetType.DOWNLOAD, (status, order) -> Download.builder().order(order).widgetStatus(status).widgetType(WidgetType.DOWNLOAD).build());
+        widgetBuilders.put(WidgetType.PARTNERS, (status, order) -> Partners.builder().order(order).widgetStatus(status).widgetType(WidgetType.PARTNERS).build());
+        widgetBuilders.put(WidgetType.CHANNEL, (status, order) -> Channel.builder().order(order).widgetStatus(status).widgetType(WidgetType.CHANNEL).build());
+
+        int order = 1;
         for (WidgetType widgetType : widgetTypeList) {
-            if (widgetType.equals(WidgetType.KEYVISUALANDSLOGAN))
-                introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(i).widgetStatus(true).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
-            else if (widgetType.equals(WidgetType.MISSIONANDVISION))
-                introPagePS.addWidgets(MissionAndVision.builder().order(i).widgetStatus(true).widgetType(WidgetType.MISSIONANDVISION).build());
-            else if (widgetType.equals(WidgetType.PRODUCTSANDSERVICES))
-                introPagePS.addWidgets(ProductsAndServices.builder().order(i).widgetStatus(true).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
-            else if (widgetType.equals(WidgetType.TEAMMEMBER))
-                introPagePS.addWidgets(TeamMember.builder().order(i).widgetStatus(true).widgetType(WidgetType.TEAMMEMBER).build());
-            else if (widgetType.equals(WidgetType.CONTACTUS))
-                introPagePS.addWidgets(ContactUs.builder().order(i).widgetStatus(true).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
-            else if (widgetType.equals(WidgetType.PERFORMANCE))
-                introPagePS.addWidgets(Performance.builder().order(i).widgetStatus(true).widgetType(WidgetType.PERFORMANCE).build());
-            else if (widgetType.equals(WidgetType.TEAMCULTURE))
-                introPagePS.addWidgets(TeamCulture.builder().order(i).widgetStatus(true).widgetType(WidgetType.TEAMCULTURE).build());
-            else if (widgetType.equals(WidgetType.HISTORY))
-                introPagePS.addWidgets(History.builder().order(i).widgetStatus(true).widgetType(WidgetType.HISTORY).build());
-            else if (widgetType.equals(WidgetType.REVIEW))
-                introPagePS.addWidgets(Review.builder().order(i).widgetStatus(true).widgetType(WidgetType.REVIEW).build());
-            else if (widgetType.equals(WidgetType.PATENT))
-                introPagePS.addWidgets(Patent.builder().order(i).widgetStatus(true).widgetType(WidgetType.PATENT).build());
-            else if (widgetType.equals(WidgetType.NEWS))
-                introPagePS.addWidgets(News.builder().order(i).widgetStatus(true).widgetType(WidgetType.NEWS).build());
-            else if (widgetType.equals(WidgetType.DOWNLOAD))
-                introPagePS.addWidgets(Download.builder().order(i).widgetStatus(true).widgetType(WidgetType.DOWNLOAD).build());
-            else if (widgetType.equals(WidgetType.PARTNERS))
-                introPagePS.addWidgets(Partners.builder().order(i).widgetStatus(true).widgetType(WidgetType.PARTNERS).build());
-            else if (widgetType.equals(WidgetType.CHANNEL))
-                introPagePS.addWidgets(Channel.builder().order(i).widgetStatus(true).widgetType(WidgetType.CHANNEL).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.KEYVISUALANDSLOGAN)) {
-            introPagePS.addWidgets(KeyVisualAndSlogan.builder().order(i).widgetStatus(false).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.MISSIONANDVISION)) {
-            introPagePS.addWidgets(MissionAndVision.builder().order(i).widgetStatus(false).widgetType(WidgetType.MISSIONANDVISION).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.PRODUCTSANDSERVICES)) {
-            introPagePS.addWidgets(ProductsAndServices.builder().order(i).widgetStatus(false).widgetType(WidgetType.PRODUCTSANDSERVICES).callToActionStatus(false).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.TEAMMEMBER)) {
-            introPagePS.addWidgets(TeamMember.builder().order(i).widgetStatus(false).widgetType(WidgetType.TEAMMEMBER).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.CONTACTUS)) {
-            introPagePS.addWidgets(ContactUs.builder().order(i).widgetStatus(false).widgetType(WidgetType.CONTACTUS).mapStatus(false).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.PERFORMANCE)) {
-            introPagePS.addWidgets(Performance.builder().order(i).widgetStatus(false).widgetType(WidgetType.PERFORMANCE).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.TEAMCULTURE)) {
-            introPagePS.addWidgets(TeamCulture.builder().order(i).widgetStatus(false).widgetType(WidgetType.TEAMCULTURE).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.HISTORY)) {
-            introPagePS.addWidgets(History.builder().order(i).widgetStatus(false).widgetType(WidgetType.HISTORY).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.REVIEW)) {
-            introPagePS.addWidgets(Review.builder().order(i).widgetStatus(false).widgetType(WidgetType.REVIEW).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.PATENT)) {
-            introPagePS.addWidgets(Patent.builder().order(i).widgetStatus(false).widgetType(WidgetType.PATENT).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.NEWS)) {
-            introPagePS.addWidgets(News.builder().order(i).widgetStatus(false).widgetType(WidgetType.NEWS).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.DOWNLOAD)) {
-            introPagePS.addWidgets(Download.builder().order(i).widgetStatus(false).widgetType(WidgetType.DOWNLOAD).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.PARTNERS)) {
-            introPagePS.addWidgets(Partners.builder().order(i).widgetStatus(false).widgetType(WidgetType.PARTNERS).build());
-            i++;
-        }
-        if (!widgetTypeList.contains(WidgetType.CHANNEL)) {
-            introPagePS.addWidgets(Channel.builder().order(i).widgetStatus(false).widgetType(WidgetType.CHANNEL).build());
+            if (widgetBuilders.containsKey(widgetType)) {
+                Widget widget = widgetBuilders.get(widgetType).apply(true, order);
+                introPagePS.addWidgets(widget);
+                order++;
+            }
         }
 
-//        User userPS = userRepository.findById(user.getId())
-//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-//
-//        IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
-//        introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
-//        introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
-//        introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
-//
-//        List<WidgetType> widgetTypeList = saveIntroPageInDTO.getWidgetTypeList();
-//        System.out.println("widgetTypeList=" + widgetTypeList);
-//
-//        Map<WidgetType, BiFunction<Boolean, Integer, Widget>> widgetBuilders = new HashMap<>();
-//        widgetBuilders.put(WidgetType.KEYVISUALANDSLOGAN, (status, order) -> KeyVisualAndSlogan.builder().order(order).widgetStatus(status).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
-//        // Add other widget types and their respective builders here
-//
-//        int order = 1;
-//        for (WidgetType widgetType : widgetTypeList) {
-//            if (widgetBuilders.containsKey(widgetType)) {
-//                Widget widget = widgetBuilders.get(widgetType).apply(true, order);
-//                introPagePS.addWidgets(widget);
-//                order++;
-//            }
-//        }
-//
-//        for (WidgetType widgetType : widgetBuilders.keySet()) {
-//            if (!widgetTypeList.contains(widgetType)) {
-//                Widget widget = widgetBuilders.get(widgetType).apply(false, order);
-//                introPagePS.addWidgets(widget);
-//                order++;
-//            }
-//        }
+        for (WidgetType widgetType : widgetBuilders.keySet()) {
+            if (!widgetTypeList.contains(widgetType)) {
+                Widget widget = widgetBuilders.get(widgetType).apply(false, order);
+                introPagePS.addWidgets(widget);
+                order++;
+            }
+        }
     }
 
     public IntroPageOutDTO findIntroPage(User user) {
@@ -220,9 +132,6 @@ public class IntroPageService {
             throw new Exception400("status", "기본 주소가 설정되어 있지 않은 상태에서 회사 소개 페이지를 공개하실 수 없습니다.");
 
         List<Widget> widgets = introPagePS.getWidgets();
-//        for (int i = 0; i < widgets.size(); i++) {
-//            widgets.get(i).setOrder(updateInDTO.getOrderList().get(i));
-//        }
         Integer index = 1;
 
         List<Integer> arr = new ArrayList<>();
@@ -264,9 +173,6 @@ public class IntroPageService {
         CompanyInfo companyInfoPS = Optional.ofNullable(introPagePS.getCompanyInfo())
                 .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
 
-        // check-point 이후 바뀔 수도 있는 내용
-//        CompanyInfo companyInfoPS = Optional.ofNullable(userPS.getCompanyInfo())
-//                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
 
         // pavicon 저장된 경로 변경이 없을 경우 기존 데이터 사용으로 간주 - 삭제X
         // check-point 원하는대로 동작하는지 테스트 필요
@@ -285,7 +191,7 @@ public class IntroPageService {
                 updateCompanyInfoInDTO.getPhoneNumber(),
                 updateCompanyInfoInDTO.getFaxNumber()
         );
-        log.info("test");
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     @Transactional
@@ -344,6 +250,7 @@ public class IntroPageService {
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
         introPagePS.getHeaderAndFooter().updateHeaderAndFooter(updateHeaderAndFooter.getHeaderAndFooterStatusList());
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
 
     private void manageS3Uploader(List<String> pathOrginList, List<String> pathList) {
@@ -361,46 +268,4 @@ public class IntroPageService {
             }
         }
     }
-
-    //    public InfoOutDTO findInfo(User user) {
-//        User userPS = userRepository.findById(user.getId())
-//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-//
-//        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
-//                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-//
-//        return InfoOutDTO.builder()
-//                .pavicon(introPagePS.getWebPageInfo().getPavicon())
-//                .webPageName(introPagePS.getWebPageInfo().getWebPageName())
-//                .domain(introPagePS.getWebPageInfo().getDomain())
-//                .title(introPagePS.getWebPageInfo().getTitle())
-//                .description(introPagePS.getWebPageInfo().getDescription())
-//                .build();
-//    }
-
-//    public CompanyInfoOutDTO findCompanyInfo(User user) {
-//        User userPS = userRepository.findById(user.getId())
-//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-//
-//        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
-//                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-//
-//        CompanyInfo companyInfoPS = Optional.ofNullable(introPagePS.getCompanyInfo())
-//                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
-//
-//
-//        // check-point 이후 바뀔 수도 있는 내용
-////        CompanyInfo companyInfoPS = Optional.ofNullable(userPS.getCompanyInfo())
-////                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
-//
-//        return CompanyInfoOutDTO.builder()
-//                .companyName(companyInfoPS.getCompanyName())
-//                .bizNum(companyInfoPS.getBizNum())
-//                .contactEmail(companyInfoPS.getContactEmail())
-//                .tagline(companyInfoPS.getTagline())
-//                .logo(companyInfoPS.getLogo())
-//                .introFile(companyInfoPS.getIntroFile())
-//                .mediaKitFile(companyInfoPS.getMediaKitFile())
-//                .build();
-//    }
 }
