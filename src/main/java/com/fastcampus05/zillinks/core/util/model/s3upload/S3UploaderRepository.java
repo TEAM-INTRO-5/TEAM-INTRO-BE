@@ -34,7 +34,7 @@ public class S3UploaderRepository {
 
     public static final int WIDTH = 400;
     public static final int HEIGHT = 400;
-    public static final String TARGET_FORMAT = "jpg";
+    public static final String TARGET_FORMAT = "png";
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -104,7 +104,9 @@ public class S3UploaderRepository {
 
         try {
             originalImage = ImageIO.read(new FileInputStream(file));
-            resizedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+            // check-point
+            // 가로 세로 리사이징
+            resizedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
             Graphics2D g = resizedImage.createGraphics();
             g.drawImage(originalImage.getScaledInstance(WIDTH, HEIGHT, Image.SCALE_SMOOTH), 0, 0, null);
