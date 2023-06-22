@@ -16,7 +16,7 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -27,6 +27,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -160,5 +162,28 @@ public class Common {
             throw new Exception500("지도 api 오류");
         }
         return kakaoAddress;
+    }
+
+    public static String getDeviceType(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent");
+
+        String deviceType = "Others";
+        Pattern desktopPattern = Pattern.compile("Windows NT|Macintosh|Mac OS|Linux");
+        Pattern mobilePattern = Pattern.compile("iPhone|Android|Mobile|Windows Phone");
+        Pattern tabletPattern = Pattern.compile("iPad|iPod|Tablet|Android");
+
+        Matcher desktopMatcher = desktopPattern.matcher(userAgent);
+        Matcher mobileMatcher = mobilePattern.matcher(userAgent);
+        Matcher tabletMatcher = tabletPattern.matcher(userAgent);
+
+        if (desktopMatcher.find()) {
+            deviceType = "Desktop";
+        } else if (tabletMatcher.find()) {
+            deviceType = "Tablet";
+        } else if (mobileMatcher.find()) {
+            deviceType = "Mobile";
+        }
+
+        return deviceType;
     }
 }
