@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.model.dashboard.repository;
 
+import com.fastcampus05.zillinks.domain.model.dashboard.ContactUsLog;
 import com.fastcampus05.zillinks.domain.model.dashboard.VisitorLog;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -52,6 +53,15 @@ public class VisitorLogQueryRepository {
                 .selectFrom(visitorLog)
                 .where(eqIntroPageId(introPageId), isNotNull(type), goeOneMonthAgo(oneMonthAgo))
                 .orderBy(visitorLog.createdAt.desc())
+                .fetch();
+    }
+
+    public List<VisitorLog> findAllInWeek(Long introPageId) {
+        LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
+
+        return query
+                .selectFrom(visitorLog)
+                .where(eqIntroPageId(introPageId), goeOneMonthAgo(oneWeekAgo))
                 .fetch();
     }
 

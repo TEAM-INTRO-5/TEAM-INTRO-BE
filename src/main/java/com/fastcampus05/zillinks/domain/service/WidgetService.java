@@ -374,7 +374,6 @@ public class WidgetService {
                         kakaoAddress.getDocuments().get(0).getX());
             }
         }
-        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.ContactUsOutDTO.toOutDTO(contactUsPS);
     }
 
@@ -494,7 +493,6 @@ public class WidgetService {
                     keyVisualAndSloganInDTO.getSloganDetail()
             );
         }
-        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.KeyVisualAndSloganOutDTO.toOutDTO(keyVisualAndSloganPS);
     }
 
@@ -520,7 +518,6 @@ public class WidgetService {
                     missionAndVisionInDTO.getVisionDetail()
             );
         }
-        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.MissionAndVisionOutDTO.toOutDTO(missionAndVisionPS);
     }
 
@@ -689,7 +686,6 @@ public class WidgetService {
                     downloadInDTO.getIntroFile()
             );
         }
-        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.DownloadOutDTO.toOutDTO(downloadPS);
     }
 
@@ -995,7 +991,6 @@ public class WidgetService {
         if (channelInDTO.getWidgetStatus()) {
             channelPS.updateChannel(snsList);
         }
-        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
         return WidgetResponse.ChannelOutDTO.toOutDTO(channelPS.getSnsList());
     }
 }

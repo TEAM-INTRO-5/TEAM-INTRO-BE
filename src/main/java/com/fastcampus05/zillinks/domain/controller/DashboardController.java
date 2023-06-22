@@ -72,6 +72,22 @@ public class DashboardController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
+    @Operation(summary = "대시보드 메인 페이지 조회", description = "대시보드 메인 페이지 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindDashboardOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/s/user/dashboard")
+    public ResponseEntity<ResponseDTO<DashboardResponse.FindDashboardOutDTO>> findDashboard(
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        DashboardResponse.FindDashboardOutDTO findDashboardOutDTO = dashboardService.findDashboard(myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findDashboardOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "연락 관리 내역 조회 - 획인 필요/완료", description = "연락 관리 내역 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = DashboardResponse.FindContactUsOutDTO.class))),

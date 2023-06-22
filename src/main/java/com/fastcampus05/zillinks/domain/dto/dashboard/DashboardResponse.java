@@ -18,12 +18,68 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DashboardResponse {
+
     @Getter
     @Builder
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class FindDashboardOutDTO {
+        private IntroPageInfoOutDTO introPageInfo;
+        private List<Integer> view;
+        private List<Integer> sharing;
+        private List<Integer> contactUsLog;
+        private List<Integer> downloadLog;
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class IntroPageInfoOutDTO {
+            private Long introPageId;
+            private String subDomain;
+            private Boolean isUpdate;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            private LocalDateTime updatedAt;
+
+            private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
+                boolean isUpdate = false;
+                if (!introPage.getCreatedAt().equals(introPage.getUpdatedAt()))
+                    isUpdate = true;
+                return IntroPageInfoOutDTO.builder()
+                        .introPageId(introPage.getId())
+                        .subDomain(introPage.getSiteInfo().getSubDomain())
+                        .isUpdate(isUpdate)
+                        .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
+                        .build();
+            }
+        }
+
+        public static FindDashboardOutDTO toOutDTO(
+                IntroPage introPage,
+                List<Integer> view,
+                List<Integer> sharing,
+                List<Integer> contactUsLog,
+                List<Integer> downloadLog
+        ) {
+            return FindDashboardOutDTO.builder()
+                    .introPageInfo(IntroPageInfoOutDTO.toOutDTO(introPage))
+                    .view(view)
+                    .sharing(sharing)
+                    .contactUsLog(contactUsLog)
+                    .downloadLog(downloadLog)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class FindContactUsOutDTO {
-        private Long introPageId;
+        private IntroPageInfoOutDTO introPageInfo;
         private String status;
         private List<ContactUsLogOutDTO> content;
         private Long totalElements;
@@ -39,6 +95,32 @@ public class DashboardResponse {
         @Getter
         @Builder
         @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class IntroPageInfoOutDTO {
+            private Long introPageId;
+            private String subDomain;
+            private Boolean isUpdate;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            private LocalDateTime updatedAt;
+
+            private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
+                boolean isUpdate = false;
+                if (!introPage.getCreatedAt().equals(introPage.getUpdatedAt()))
+                    isUpdate = true;
+                return IntroPageInfoOutDTO.builder()
+                        .introPageId(introPage.getId())
+                        .subDomain(introPage.getSiteInfo().getSubDomain())
+                        .isUpdate(isUpdate)
+                        .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
+                        .build();
+            }
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class ContactUsLogOutDTO {
             private Long contactUsLogId;
@@ -57,7 +139,7 @@ public class DashboardResponse {
                 ContactUsStatus status
         ) {
             return FindContactUsOutDTO.builder()
-                    .introPageId(introPage.getId())
+                    .introPageInfo(IntroPageInfoOutDTO.toOutDTO(introPage))
                     .status(String.valueOf(status))
                     .content(contactUsLogOutDTOList)
                     .totalElements(contactUsLog.getTotalElements())
@@ -76,6 +158,7 @@ public class DashboardResponse {
     @Getter
     @Builder
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class FindContactUsDetailOutDTO {
         private Long contactUsLogId;
@@ -91,9 +174,10 @@ public class DashboardResponse {
     @Getter
     @Builder
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class FindDownloadOutDTO {
-        private Long introPageId;
+        private IntroPageInfoOutDTO introPageInfo;
         private String type;
         private List<Integer> introFile;
         private List<Integer> mediaKitFile;
@@ -111,6 +195,32 @@ public class DashboardResponse {
         @Getter
         @Builder
         @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class IntroPageInfoOutDTO {
+            private Long introPageId;
+            private String subDomain;
+            private Boolean isUpdate;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            private LocalDateTime updatedAt;
+
+            private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
+                boolean isUpdate = false;
+                if (!introPage.getCreatedAt().equals(introPage.getUpdatedAt()))
+                    isUpdate = true;
+                return IntroPageInfoOutDTO.builder()
+                        .introPageId(introPage.getId())
+                        .subDomain(introPage.getSiteInfo().getSubDomain())
+                        .isUpdate(isUpdate)
+                        .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
+                        .build();
+            }
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class DownloadOutDTO {
             private Long downloadLogId;
@@ -145,7 +255,7 @@ public class DashboardResponse {
             }
 
             return FindDownloadOutDTO.builder()
-                    .introPageId(introPage.getId())
+                    .introPageInfo(IntroPageInfoOutDTO.toOutDTO(introPage))
                     .type(typeString)
                     .introFile(introFile)
                     .mediaKitFile(mediaKitFile)
@@ -166,9 +276,10 @@ public class DashboardResponse {
     @Getter
     @Builder
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class FindVisitorOutDTO {
-        private Long introPageId;
+        private IntroPageInfoOutDTO introPageInfo;
         private String type;
         private List<VisitorOutDTO> content;
         private Long totalElements;
@@ -184,6 +295,32 @@ public class DashboardResponse {
         @Getter
         @Builder
         @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+        private static class IntroPageInfoOutDTO {
+            private Long introPageId;
+            private String subDomain;
+            private Boolean isUpdate;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            private LocalDateTime updatedAt;
+
+            private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
+                boolean isUpdate = false;
+                if (!introPage.getCreatedAt().equals(introPage.getUpdatedAt()))
+                    isUpdate = true;
+                return IntroPageInfoOutDTO.builder()
+                        .introPageId(introPage.getId())
+                        .subDomain(introPage.getSiteInfo().getSubDomain())
+                        .isUpdate(isUpdate)
+                        .updatedAt(isUpdate ? introPage.getUpdatedAt() : null)
+                        .build();
+            }
+        }
+
+        @Getter
+        @Builder
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class VisitorOutDTO {
             private Long visitorId;
@@ -202,7 +339,7 @@ public class DashboardResponse {
                 String type
         ) {
             return FindVisitorOutDTO.builder()
-                    .introPageId(introPage.getId())
+                    .introPageInfo(IntroPageInfoOutDTO.toOutDTO(introPage))
                     .type(type)
                     .content(visitorList)
                     .totalElements(visitorLogPG.getTotalElements())
