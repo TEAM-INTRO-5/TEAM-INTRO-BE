@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.controller;
 
 import com.fastcampus05.zillinks.core.auth.session.MyUserDetails;
+import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
@@ -21,6 +22,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
@@ -47,10 +49,11 @@ public class IntroPageController {
     })
     @PostMapping("/introPage")
     public ResponseEntity<ResponseDTO<FindIntroPageOutDTO>> getIntroPage(
+            HttpServletRequest request,
             @RequestBody @Valid IntroPageRequest.FindIntroPageInDTO findIntroPageInDTO,
             Errors errors
     ) {
-        FindIntroPageOutDTO findIntroPageOutDTO = introPageService.getIntroPage(findIntroPageInDTO);
+        FindIntroPageOutDTO findIntroPageOutDTO = introPageService.getIntroPage(findIntroPageInDTO, Common.getDeviceType(request));
         ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", findIntroPageOutDTO);
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }

@@ -7,6 +7,8 @@ import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileReposito
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageRequest;
 import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
+import com.fastcampus05.zillinks.domain.model.dashboard.VisitorLog;
+import com.fastcampus05.zillinks.domain.model.dashboard.repository.VisitorLogRepository;
 import com.fastcampus05.zillinks.domain.model.intropage.*;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import com.fastcampus05.zillinks.domain.model.user.UserRepository;
@@ -35,14 +37,22 @@ public class IntroPageService {
     private final S3UploaderFileRepository s3UploaderFileRepository;
     private final S3UploaderRepository s3UploaderRepository;
     private final SiteInfoRepository siteInfoRepository;
+    private final VisitorLogRepository visitorLogRepository;
 
     @Transactional
-    public IntroPageResponse.FindIntroPageOutDTO getIntroPage(IntroPageRequest.FindIntroPageInDTO findIntroPageInDTO) {
+    public IntroPageResponse.FindIntroPageOutDTO getIntroPage(IntroPageRequest.FindIntroPageInDTO findIntroPageInDTO, String deviceType) {
         SiteInfo siteInfoPS = siteInfoRepository.findBySubDomain(findIntroPageInDTO.getSubDomain())
                 .orElseThrow(() -> new Exception400("sub_domain", "존재하지 sub_domain입니다."));
         IntroPage introPagePS = siteInfoPS.getIntroPage();
         if (introPagePS.getIntroPageStatus().equals(IntroPageStatus.PRIVATE))
             throw new Exception400("intro_page_status", "비공개 상태의 회사 소개 페이지입니다.");
+
+        VisitorLog visitorLog = VisitorLog.builder()
+                .deviceType(deviceType)
+                .keyword(findIntroPageInDTO.getKeyword())
+                .sharingCode(findIntroPageInDTO.getShare())
+                .build();
+        visitorLogRepository.save(visitorLog);
 
         List<Integer> orderList = new ArrayList<>();
         for (Widget widget : introPagePS.getWidgets()) {
@@ -151,6 +161,38 @@ public class IntroPageService {
         if (!widgetTypeList.contains(WidgetType.CHANNEL)) {
             introPagePS.addWidgets(Channel.builder().order(i).widgetStatus(false).widgetType(WidgetType.CHANNEL).build());
         }
+
+//        User userPS = userRepository.findById(user.getId())
+//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+//
+//        IntroPage introPagePS = introPageRepository.save(IntroPage.saveIntroPage(userPS));
+//        introPagePS.setCompanyInfo(CompanyInfo.saveCompanyInfo(introPagePS));
+//        introPagePS.setSiteInfo(SiteInfo.saveSiteInfo());
+//        introPagePS.setHeaderAndFooter(HeaderAndFooter.saveHeaderAndFooter());
+//
+//        List<WidgetType> widgetTypeList = saveIntroPageInDTO.getWidgetTypeList();
+//        System.out.println("widgetTypeList=" + widgetTypeList);
+//
+//        Map<WidgetType, BiFunction<Boolean, Integer, Widget>> widgetBuilders = new HashMap<>();
+//        widgetBuilders.put(WidgetType.KEYVISUALANDSLOGAN, (status, order) -> KeyVisualAndSlogan.builder().order(order).widgetStatus(status).widgetType(WidgetType.KEYVISUALANDSLOGAN).filter(Filter.BLACK).build());
+//        // Add other widget types and their respective builders here
+//
+//        int order = 1;
+//        for (WidgetType widgetType : widgetTypeList) {
+//            if (widgetBuilders.containsKey(widgetType)) {
+//                Widget widget = widgetBuilders.get(widgetType).apply(true, order);
+//                introPagePS.addWidgets(widget);
+//                order++;
+//            }
+//        }
+//
+//        for (WidgetType widgetType : widgetBuilders.keySet()) {
+//            if (!widgetTypeList.contains(widgetType)) {
+//                Widget widget = widgetBuilders.get(widgetType).apply(false, order);
+//                introPagePS.addWidgets(widget);
+//                order++;
+//            }
+//        }
     }
 
     public IntroPageOutDTO findIntroPage(User user) {
