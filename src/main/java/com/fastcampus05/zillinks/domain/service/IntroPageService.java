@@ -47,6 +47,7 @@ public class IntroPageService {
             throw new Exception400("intro_page_status", "비공개 상태의 회사 소개 페이지입니다.");
 
         VisitorLog visitorLog = VisitorLog.builder()
+                .introPage(introPagePS)
                 .deviceType(deviceType)
                 .keyword(findIntroPageInDTO.getKeyword())
                 .sharingCode(findIntroPageInDTO.getShare())

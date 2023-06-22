@@ -170,7 +170,7 @@ public class DashboardResponse {
     public static class FindVisitorOutDTO {
         private Long introPageId;
         private String type;
-        private List<Visitor> content;
+        private List<VisitorOutDTO> content;
         private Long totalElements;
         private Integer totalPage;
         private Integer size;
@@ -185,7 +185,7 @@ public class DashboardResponse {
         @Builder
         @AllArgsConstructor
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Visitor {
+        public static class VisitorOutDTO {
             private Long visitorId;
             @JsonInclude(JsonInclude.Include.NON_NULL)
             private String keyword;
@@ -198,7 +198,7 @@ public class DashboardResponse {
         public static FindVisitorOutDTO toOutDTO(
                 IntroPage introPage,
                 Page<VisitorLog> visitorLogPG,
-                List<Visitor> visitorList,
+                List<VisitorOutDTO> visitorList,
                 String type
         ) {
             return FindVisitorOutDTO.builder()
