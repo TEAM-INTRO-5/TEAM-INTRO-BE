@@ -26,13 +26,13 @@ public class VisitorLogQueryRepository {
         this.query = new JPAQueryFactory(em);
     }
 
-    public Page<VisitorLog> findPGAllByType(Long introPageId, Integer page) {
+    public Page<VisitorLog> findPGAllByType(Long introPageId, String type, Integer page) {
         int size = 8;
         int startPosition = page * size;
 
         List<VisitorLog> visitorLogListPS = query
                 .selectFrom(visitorLog)
-                .where(eqIntroPageId(introPageId))
+                .where(eqIntroPageId(introPageId), isNotNull(type))
                 .orderBy(visitorLog.createdAt.desc())
                 .offset(startPosition)
                 .limit(size)
@@ -45,12 +45,12 @@ public class VisitorLogQueryRepository {
         return new PageImpl<>(visitorLogListPS, PageRequest.of(page, size), totalCount);
     }
 
-    public List<VisitorLog> findAllByType(Long introPageId) {
+    public List<VisitorLog> findAllByType(Long introPageId, String type) {
         LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
 
         return query
                 .selectFrom(visitorLog)
-                .where(eqIntroPageId(introPageId), goeOneMonthAgo(oneMonthAgo))
+                .where(eqIntroPageId(introPageId), isNotNull(type), goeOneMonthAgo(oneMonthAgo))
                 .orderBy(visitorLog.createdAt.desc())
                 .fetch();
     }
@@ -58,6 +58,13 @@ public class VisitorLogQueryRepository {
     private BooleanExpression eqIntroPageId(Long introPageId) {
         if (introPageId != null) {
             return visitorLog.introPage.id.eq(introPageId);
+        }
+        return null;
+    }
+
+    private BooleanExpression isNotNull(String type) {
+        if (type.equals("SHARING")) {
+            return visitorLog.sharingCode.isNotNull();
         }
         return null;
     }

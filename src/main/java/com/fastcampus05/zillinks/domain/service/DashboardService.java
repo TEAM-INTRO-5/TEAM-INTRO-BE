@@ -172,12 +172,12 @@ public class DashboardService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        Page<VisitorLog> visitorLogPG = visitorLogQueryRepository.findPGAllByType(introPagePS.getId(), page);
-        List<FindVisitorOutDTO.Visitor> visitorList = visitorLogPG.stream().map(
-                s -> FindVisitorOutDTO.Visitor.builder()
+        Page<VisitorLog> visitorLogPG = visitorLogQueryRepository.findPGAllByType(introPagePS.getId(), type, page);
+        List<FindVisitorOutDTO.VisitorOutDTO> visitorList = visitorLogPG.stream().map(
+                s -> FindVisitorOutDTO.VisitorOutDTO.builder()
                         .visitorId(s.getId())
-                        .keyword(type.equals("VIEW") ? ((s.getKeyword() == null) ? "(없음)": s.getKeyword()) : null)
-                        .sharingCode(type.equals("SHARING") ? ((s.getSharingCode() == null) ? "(없음)": s.getSharingCode()) : null)
+                        .keyword(type.equals("VIEW") ? ((s.getKeyword() == null) ? "(없음)" : s.getKeyword()) : null)
+                        .sharingCode(type.equals("SHARING") ? s.getSharingCode() : null)
                         .date(s.getCreatedAt())
                         .build()
         ).collect(Collectors.toList());
@@ -234,11 +234,11 @@ public class DashboardService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        List<VisitorLog> visitorLogList = visitorLogQueryRepository.findAllByType(introPagePS.getId());
+        List<VisitorLog> visitorLogList = visitorLogQueryRepository.findAllByType(introPagePS.getId(), excelVisitorInDTO.getType());
         return visitorLogList.stream()
                 .map(s -> ExcelOutDTO.VisitorOutDTO.builder()
                         .deviceType(s.getDeviceType())
-                        .type(excelVisitorInDTO.getType().equals("VIEW") ? ((s.getKeyword() == null) ? "(없음)": s.getKeyword()) : ((s.getSharingCode() == null) ? "(없음)": s.getSharingCode()))
+                        .type(excelVisitorInDTO.getType().equals("VIEW") ? ((s.getKeyword() == null) ? "(없음)": s.getKeyword()) : s.getSharingCode())
                         .date(s.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
