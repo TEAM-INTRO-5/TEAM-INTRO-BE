@@ -164,6 +164,22 @@ public class IntroPageService {
     }
 
     @Transactional
+    public void updateTheme(IntroPageRequest.UpdateThemeInDTO updateThemeInDTO, User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        CompanyInfo companyInfoPS = Optional.ofNullable(introPagePS.getCompanyInfo())
+                .orElseThrow(() -> new Exception400("intro_page_id", "해당 유저의 회사 기본 정보는 존재하지 않습니다."));
+
+        introPagePS.getTheme().updateTheme(updateThemeInDTO.getThemeType(), updateThemeInDTO.getColor());
+
+        introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
+    }
+
+    @Transactional
     public void updateCompanyInfo(IntroPageRequest.UpdateCompanyInfoInDTO updateCompanyInfoInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));

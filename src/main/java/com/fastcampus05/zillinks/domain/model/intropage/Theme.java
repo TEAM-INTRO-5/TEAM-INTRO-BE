@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Pattern;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Embeddable
 @Getter
@@ -14,8 +16,13 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @Builder
 public class Theme {
-
-    @Pattern(regexp = "ThemeA|ThemeB")
-    private String type;
+    @Column(name = "theme_type")
+    @Enumerated(EnumType.STRING)
+    private ThemeType themeType;
     private String color;
+
+    public void updateTheme(ThemeType themeType, String color) {
+        this.themeType = themeType;
+        this.color = color;
+    }
 }

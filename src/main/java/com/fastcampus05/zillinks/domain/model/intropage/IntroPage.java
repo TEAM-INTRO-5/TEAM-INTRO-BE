@@ -91,7 +91,7 @@ public class IntroPage extends TimeBaseEntity {
         return IntroPage.builder()
                 .user(user)
                 .introPageStatus(IntroPageStatus.PRIVATE)
-                .theme(new Theme("ThemeA", "#000000"))
+                .theme(new Theme(ThemeType.ThemeA, "#000000"))
                 .widgets(new ArrayList<>())
                 .build();
     }

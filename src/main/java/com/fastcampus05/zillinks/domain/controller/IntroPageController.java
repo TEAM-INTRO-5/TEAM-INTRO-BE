@@ -102,7 +102,7 @@ public class IntroPageController {
             @Parameter(name = "updateInDTO"),
             @Parameter(name = "myUserDetails", hidden = true)
     })
-    @PutMapping("/s/user/introPage")
+    @PatchMapping("/s/user/introPage")
     public ResponseEntity<ResponseDTO> updateIntroPage(
             @RequestBody @Valid IntroPageRequest.UpdateInDTO updateInDTO,
             Errors errors,
@@ -111,6 +111,25 @@ public class IntroPageController {
         introPageService.updateIntroPage(updateInDTO, myUserDetails.getUser());
         ResponseDTO responseBody = new ResponseDTO(null);
         return ResponseEntity.ok(responseBody);
+    }
+
+    @Operation(summary = "테마 변경", description = "테마 변경")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "updateThemeInDTO"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @PatchMapping("/s/user/introPage/theme")
+    public ResponseEntity<ResponseDTO> updateTheme(
+            @RequestBody @Valid IntroPageRequest.UpdateThemeInDTO updateThemeInDTO,
+            Errors errors,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        introPageService.updateTheme(updateThemeInDTO, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", null);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
     @Operation(summary = "회사 기본 정보 수정", description = "회사 기본 정보 수정")
