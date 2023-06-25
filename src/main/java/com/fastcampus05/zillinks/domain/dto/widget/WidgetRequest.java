@@ -336,6 +336,13 @@ public class WidgetRequest {
     /**
      * 보도 자료
      */
+//    @Getter
+//    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+//    public static class ImportNewsInDTO {
+//        @Schema(description = "링크 주소", example = "url 주소")
+//        private String url;
+//    }
+
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateNewsInDTO {

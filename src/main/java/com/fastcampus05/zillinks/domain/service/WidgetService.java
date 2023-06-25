@@ -17,10 +17,13 @@ import com.fastcampus05.zillinks.domain.model.widget.*;
 import com.fastcampus05.zillinks.domain.model.widget.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -792,6 +795,12 @@ public class WidgetService {
     /**
      * 보고 자료
      */
+//    public WidgetResponse.ImportNewsOutDTO importNews(WidgetRequest.ImportNewsInDTO importNewsInDTO, User user) {
+    public WidgetResponse.ImportNewsOutDTO importNews(String url, User user) {
+        NewsElement newsElement = Common.ImportNews(url);
+        return WidgetResponse.ImportNewsOutDTO.toOutDTO(newsElement);
+    }
+
     @Transactional
     public WidgetResponse.UpdateNewsOutDTO updateNews(WidgetRequest.UpdateNewsInDTO updateNewsInDTO, User user) {
         User userPS = userRepository.findById(user.getId())

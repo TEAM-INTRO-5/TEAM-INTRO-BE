@@ -509,6 +509,26 @@ public class WidgetController {
     /**
      * 보도 자료
      */
+    @Operation(summary = "보도 자료 불러오기", description = "보도 자료 불러오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.ImportNewsOutDTO.class))),
+    })
+    @Parameters({
+            @Parameter(name = "url"),
+            @Parameter(name = "myUserDetails", hidden = true)
+    })
+    @GetMapping("/news/import")
+    public ResponseEntity<ResponseDTO<WidgetResponse.ImportNewsOutDTO>> importNews(
+//            @RequestBody @Valid WidgetRequest.ImportNewsInDTO importNewsInDTO,
+//            Errors errors,
+            @RequestParam String url,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        WidgetResponse.ImportNewsOutDTO importNewsOutDTO = widgetService.importNews(url, myUserDetails.getUser());
+        ResponseDTO responseBody = new ResponseDTO(HttpStatus.OK, "성공", importNewsOutDTO);
+        return new ResponseEntity(responseBody, HttpStatus.OK);
+    }
+
     @Operation(summary = "보도 자료 수정", description = "보도 자료 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = WidgetResponse.UpdateNewsOutDTO.class))),

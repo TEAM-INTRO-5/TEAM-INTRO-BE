@@ -4,6 +4,7 @@ import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.core.exception.Exception500;
 import com.fastcampus05.zillinks.core.util.dto.map.KakaoAddress;
 import com.fastcampus05.zillinks.core.util.dto.zillinksapi.ZillinksApiResponse;
+import com.fastcampus05.zillinks.domain.model.widget.NewsElement;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -185,5 +191,48 @@ public class Common {
         }
 
         return deviceType;
+    }
+
+    public static NewsElement ImportNews(String url) {
+        try {
+            Document doc = Jsoup.connect(url).get();
+
+            // 이미지 추출
+            Element lazyImage = doc.select("._LAZY_LOADING").first();
+
+            if (lazyImage != null) {
+                System.out.println(lazyImage.attr("src"));
+            } else {
+                System.out.println("lazy_loading 클래스를 가진 요소를 찾을 수 없습니다.");
+            }
+
+            // 날짜 데이터 추출
+            Element dateTimeElement = doc.select("._ARTICLE_DATE_TIME").first();
+            String dateTimeText = dateTimeElement.text();
+            String dateText = dateTimeText.substring(0, 10);
+            // 형식 맞추기 위한 날짜 패턴을 생성
+            LocalDate date = LocalDate.parse(dateText, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+
+            // 언론 매체 추출
+            Element logoImgElement = doc.select(".media_end_head_top_logo > img").first();
+            String press = logoImgElement.attr("title");
+
+            // 기사 제목 추출
+            String title = doc.getElementById("title_area").text();
+
+            // 기사 본문 추출
+            String dicArera = doc.getElementById("dic_area").text();
+            String description = dicArera.substring(0, Math.min(dicArera.length(), 100));
+
+            return NewsElement.builder()
+                    .image(null)
+                    .date(date)
+                    .press(press)
+                    .title(title)
+                    .description(description)
+                    .build();
+        } catch (IOException e) {
+            throw new Exception500("Jsoup.connect url failure\n" + e.getMessage());
+        }
     }
 }
