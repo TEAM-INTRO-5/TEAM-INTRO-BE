@@ -1,5 +1,6 @@
 package com.fastcampus05.zillinks.domain.dto.intropage;
 
+import com.fastcampus05.zillinks.domain.model.intropage.ThemeType;
 import com.fastcampus05.zillinks.domain.model.widget.WidgetType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -45,6 +47,18 @@ public class IntroPageRequest {
         @Size(min = 14, max = 14, message = "위젯의 개수 14개")
         @JsonProperty("order_list")
         private List<Integer> orderList;
+    }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateThemeInDTO {
+        @Schema(description = "테마 선택", example = "ThemeA")
+//        @Pattern(regexp = "ThemeA|ThemeB")
+        private ThemeType themeType;
+
+        @Schema(description = "기본 색상 변경", example = "#4B48DF")
+        @Pattern(regexp = "^#(?:[0-9a-fA-F]{3}){1,2}$")
+        private String color;
     }
 
     @Getter

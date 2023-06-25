@@ -35,7 +35,7 @@ public class DummyEntity {
     public IntroPage newIntroPage() {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
-                .theme(new Theme("ThemeA", "#ffffff"))
+                .theme(new Theme(ThemeType.ThemeA, "#ffffff"))
                 .introPageStatus(IntroPageStatus.valueOf("PRIVATE"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
@@ -56,7 +56,7 @@ public class DummyEntity {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
                 .user(user)
-                .theme(new Theme("ThemeA", "#ffffff"))
+                .theme(new Theme(ThemeType.ThemeA, "#ffffff"))
                 .introPageStatus(IntroPageStatus.valueOf("PRIVATE"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()
@@ -76,7 +76,7 @@ public class DummyEntity {
     public IntroPage newMockIntroPage(Long id) {
         ZillinksData zillinksData = Common.zillinksApi("2258701327").toZillinksData();
         IntroPage introPage = IntroPage.builder()
-                .theme(new Theme("ThemeA", "#ffffff"))
+                .theme(new Theme(ThemeType.ThemeA, "#ffffff"))
                 .introPageStatus(IntroPageStatus.valueOf("PRIVATE"))
                 .build();
         CompanyInfo companyInfo = CompanyInfo.builder()

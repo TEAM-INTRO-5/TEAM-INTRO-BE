@@ -2,6 +2,7 @@ package com.fastcampus05.zillinks.domain.dto.intropage;
 
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPageStatus;
+import com.fastcampus05.zillinks.domain.model.intropage.ThemeType;
 import com.fastcampus05.zillinks.domain.model.widget.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -40,7 +41,7 @@ public class IntroPageResponse {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class ThemeOutDTO {
-            private String type;
+            private ThemeType type;
             private String color;
         }
 
@@ -854,7 +855,7 @@ public class IntroPageResponse {
                     .introPageId(introPage.getId())
                     .introPageStatus(introPage.getIntroPageStatus())
                     .theme(ThemeOutDTO.builder()
-                            .type(introPage.getTheme().getType())
+                            .type(introPage.getTheme().getThemeType())
                             .color(introPage.getTheme().getColor())
                             .build())
                     .companyInfo(CompanyInfoOutDTO.builder()
@@ -913,7 +914,7 @@ public class IntroPageResponse {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class ThemeOutDTO {
-            private String type;
+            private ThemeType type;
             private String color;
         }
 
@@ -1728,7 +1729,7 @@ public class IntroPageResponse {
                     .introPageId(introPage.getId())
                     .introPageStatus(introPage.getIntroPageStatus())
                     .theme(ThemeOutDTO.builder()
-                            .type(introPage.getTheme().getType())
+                            .type(introPage.getTheme().getThemeType())
                             .color(introPage.getTheme().getColor())
                             .build())
                     .companyInfo(CompanyInfoOutDTO.builder()
