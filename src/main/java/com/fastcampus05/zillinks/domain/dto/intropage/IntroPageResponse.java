@@ -954,6 +954,7 @@ public class IntroPageResponse {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class HeaderAndFooterOutDTO {
+            private List<Boolean> headerAndFooterStatusList;
             private Boolean misionAndVision;
             private Boolean productsAndServices;
             private Boolean teamMember;
@@ -1725,6 +1726,19 @@ public class IntroPageResponse {
                         widgetOutDTOs.add(ChannelOutDTO.toOutDTO((Channel) widget));
                 }
             }
+            List<Boolean> headerAndFooterStatusList = new ArrayList<>();
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getMisionAndVision());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getTeamMember());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getContactUs());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getNews());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getDownload());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getHistory());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getTeamCulture());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getPerformance());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getPartners());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getReview());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getPatent());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getFooter());
             return IntroPageOutDTO.builder()
                     .introPageId(introPage.getId())
                     .introPageStatus(introPage.getIntroPageStatus())
@@ -1749,19 +1763,7 @@ public class IntroPageResponse {
                             .description(introPage.getSiteInfo().getDescription())
                             .build())
                     .headerAndFooter(HeaderAndFooterOutDTO.builder()
-                            .misionAndVision(introPage.getHeaderAndFooter().getMisionAndVision())
-                            .productsAndServices(introPage.getHeaderAndFooter().getProductsAndServices())
-                            .teamMember(introPage.getHeaderAndFooter().getTeamMember())
-                            .contactUs(introPage.getHeaderAndFooter().getContactUs())
-                            .news(introPage.getHeaderAndFooter().getNews())
-                            .download(introPage.getHeaderAndFooter().getDownload())
-                            .history(introPage.getHeaderAndFooter().getHistory())
-                            .teamCulture(introPage.getHeaderAndFooter().getTeamCulture())
-                            .performance(introPage.getHeaderAndFooter().getPerformance())
-                            .partners(introPage.getHeaderAndFooter().getPartners())
-                            .review(introPage.getHeaderAndFooter().getReview())
-                            .patent(introPage.getHeaderAndFooter().getPatent())
-                            .footer(introPage.getHeaderAndFooter().getFooter())
+                            .headerAndFooterStatusList(headerAndFooterStatusList)
                             .build())
                     .widgets(widgetOutDTOs)
                     .build();
