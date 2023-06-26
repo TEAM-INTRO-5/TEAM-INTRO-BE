@@ -697,7 +697,7 @@ public class WidgetService {
         log.info("ss3UploaderFileListPS={}", s3UploaderFileListPS);
         for (String pathOrigin : pathOrginList) {
             log.info("pathOrigin={}", pathOrigin);
-            if (!pathList.contains(pathOrigin) && !(pathOrigin == null)) {
+            if (!pathList.contains(pathOrigin) && !(pathOrigin == null || pathOrigin.isEmpty())) {
                 s3UploaderFileRepository.delete(s3UploaderFileListPS.stream().filter(s -> s.getEncodingPath().equals(pathOrigin)).findAny().orElseThrow(
                         () -> new Exception500("manageS3Uploader: 파일 관리에 문제가 생겼습니다.")
                 ));
