@@ -16,7 +16,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -193,18 +192,31 @@ public class Common {
         return deviceType;
     }
 
-    public static NewsElement ImportNews(String url) {
+    public static NewsElement importNews(String url) {
         try {
+//            // Docker 컨테이너 IP와 포트(4444)로 수정
+//            java.net.URL hubUrl = new URL("http://localhost:4444/wd/hub");
+//
+//            // 웹 드라이버 인스턴스 생성 및 연결
+//            FirefoxOptions options = new FirefoxOptions();
+//            options.addArguments("--headless");
+//            options.addArguments("--disable-dev-shm-usage");
+//            options.addArguments("--no-sandbox");
+//            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+//            WebDriver driver = new RemoteWebDriver(hubUrl, options);
+//
+//            driver.get(url);
+//
+//            // 페이지 로딩 시간을 기다림 (예: 최대 10초)
+//            new WebDriverWait(driver, Duration.ofSeconds(30)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id("title_area")));
+//
+//            String htmlContent = driver.getPageSource();
+//            Document doc = Jsoup.parse(htmlContent);
             Document doc = Jsoup.connect(url).get();
 
             // 이미지 추출
-            Element lazyImage = doc.select("._LAZY_LOADING").first();
-
-            if (lazyImage != null) {
-                System.out.println(lazyImage.attr("src"));
-            } else {
-                System.out.println("lazy_loading 클래스를 가진 요소를 찾을 수 없습니다.");
-            }
+            Element imgElement = doc.getElementById("img1");
+            String image = imgElement.attr("src");
 
             // 날짜 데이터 추출
             Element dateTimeElement = doc.select("._ARTICLE_DATE_TIME").first();
@@ -225,7 +237,7 @@ public class Common {
             String description = dicArera.substring(0, Math.min(dicArera.length(), 100));
 
             return NewsElement.builder()
-                    .image(null)
+//                    .image(image)
                     .date(date)
                     .press(press)
                     .title(title)

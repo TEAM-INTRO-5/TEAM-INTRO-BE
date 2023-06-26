@@ -17,13 +17,10 @@ import com.fastcampus05.zillinks.domain.model.widget.*;
 import com.fastcampus05.zillinks.domain.model.widget.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -797,7 +794,12 @@ public class WidgetService {
      */
 //    public WidgetResponse.ImportNewsOutDTO importNews(WidgetRequest.ImportNewsInDTO importNewsInDTO, User user) {
     public WidgetResponse.ImportNewsOutDTO importNews(String url, User user) {
-        NewsElement newsElement = Common.ImportNews(url);
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        NewsElement newsElement = Common.importNews(url);
         return WidgetResponse.ImportNewsOutDTO.toOutDTO(newsElement);
     }
 
