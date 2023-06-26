@@ -955,19 +955,6 @@ public class IntroPageResponse {
         @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         private static class HeaderAndFooterOutDTO {
             private List<Boolean> headerAndFooterStatusList;
-            private Boolean misionAndVision;
-            private Boolean productsAndServices;
-            private Boolean teamMember;
-            private Boolean contactUs;
-            private Boolean news;
-            private Boolean download;
-            private Boolean history;
-            private Boolean teamCulture;
-            private Boolean performance;
-            private Boolean partners;
-            private Boolean review;
-            private Boolean patent;
-            private Boolean footer;
         }
 
         @Getter
@@ -1728,6 +1715,7 @@ public class IntroPageResponse {
             }
             List<Boolean> headerAndFooterStatusList = new ArrayList<>();
             headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getMisionAndVision());
+            headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getProductsAndServices());
             headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getTeamMember());
             headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getContactUs());
             headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getNews());
