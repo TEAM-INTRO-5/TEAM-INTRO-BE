@@ -217,6 +217,9 @@ public class Common {
             // 이미지 추출
             Element imgElement = doc.getElementById("img1");
             String image = imgElement.attr("src");
+            if (image.isEmpty()) {
+                image = imgElement.attr("data-src");
+            }
 
             // 날짜 데이터 추출
             Element dateTimeElement = doc.select("._ARTICLE_DATE_TIME").first();
@@ -237,7 +240,7 @@ public class Common {
             String description = dicArera.substring(0, Math.min(dicArera.length(), 100));
 
             return NewsElement.builder()
-//                    .image(image)
+                    .image(image)
                     .date(date)
                     .press(press)
                     .title(title)
