@@ -7,6 +7,7 @@ import com.fastcampus05.zillinks.core.util.dto.map.KakaoAddress;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFileRepository;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderRepository;
+import com.fastcampus05.zillinks.domain.dto.intropage.IntroPageResponse;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
 import com.fastcampus05.zillinks.domain.model.intropage.IntroPage;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -1003,5 +1005,18 @@ public class WidgetService {
             channelPS.updateChannel(snsList);
         }
         return WidgetResponse.ChannelOutDTO.toOutDTO(channelPS.getSnsList());
+    }
+
+    public List<TeamMemberElement> test(User user) {
+        User userPS = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
+
+        IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
+                .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
+
+        TeamMember teamMember = (TeamMember) introPagePS.getWidgets().stream().filter(s -> s instanceof TeamMember).findFirst().orElseThrow(
+                () -> new Exception500("TeamMember 위젯이 존재하지 않습니다."));
+
+        return teamMemberElementRepository.findAllByTeamMember(teamMember);
     }
 }
