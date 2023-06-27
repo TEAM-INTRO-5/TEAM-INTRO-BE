@@ -873,16 +873,6 @@ public class WidgetService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-        List<NewsElement> newsElements = newsElementQueryRepository.findAllByDeleteList(deleteNewsElementsInDTO.getDeleteList());
-        for (NewsElement newsElement : newsElements) {
-            String image = newsElement.getImage();
-            if (image == null)
-                continue;
-            s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(image).orElseThrow(
-                    () -> new Exception500("deletePatentElements: 파일 관리 실패")
-            ));
-            s3UploaderRepository.delete(image);
-        }
         newsElementQueryRepository.deleteByDeleteList(deleteNewsElementsInDTO.getDeleteList());
         introPagePS.updateSaveStatus(IntroPageStatus.PRIVATE);
     }
