@@ -3,6 +3,7 @@ package com.fastcampus05.zillinks.core.dummy;
 import com.fastcampus05.zillinks.core.util.Common;
 import com.fastcampus05.zillinks.core.util.model.s3upload.S3UploaderFile;
 import com.fastcampus05.zillinks.domain.model.intropage.*;
+import com.fastcampus05.zillinks.domain.model.user.Marketing;
 import com.fastcampus05.zillinks.domain.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

@@ -39,7 +39,7 @@ public class DashboardRequest {
         @JsonProperty("intro_page_id")
         private Long introPageId;
 
-        @Schema(description = "다운 받을 자료 종류", example = "intro_file")
+        @Schema(description = "다운 받을 자료 종류", example = "INTROFILE")
         @Pattern(regexp = "INTROFILE|MEDIAKIT")
         private String type;
 
