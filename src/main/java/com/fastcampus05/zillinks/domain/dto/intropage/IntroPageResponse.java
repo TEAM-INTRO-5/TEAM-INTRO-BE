@@ -105,7 +105,7 @@ public class IntroPageResponse {
         private static class WidgetOutDTO {
             private Long widgetId;
             private Integer order;
-            private String widgetType;
+            private Integer widgetType;
             private Boolean widgetStatus;
         }
 
@@ -124,7 +124,7 @@ public class IntroPageResponse {
                 return KeyVisualAndSloganOutDTO.builder()
                         .widgetId(keyVisualAndSlogan.getId())
                         .order(keyVisualAndSlogan.getOrder())
-                        .widgetType(String.valueOf(keyVisualAndSlogan.getWidgetType()))
+                        .widgetType(5)
                         .widgetStatus(keyVisualAndSlogan.getWidgetStatus())
                         .background(keyVisualAndSlogan.getWidgetStatus() ? keyVisualAndSlogan.getBackground() : null)
                         .filter(keyVisualAndSlogan.getWidgetStatus() ? keyVisualAndSlogan.getFilter() : null)
@@ -149,7 +149,7 @@ public class IntroPageResponse {
                 return MissionAndVisionOutDTO.builder()
                         .widgetId(missionAndVision.getId())
                         .order(missionAndVision.getOrder())
-                        .widgetType(String.valueOf(missionAndVision.getWidgetType()))
+                        .widgetType(1)
                         .widgetStatus(missionAndVision.getWidgetStatus())
                         .mission(missionAndVision.getWidgetStatus() ? missionAndVision.getMission() : null)
                         .missionDetail(missionAndVision.getWidgetStatus() ? missionAndVision.getMissionDetail() : null)
@@ -224,7 +224,7 @@ public class IntroPageResponse {
                 return ProductsAndServicesOutDTO.builder()
                         .widgetId(productsAndServices.getId())
                         .order(productsAndServices.getOrder())
-                        .widgetType(String.valueOf(productsAndServices.getWidgetType()))
+                        .widgetType(2)
                         .widgetStatus(productsAndServices.getWidgetStatus())
                         .productsAndServicesElements(productsAndServices.getWidgetStatus() ? productsAndServicesElementOutDTOs : null)
                         .callToActionStatus(productsAndServices.getWidgetStatus() ? productsAndServices.getCallToActionStatus() : null)
@@ -338,7 +338,7 @@ public class IntroPageResponse {
                 return TeamMemberOutDTO.builder()
                         .widgetId(teamMember.getId())
                         .order(teamMember.getOrder())
-                        .widgetType(String.valueOf(teamMember.getWidgetType()))
+                        .widgetType(6)
                         .widgetStatus(teamMember.getWidgetStatus())
                         .teamMemberElements(teamMember.getWidgetStatus() ? teamMemberElementOutDTOs : null)
                         .build();
@@ -361,7 +361,7 @@ public class IntroPageResponse {
                 return ContactUsOutDTO.builder()
                         .widgetId(contactUs.getId())
                         .order(contactUs.getOrder())
-                        .widgetType(String.valueOf(contactUs.getWidgetType()))
+                        .widgetType(3)
                         .widgetStatus(contactUs.getWidgetStatus())
                         .mapStatus(contactUs.getWidgetStatus() ? contactUs.getMapStatus() : null)
                         .fullAddress(contactUs.getWidgetStatus() ? (contactUs.getMapStatus() ? contactUs.getFullAddress() : null) : null)
@@ -421,7 +421,7 @@ public class IntroPageResponse {
                 return PerformanceOutDTO.builder()
                         .widgetId(performance.getId())
                         .order(performance.getOrder())
-                        .widgetType(String.valueOf(performance.getWidgetType()))
+                        .widgetType(7)
                         .widgetStatus(performance.getWidgetStatus())
                         .performanceElements(performance.getWidgetStatus() ? performanceElementOutDTOs : null)
                         .build();
@@ -477,7 +477,7 @@ public class IntroPageResponse {
                 return TeamCultureOutDTO.builder()
                         .widgetId(teamCulture.getId())
                         .order(teamCulture.getOrder())
-                        .widgetType(String.valueOf(teamCulture.getWidgetType()))
+                        .widgetType(8)
                         .widgetStatus(teamCulture.getWidgetStatus())
                         .teamCultureElements(teamCulture.getWidgetStatus() ? teamCultureElementOutDTOs : null)
                         .build();
@@ -528,7 +528,7 @@ public class IntroPageResponse {
                 return HistoryOutDTO.builder()
                         .widgetId(history.getId())
                         .order(history.getOrder())
-                        .widgetType(String.valueOf(history.getWidgetType()))
+                        .widgetType(9)
                         .widgetStatus(history.getWidgetStatus())
                         .historyElements(history.getWidgetStatus() ? historyElementOutDTOs : null)
                         .build();
@@ -588,7 +588,7 @@ public class IntroPageResponse {
                 return ReviewOutDTO.builder()
                         .widgetId(review.getId())
                         .order(review.getOrder())
-                        .widgetType(String.valueOf(review.getWidgetType()))
+                        .widgetType(4)
                         .widgetStatus(review.getWidgetStatus())
                         .reviewElements(review.getWidgetStatus() ? reviewElementOutDTOs : null)
                         .build();
@@ -644,7 +644,7 @@ public class IntroPageResponse {
                 return PatentOutDTO.builder()
                         .widgetId(patent.getId())
                         .order(patent.getOrder())
-                        .widgetType(String.valueOf(patent.getWidgetType()))
+                        .widgetType(10)
                         .widgetStatus(patent.getWidgetStatus())
                         .patentElements(patent.getWidgetStatus() ? patentElementOutDTOs : null)
                         .build();
@@ -704,7 +704,7 @@ public class IntroPageResponse {
                 return NewsOutDTO.builder()
                         .widgetId(news.getId())
                         .order(news.getOrder())
-                        .widgetType(String.valueOf(news.getWidgetType()))
+                        .widgetType(11)
                         .widgetStatus(news.getWidgetStatus())
                         .newsElements(news.getWidgetStatus() ? newsElementOutDTOs : null)
                         .build();
@@ -725,7 +725,7 @@ public class IntroPageResponse {
                 return DownloadOutDTO.builder()
                         .widgetId(download.getId())
                         .order(download.getOrder())
-                        .widgetType(String.valueOf(download.getWidgetType()))
+                        .widgetType(12)
                         .widgetStatus(download.getWidgetStatus())
                         .description(download.getWidgetStatus() ? download.getDescription() : null)
                         .mediaKitFile(download.getWidgetStatus() ? download.getMediaKitFile() : null)
@@ -783,7 +783,7 @@ public class IntroPageResponse {
                 return PartnersOutDTO.builder()
                         .widgetId(partners.getId())
                         .order(partners.getOrder())
-                        .widgetType(String.valueOf(partners.getWidgetType()))
+                        .widgetType(13)
                         .widgetStatus(partners.getWidgetStatus())
                         .partnersElements(partners.getWidgetStatus() ? partnersElementOutDTOs : null)
                         .build();
@@ -824,7 +824,8 @@ public class IntroPageResponse {
             private static ChannelOutDTO toOutDTO(Channel channel) {
                 return ChannelOutDTO.builder()
                         .widgetId(channel.getId())
-                        .widgetType(String.valueOf(channel.getWidgetType()))
+                        .order(channel.getOrder())
+                        .widgetType(14)
                         .widgetStatus(channel.getWidgetStatus())
                         .snsList(channel.getWidgetStatus() ? (channel.getSnsList() != null ? ChannelOutDTO.SnsList.builder()
                                 .instagramStatus(channel.getSnsList().getInstagramStatus())
@@ -997,7 +998,7 @@ public class IntroPageResponse {
         private static class WidgetOutDTO {
             private Long widgetId;
             private Integer order;
-            private String widgetType;
+            private Integer widgetType;
             private Boolean widgetStatus;
         }
 
@@ -1016,7 +1017,7 @@ public class IntroPageResponse {
                 return KeyVisualAndSloganOutDTO.builder()
                         .widgetId(keyVisualAndSlogan.getId())
                         .order(keyVisualAndSlogan.getOrder())
-                        .widgetType(String.valueOf(keyVisualAndSlogan.getWidgetType()))
+                        .widgetType(5)
                         .widgetStatus(keyVisualAndSlogan.getWidgetStatus())
                         .background(keyVisualAndSlogan.getBackground())
                         .filter(keyVisualAndSlogan.getFilter())
@@ -1041,7 +1042,7 @@ public class IntroPageResponse {
                 return MissionAndVisionOutDTO.builder()
                         .widgetId(missionAndVision.getId())
                         .order(missionAndVision.getOrder())
-                        .widgetType(String.valueOf(missionAndVision.getWidgetType()))
+                        .widgetType(1)
                         .widgetStatus(missionAndVision.getWidgetStatus())
                         .mission(missionAndVision.getMission())
                         .missionDetail(missionAndVision.getMissionDetail())
@@ -1116,7 +1117,7 @@ public class IntroPageResponse {
                 return ProductsAndServicesOutDTO.builder()
                         .widgetId(productsAndServices.getId())
                         .order(productsAndServices.getOrder())
-                        .widgetType(String.valueOf(productsAndServices.getWidgetType()))
+                        .widgetType(2)
                         .widgetStatus(productsAndServices.getWidgetStatus())
                         .productsAndServicesElements(productsAndServicesElementOutDTOs)
                         .callToActionStatus(productsAndServices.getCallToActionStatus())
@@ -1230,7 +1231,7 @@ public class IntroPageResponse {
                 return TeamMemberOutDTO.builder()
                         .widgetId(teamMember.getId())
                         .order(teamMember.getOrder())
-                        .widgetType(String.valueOf(teamMember.getWidgetType()))
+                        .widgetType(6)
                         .widgetStatus(teamMember.getWidgetStatus())
                         .teamMemberElements(teamMemberElementOutDTOs)
                         .build();
@@ -1253,7 +1254,7 @@ public class IntroPageResponse {
                 return ContactUsOutDTO.builder()
                         .widgetId(contactUs.getId())
                         .order(contactUs.getOrder())
-                        .widgetType(String.valueOf(contactUs.getWidgetType()))
+                        .widgetType(3)
                         .widgetStatus(contactUs.getWidgetStatus())
                         .mapStatus(contactUs.getMapStatus())
                         .fullAddress(contactUs.getFullAddress())
@@ -1313,7 +1314,7 @@ public class IntroPageResponse {
                 return PerformanceOutDTO.builder()
                         .widgetId(performance.getId())
                         .order(performance.getOrder())
-                        .widgetType(String.valueOf(performance.getWidgetType()))
+                        .widgetType(7)
                         .widgetStatus(performance.getWidgetStatus())
                         .performanceElements(performanceElementOutDTOs)
                         .build();
@@ -1369,7 +1370,7 @@ public class IntroPageResponse {
                 return TeamCultureOutDTO.builder()
                         .widgetId(teamCulture.getId())
                         .order(teamCulture.getOrder())
-                        .widgetType(String.valueOf(teamCulture.getWidgetType()))
+                        .widgetType(8)
                         .widgetStatus(teamCulture.getWidgetStatus())
                         .teamCultureElements(teamCultureElementOutDTOs)
                         .build();
@@ -1420,7 +1421,7 @@ public class IntroPageResponse {
                 return HistoryOutDTO.builder()
                         .widgetId(history.getId())
                         .order(history.getOrder())
-                        .widgetType(String.valueOf(history.getWidgetType()))
+                        .widgetType(9)
                         .widgetStatus(history.getWidgetStatus())
                         .historyElements(historyElementOutDTOs)
                         .build();
@@ -1480,7 +1481,7 @@ public class IntroPageResponse {
                 return ReviewOutDTO.builder()
                         .widgetId(review.getId())
                         .order(review.getOrder())
-                        .widgetType(String.valueOf(review.getWidgetType()))
+                        .widgetType(4)
                         .widgetStatus(review.getWidgetStatus())
                         .reviewElements(reviewElementOutDTOs)
                         .build();
@@ -1536,7 +1537,7 @@ public class IntroPageResponse {
                 return PatentOutDTO.builder()
                         .widgetId(patent.getId())
                         .order(patent.getOrder())
-                        .widgetType(String.valueOf(patent.getWidgetType()))
+                        .widgetType(10)
                         .widgetStatus(patent.getWidgetStatus())
                         .patentElements(patentElementOutDTOs)
                         .build();
@@ -1596,7 +1597,7 @@ public class IntroPageResponse {
                 return NewsOutDTO.builder()
                         .widgetId(news.getId())
                         .order(news.getOrder())
-                        .widgetType(String.valueOf(news.getWidgetType()))
+                        .widgetType(11)
                         .widgetStatus(news.getWidgetStatus())
                         .newsElements(newsElementOutDTOs)
                         .build();
@@ -1617,7 +1618,7 @@ public class IntroPageResponse {
                 return DownloadOutDTO.builder()
                         .widgetId(download.getId())
                         .order(download.getOrder())
-                        .widgetType(String.valueOf(download.getWidgetType()))
+                        .widgetType(12)
                         .widgetStatus(download.getWidgetStatus())
                         .description(download.getDescription())
                         .mediaKitFile(download.getMediaKitFile())
@@ -1675,7 +1676,7 @@ public class IntroPageResponse {
                 return PartnersOutDTO.builder()
                         .widgetId(partners.getId())
                         .order(partners.getOrder())
-                        .widgetType(String.valueOf(partners.getWidgetType()))
+                        .widgetType(13)
                         .widgetStatus(partners.getWidgetStatus())
                         .partnersElements(partnersElementOutDTOs)
                         .build();
@@ -1716,7 +1717,8 @@ public class IntroPageResponse {
             private static ChannelOutDTO toOutDTO(Channel channel) {
                 return ChannelOutDTO.builder()
                         .widgetId(channel.getId())
-                        .widgetType(String.valueOf(channel.getWidgetType()))
+                        .order(channel.getOrder())
+                        .widgetType(14)
                         .widgetStatus(channel.getWidgetStatus())
                         .snsList(channel.getSnsList() != null ?
                                 SnsList.builder()
