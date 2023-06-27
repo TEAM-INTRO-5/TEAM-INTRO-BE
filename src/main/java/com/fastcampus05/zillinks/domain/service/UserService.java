@@ -279,7 +279,6 @@ public class UserService {
 
         manageS3Uploader(pathOrginList, pathList);
 
-
         userPS.updateMyPage(userInfoUpdateInDTO.getEmail(), userInfoUpdateInDTO.getProfile(), marketing);
     }
 
