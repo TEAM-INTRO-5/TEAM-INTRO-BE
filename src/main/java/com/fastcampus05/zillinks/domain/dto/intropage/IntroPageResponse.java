@@ -1102,13 +1102,17 @@ public class IntroPageResponse {
             private static ProductsAndServicesOutDTO toOutDTO(ProductsAndServices productsAndServices) {
                 List<ProductsAndServicesElement> productsAndServicesElements = productsAndServices.getProductsAndServicesElements();
                 List<ProductsAndServicesElementOutDTO> productsAndServicesElementOutDTOs = new ArrayList<>();
+                Collections.sort(productsAndServicesElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < productsAndServicesElements.size(); i++) {
-                    for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
-                        if (productsAndServicesElement.getOrder() != i + 1)
-                            continue;
-                        productsAndServicesElementOutDTOs.add(ProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElement));
-                    }
+                    productsAndServicesElementOutDTOs.add(ProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElements.get(i)));
                 }
+//                for (int i = 0; i < productsAndServicesElements.size(); i++) {
+//                    for (ProductsAndServicesElement productsAndServicesElement : productsAndServicesElements) {
+//                        if (productsAndServicesElement.getOrder() != i + 1)
+//                            continue;
+//                        productsAndServicesElementOutDTOs.add(ProductsAndServicesElementOutDTO.toOutDTO(productsAndServicesElement));
+//                    }
+//                }
                 return ProductsAndServicesOutDTO.builder()
                         .widgetId(productsAndServices.getId())
                         .order(productsAndServices.getOrder())
@@ -1295,13 +1299,17 @@ public class IntroPageResponse {
             private static PerformanceOutDTO toOutDTO(Performance performance) {
                 List<PerformanceElement> performanceElements = performance.getPerformanceElements();
                 List<PerformanceElementOutDTO> performanceElementOutDTOs = new ArrayList<>();
+                Collections.sort(performanceElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < performanceElements.size(); i++) {
-                    for (PerformanceElement performanceElement : performanceElements) {
-                        if (performanceElement.getOrder() != i + 1)
-                            continue;
-                        performanceElementOutDTOs.add(PerformanceElementOutDTO.toOutDTO(performanceElement));
-                    }
+                    performanceElementOutDTOs.add(PerformanceElementOutDTO.toOutDTO(performanceElements.get(i)));
                 }
+//                for (int i = 0; i < performanceElements.size(); i++) {
+//                    for (PerformanceElement performanceElement : performanceElements) {
+//                        if (performanceElement.getOrder() != i + 1)
+//                            continue;
+//                        performanceElementOutDTOs.add(PerformanceElementOutDTO.toOutDTO(performanceElement));
+//                    }
+//                }
                 return PerformanceOutDTO.builder()
                         .widgetId(performance.getId())
                         .order(performance.getOrder())
@@ -1347,13 +1355,17 @@ public class IntroPageResponse {
             private static TeamCultureOutDTO toOutDTO(TeamCulture teamCulture) {
                 List<TeamCultureElement> teamCultureElements = teamCulture.getTeamCultureElements();
                 List<TeamCultureElementOutDTO> teamCultureElementOutDTOs = new ArrayList<>();
+                Collections.sort(teamCultureElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < teamCultureElements.size(); i++) {
-                    for (TeamCultureElement teamCultureElement : teamCultureElements) {
-                        if (teamCultureElement.getOrder() != i + 1)
-                            continue;
-                        teamCultureElementOutDTOs.add(TeamCultureElementOutDTO.toOutDTO(teamCultureElement));
-                    }
+                    teamCultureElementOutDTOs.add(TeamCultureElementOutDTO.toOutDTO(teamCultureElements.get(i)));
                 }
+//                for (int i = 0; i < teamCultureElements.size(); i++) {
+//                    for (TeamCultureElement teamCultureElement : teamCultureElements) {
+//                        if (teamCultureElement.getOrder() != i + 1)
+//                            continue;
+//                        teamCultureElementOutDTOs.add(TeamCultureElementOutDTO.toOutDTO(teamCultureElement));
+//                    }
+//                }
                 return TeamCultureOutDTO.builder()
                         .widgetId(teamCulture.getId())
                         .order(teamCulture.getOrder())
@@ -1454,13 +1466,17 @@ public class IntroPageResponse {
             private static ReviewOutDTO toOutDTO(Review review) {
                 List<ReviewElement> reviewElements = review.getReviewElement();
                 List<ReviewElementOutDTO> reviewElementOutDTOs = new ArrayList<>();
+                Collections.sort(reviewElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < reviewElements.size(); i++) {
-                    for (ReviewElement reviewElement : reviewElements) {
-                        if (reviewElement.getOrder() != i + 1)
-                            continue;
-                        reviewElementOutDTOs.add(ReviewElementOutDTO.toOutDTO(reviewElement));
-                    }
+                    reviewElementOutDTOs.add(ReviewElementOutDTO.toOutDTO(reviewElements.get(i)));
                 }
+//                for (int i = 0; i < reviewElements.size(); i++) {
+//                    for (ReviewElement reviewElement : reviewElements) {
+//                        if (reviewElement.getOrder() != i + 1)
+//                            continue;
+//                        reviewElementOutDTOs.add(ReviewElementOutDTO.toOutDTO(reviewElement));
+//                    }
+//                }
                 return ReviewOutDTO.builder()
                         .widgetId(review.getId())
                         .order(review.getOrder())
@@ -1506,13 +1522,17 @@ public class IntroPageResponse {
             private static PatentOutDTO toOutDTO(Patent patent) {
                 List<PatentElement> patentElements = patent.getPatentElements();
                 List<PatentElementOutDTO> patentElementOutDTOs = new ArrayList<>();
+                Collections.sort(patentElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < patentElements.size(); i++) {
-                    for (PatentElement patentElement : patentElements) {
-                        if (patentElement.getOrder() != i + 1)
-                            continue;
-                        patentElementOutDTOs.add(PatentElementOutDTO.toOutDTO(patentElement));
-                    }
+                    patentElementOutDTOs.add(PatentElementOutDTO.toOutDTO(patentElements.get(i)));
                 }
+//                for (int i = 0; i < patentElements.size(); i++) {
+//                    for (PatentElement patentElement : patentElements) {
+//                        if (patentElement.getOrder() != i + 1)
+//                            continue;
+//                        patentElementOutDTOs.add(PatentElementOutDTO.toOutDTO(patentElement));
+//                    }
+//                }
                 return PatentOutDTO.builder()
                         .widgetId(patent.getId())
                         .order(patent.getOrder())
@@ -1562,13 +1582,17 @@ public class IntroPageResponse {
             private static NewsOutDTO toOutDTO(News news) {
                 List<NewsElement> newsElements = news.getNewsElements();
                 List<NewsElementOutDTO> newsElementOutDTOs = new ArrayList<>();
+                Collections.sort(newsElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < newsElements.size(); i++) {
-                    for (NewsElement newsElement : newsElements) {
-                        if (newsElement.getOrder() != i + 1)
-                            continue;
-                        newsElementOutDTOs.add(NewsElementOutDTO.toOutDTO(newsElement));
-                    }
+                    newsElementOutDTOs.add(NewsElementOutDTO.toOutDTO(newsElements.get(i)));
                 }
+//                for (int i = 0; i < newsElements.size(); i++) {
+//                    for (NewsElement newsElement : newsElements) {
+//                        if (newsElement.getOrder() != i + 1)
+//                            continue;
+//                        newsElementOutDTOs.add(NewsElementOutDTO.toOutDTO(newsElement));
+//                    }
+//                }
                 return NewsOutDTO.builder()
                         .widgetId(news.getId())
                         .order(news.getOrder())
@@ -1637,13 +1661,17 @@ public class IntroPageResponse {
             private static PartnersOutDTO toOutDTO(Partners partners) {
                 List<PartnersElement> partnersElements = partners.getPartnersElements();
                 List<PartnersElementOutDTO> partnersElementOutDTOs = new ArrayList<>();
+                Collections.sort(partnersElements, Comparator.comparingInt(o -> Math.toIntExact(o.getOrder())));
                 for (int i = 0; i < partnersElements.size(); i++) {
-                    for (PartnersElement partnersElement : partnersElements) {
-                        if (partnersElement.getOrder() != i + 1)
-                            continue;
-                        partnersElementOutDTOs.add(PartnersElementOutDTO.toOutDTO(partnersElement));
-                    }
+                    partnersElementOutDTOs.add(PartnersElementOutDTO.toOutDTO(partnersElements.get(i)));
                 }
+//                for (int i = 0; i < partnersElements.size(); i++) {
+//                    for (PartnersElement partnersElement : partnersElements) {
+//                        if (partnersElement.getOrder() != i + 1)
+//                            continue;
+//                        partnersElementOutDTOs.add(PartnersElementOutDTO.toOutDTO(partnersElement));
+//                    }
+//                }
                 return PartnersOutDTO.builder()
                         .widgetId(partners.getId())
                         .order(partners.getOrder())
