@@ -1,6 +1,7 @@
 package com.fastcampus05.zillinks.domain.model.widget;
 
 import com.fastcampus05.zillinks.core.util.TimeBaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class TeamMemberElement extends TimeBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_member_id")
+    @JsonIgnore
     private TeamMember teamMember;
 
     @Column(name = "orders")

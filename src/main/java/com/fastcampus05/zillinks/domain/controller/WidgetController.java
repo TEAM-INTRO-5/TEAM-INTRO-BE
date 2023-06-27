@@ -5,6 +5,7 @@ import com.fastcampus05.zillinks.core.exception.Exception400;
 import com.fastcampus05.zillinks.domain.dto.ResponseDTO;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetRequest;
 import com.fastcampus05.zillinks.domain.dto.widget.WidgetResponse;
+import com.fastcampus05.zillinks.domain.model.widget.TeamMemberElement;
 import com.fastcampus05.zillinks.domain.service.WidgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +23,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -659,7 +661,7 @@ public class WidgetController {
             @Parameter(name = "myUserDetails", hidden = true)
     })
     @PatchMapping("/download")
-    public ResponseEntity<ResponseDTO> saveDownload(
+    public ResponseEntity<ResponseDTO<WidgetResponse.DownloadOutDTO>> saveDownload(
             @RequestBody @Valid WidgetRequest.DownloadInDTO downloadInDTO,
             Errors errors,
             @AuthenticationPrincipal MyUserDetails myUserDetails
@@ -691,4 +693,12 @@ public class WidgetController {
         return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 
+    @GetMapping("/show-team-member")
+    public ResponseEntity<?> test(
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        List<TeamMemberElement> testOutDTO = widgetService.test(myUserDetails.getUser());
+        ResponseDTO responseBody =  new ResponseDTO(HttpStatus.OK, "성공", testOutDTO);
+        return ResponseEntity.ok(responseBody);
+    }
 }
