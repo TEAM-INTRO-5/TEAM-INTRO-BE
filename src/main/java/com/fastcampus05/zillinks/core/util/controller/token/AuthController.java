@@ -99,7 +99,7 @@ public class AuthController {
                         String rtk = URLEncoder.encode(tokenResponse.getRefreshToken(), "utf-8");
                         Cookie cookie = new Cookie("remember_me", rtk);
                         cookie.setHttpOnly(true);
-                        cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
+                        cookie.setPath("/"); // accessToken 재발급시에만 사용가능하도록 설정
                         cookie.setMaxAge(60 * 60 * 24 * 30);
                         // HTTPS를 사용할 경우 true로 설정
                         cookie.setSecure(false);

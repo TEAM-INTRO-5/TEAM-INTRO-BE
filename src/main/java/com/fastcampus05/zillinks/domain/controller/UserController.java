@@ -104,7 +104,7 @@ public class UserController {
                 String rtk = URLEncoder.encode(loginOutDTO.getRefreshToken(), "utf-8");
                 Cookie cookie = new Cookie("remember_me", rtk);
                 cookie.setHttpOnly(true);
-                cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
+                cookie.setPath("/"); // accessToken 재발급시에만 사용가능하도록 설정
                 cookie.setMaxAge(60 * 60 * 24 * 30);
                 // HTTPS를 사용할 경우 true로 설정
                 cookie.setSecure(false);
@@ -139,7 +139,7 @@ public class UserController {
                 try {
                     Cookie cookie = new Cookie("remember_me", URLEncoder.encode("", "utf-8"));
                     cookie.setHttpOnly(true);
-                    cookie.setPath("/api"); // accessToken 재발급시에만 사용가능하도록 설정
+                    cookie.setPath("/"); // accessToken 재발급시에만 사용가능하도록 설정
                     cookie.setMaxAge(0); // 쿠키 만료 시점을 설정
                     // HTTPS를 사용할 경우 true로 설정
                     cookie.setSecure(false);
