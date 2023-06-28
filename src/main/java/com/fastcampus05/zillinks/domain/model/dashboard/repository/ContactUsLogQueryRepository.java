@@ -13,10 +13,12 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.fastcampus05.zillinks.domain.model.dashboard.QContactUsLog.contactUsLog;
 import static com.fastcampus05.zillinks.domain.model.dashboard.QDownloadLog.downloadLog;
+import static com.fastcampus05.zillinks.domain.model.widget.QHistoryElement.historyElement;
 
 
 @Repository
@@ -60,6 +62,17 @@ public class ContactUsLogQueryRepository {
                 .fetch();
     }
 
+    public List<ContactUsLog> findByContactUsList(List<Long> contactUsIdList) {
+        if (contactUsIdList == null || contactUsIdList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return query
+                .selectFrom(contactUsLog)
+                .where(inContactUsList(contactUsIdList))
+                .fetch();
+    }
+
     public List<ContactUsLog> findAllInWeek(Long introPageId) {
         LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
 
@@ -86,6 +99,13 @@ public class ContactUsLogQueryRepository {
     private static BooleanExpression goeOneMonthAgo(LocalDate oneMonthAgo) {
         if (oneMonthAgo != null) {
             return contactUsLog.createdAt.goe(oneMonthAgo.atStartOfDay());
+        }
+        return null;
+    }
+
+    private static BooleanExpression inContactUsList(List<Long> contactUsIdList) {
+        if (contactUsIdList != null) {
+            return contactUsLog.id.in(contactUsIdList);
         }
         return null;
     }
