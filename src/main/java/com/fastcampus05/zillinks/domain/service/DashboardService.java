@@ -172,11 +172,14 @@ public class DashboardService {
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
-        ContactUsLog contactUsLogPS = contactUsLogRepository.findById(updateContactUsDetailInDTO.getContactUsId())
-                .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
-        if (!contactUsLogPS.getIntroPage().equals(introPagePS))
-            throw new Exception401("해당 게시물을 열람할 권한이 없습니다.");
-        contactUsLogPS.updateContactUsStatus(ContactUsStatus.valueOf(updateContactUsDetailInDTO.getStatus()));
+//        ContactUsLog contactUsLogPS = contactUsLogRepository.findById(updateContactUsDetailInDTO.getContactUsId())
+//                .orElseThrow(() -> new Exception400("contact_us_id", "해당 게시물은 존재하지 않습니다."));
+        List<ContactUsLog> contactUsLogListPS = contactUsLogQueryRepository.findByContactUsList(updateContactUsDetailInDTO.getContactUsIdList());
+        for (ContactUsLog contactUsLogPS : contactUsLogListPS) {
+            if (!contactUsLogPS.getIntroPage().equals(introPagePS))
+                throw new Exception401("해당 게시물을 열람할 권한이 없습니다.");
+            contactUsLogPS.updateContactUsStatus(ContactUsStatus.valueOf(updateContactUsDetailInDTO.getStatus()));
+        }
     }
 
     public FindDownloadOutDTO findDownload(DownloadType type, Integer page, User user) {
