@@ -42,7 +42,7 @@ public class DashboardResponse {
             private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
             private LocalDateTime updatedAt;
 
             private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
@@ -105,7 +105,7 @@ public class DashboardResponse {
             private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
             private LocalDateTime updatedAt;
 
             private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
@@ -207,7 +207,7 @@ public class DashboardResponse {
             private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
             private LocalDateTime updatedAt;
 
             private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
@@ -309,7 +309,7 @@ public class DashboardResponse {
             private IntroPageStatus introPageStatus;
             private String subDomain;
             private Boolean isUpdate;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd- HH:mm", timezone = "UTC")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
             private LocalDateTime updatedAt;
 
             private static IntroPageInfoOutDTO toOutDTO(IntroPage introPage) {
