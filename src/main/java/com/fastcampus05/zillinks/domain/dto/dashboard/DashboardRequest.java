@@ -1,16 +1,20 @@
 package com.fastcampus05.zillinks.domain.dto.dashboard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 public class DashboardRequest {
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ContactUsLogInDTO {
         @Schema(description = "요청할 회사의 ID", example = "1")
         @JsonProperty("intro_page_id")
@@ -34,6 +38,7 @@ public class DashboardRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DownloadInDTO {
         @Schema(description = "요청할 회사의 ID", example = "1")
         @JsonProperty("intro_page_id")
@@ -49,10 +54,11 @@ public class DashboardRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateContactUsDetailInDTO {
-        @Schema(description = "연락관리내역 요소 ID", example = "1")
-        @JsonProperty("contact_us_id")
-        private Long contactUsId;
+        @Schema(description = "연락관리내역 요소 ID 리스트", example = "[1, 2, 3]")
+        @NotNull(message = "연락관리내역 요소 ID 리스트를 비워둘 수 없습니다.")
+        private List<Long> contactUsIdList;
 
         @Schema(description = "변경 상태 종류", example = "CONFIRM")
         @Pattern(regexp = "CONFIRM|CANCEL")
@@ -60,6 +66,7 @@ public class DashboardRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ExcelContactUsInDTO {
         @Schema(description = "확인 필요/완료", example = "UNCONFIRMED")
         @Pattern(regexp = "UNCONFIRMED|CONFIRM")
@@ -67,6 +74,7 @@ public class DashboardRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ExcelDownloadInDTO {
         @Schema(description = "다운로드 내역", example = "UNCONFIRMED")
         @Pattern(regexp = "ALL|INTROFILE|MEDIAKIT")
@@ -74,6 +82,7 @@ public class DashboardRequest {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class ExcelVisitorInDTO {
         @Schema(description = "방문자 기록", example = "VIEW")
         @Pattern(regexp = "VIEW|SHARING")
