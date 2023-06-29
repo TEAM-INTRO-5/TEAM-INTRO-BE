@@ -43,8 +43,6 @@ public class S3UploaderService {
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         Optional<IntroPage> introPageOP = introPageRepository.findByUserId(userPS.getId());
 
-//        delete(getUrlByName(introPageOP, type));
-
         String dir = String.valueOf(user.getId());
         String uploadPath = DEFAULT_IMAGE;
         if (image != null) {

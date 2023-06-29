@@ -1744,41 +1744,71 @@ public class IntroPageResponse {
         public static IntroPageOutDTO toOutDTO(IntroPage introPage, List<Integer> orderList) {
             List<Widget> widgets = introPage.getWidgets();
             List<WidgetOutDTO> widgetOutDTOs = new ArrayList<>();
-            // check-point 바뀐 순서대로 보내줄지, 아니면 그냥 고정된 순서로 보내고 orderList로 처리할지
-            for (int i = 0; i < orderList.size(); i++) {
-                for (Widget widget : widgets) {
-                    if (widget.getOrder() != i + 1)
-                        continue;
-                    if (widget instanceof KeyVisualAndSlogan)
-                        widgetOutDTOs.add(KeyVisualAndSloganOutDTO.toOutDTO((KeyVisualAndSlogan) widget));
-                    else if (widget instanceof MissionAndVision)
-                        widgetOutDTOs.add(MissionAndVisionOutDTO.toOutDTO((MissionAndVision) widget));
-                    else if (widget instanceof ProductsAndServices)
-                        widgetOutDTOs.add(ProductsAndServicesOutDTO.toOutDTO((ProductsAndServices) widget));
-                    else if (widget instanceof TeamMember)
-                        widgetOutDTOs.add(TeamMemberOutDTO.toOutDTO((TeamMember) widget));
-                    else if (widget instanceof ContactUs)
-                        widgetOutDTOs.add(ContactUsOutDTO.toOutDTO((ContactUs) widget));
-                    else if (widget instanceof Performance)
-                        widgetOutDTOs.add(PerformanceOutDTO.toOutDTO((Performance) widget));
-                    else if (widget instanceof TeamCulture)
-                        widgetOutDTOs.add(TeamCultureOutDTO.toOutDTO((TeamCulture) widget));
-                    else if (widget instanceof History)
-                        widgetOutDTOs.add(HistoryOutDTO.toOutDTO((History) widget));
-                    else if (widget instanceof Review)
-                        widgetOutDTOs.add(ReviewOutDTO.toOutDTO((Review) widget));
-                    else if (widget instanceof Patent)
-                        widgetOutDTOs.add(PatentOutDTO.toOutDTO((Patent) widget));
-                    else if (widget instanceof News)
-                        widgetOutDTOs.add(NewsOutDTO.toOutDTO((News) widget));
-                    else if (widget instanceof Download)
-                        widgetOutDTOs.add(DownloadOutDTO.toOutDTO((Download) widget));
-                    else if (widget instanceof Partners)
-                        widgetOutDTOs.add(PartnersOutDTO.toOutDTO((Partners) widget));
-                    else if (widget instanceof Channel)
-                        widgetOutDTOs.add(ChannelOutDTO.toOutDTO((Channel) widget));
-                }
+            Collections.sort(widgets, Comparator.comparingInt(o -> o.getOrder()));
+            for (Widget widget : widgets) {
+                if (widget instanceof KeyVisualAndSlogan)
+                    widgetOutDTOs.add(KeyVisualAndSloganOutDTO.toOutDTO((KeyVisualAndSlogan) widget));
+                else if (widget instanceof MissionAndVision)
+                    widgetOutDTOs.add(MissionAndVisionOutDTO.toOutDTO((MissionAndVision) widget));
+                else if (widget instanceof ProductsAndServices)
+                    widgetOutDTOs.add(ProductsAndServicesOutDTO.toOutDTO((ProductsAndServices) widget));
+                else if (widget instanceof TeamMember)
+                    widgetOutDTOs.add(TeamMemberOutDTO.toOutDTO((TeamMember) widget));
+                else if (widget instanceof ContactUs)
+                    widgetOutDTOs.add(ContactUsOutDTO.toOutDTO((ContactUs) widget));
+                else if (widget instanceof Performance)
+                    widgetOutDTOs.add(PerformanceOutDTO.toOutDTO((Performance) widget));
+                else if (widget instanceof TeamCulture)
+                    widgetOutDTOs.add(TeamCultureOutDTO.toOutDTO((TeamCulture) widget));
+                else if (widget instanceof History)
+                    widgetOutDTOs.add(HistoryOutDTO.toOutDTO((History) widget));
+                else if (widget instanceof Review)
+                    widgetOutDTOs.add(ReviewOutDTO.toOutDTO((Review) widget));
+                else if (widget instanceof Patent)
+                    widgetOutDTOs.add(PatentOutDTO.toOutDTO((Patent) widget));
+                else if (widget instanceof News)
+                    widgetOutDTOs.add(NewsOutDTO.toOutDTO((News) widget));
+                else if (widget instanceof Download)
+                    widgetOutDTOs.add(DownloadOutDTO.toOutDTO((Download) widget));
+                else if (widget instanceof Partners)
+                    widgetOutDTOs.add(PartnersOutDTO.toOutDTO((Partners) widget));
+                else if (widget instanceof Channel)
+                    widgetOutDTOs.add(ChannelOutDTO.toOutDTO((Channel) widget));
             }
+//            for (int i = 0; i < orderList.size(); i++) {
+//                for (Widget widget : widgets) {
+//                    if (widget.getOrder() != i + 1)
+//                        continue;
+//                    if (widget instanceof KeyVisualAndSlogan)
+//                        widgetOutDTOs.add(KeyVisualAndSloganOutDTO.toOutDTO((KeyVisualAndSlogan) widget));
+//                    else if (widget instanceof MissionAndVision)
+//                        widgetOutDTOs.add(MissionAndVisionOutDTO.toOutDTO((MissionAndVision) widget));
+//                    else if (widget instanceof ProductsAndServices)
+//                        widgetOutDTOs.add(ProductsAndServicesOutDTO.toOutDTO((ProductsAndServices) widget));
+//                    else if (widget instanceof TeamMember)
+//                        widgetOutDTOs.add(TeamMemberOutDTO.toOutDTO((TeamMember) widget));
+//                    else if (widget instanceof ContactUs)
+//                        widgetOutDTOs.add(ContactUsOutDTO.toOutDTO((ContactUs) widget));
+//                    else if (widget instanceof Performance)
+//                        widgetOutDTOs.add(PerformanceOutDTO.toOutDTO((Performance) widget));
+//                    else if (widget instanceof TeamCulture)
+//                        widgetOutDTOs.add(TeamCultureOutDTO.toOutDTO((TeamCulture) widget));
+//                    else if (widget instanceof History)
+//                        widgetOutDTOs.add(HistoryOutDTO.toOutDTO((History) widget));
+//                    else if (widget instanceof Review)
+//                        widgetOutDTOs.add(ReviewOutDTO.toOutDTO((Review) widget));
+//                    else if (widget instanceof Patent)
+//                        widgetOutDTOs.add(PatentOutDTO.toOutDTO((Patent) widget));
+//                    else if (widget instanceof News)
+//                        widgetOutDTOs.add(NewsOutDTO.toOutDTO((News) widget));
+//                    else if (widget instanceof Download)
+//                        widgetOutDTOs.add(DownloadOutDTO.toOutDTO((Download) widget));
+//                    else if (widget instanceof Partners)
+//                        widgetOutDTOs.add(PartnersOutDTO.toOutDTO((Partners) widget));
+//                    else if (widget instanceof Channel)
+//                        widgetOutDTOs.add(ChannelOutDTO.toOutDTO((Channel) widget));
+//                }
+//            }
             List<Boolean> headerAndFooterStatusList = new ArrayList<>();
             headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getMisionAndVision());
             headerAndFooterStatusList.add(introPage.getHeaderAndFooter().getProductsAndServices());

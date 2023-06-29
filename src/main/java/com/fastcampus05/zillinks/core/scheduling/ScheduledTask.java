@@ -48,7 +48,6 @@ public class ScheduledTask {
             throw new Exception500("강제에러");
         } catch (AmazonServiceException e) {
             throw new Exception500(e.getMessage());
-
         }
     }
 }
