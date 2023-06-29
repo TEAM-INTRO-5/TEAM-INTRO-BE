@@ -75,7 +75,7 @@ public class MailService {
                     + "</html>";
             mailHandler.setText(htmlContent, true);
             mailHandler.send();
-            // redis에 저장하여 유효시간 10분 부여하여야 한다.
+            // redis에 저장하여 유효시간 30분 부여하여야 한다.
             MailValid mailValid = new MailValid(verificationCode);
             mailValidRepository.save(mailValid);
         } catch (Exception e) {

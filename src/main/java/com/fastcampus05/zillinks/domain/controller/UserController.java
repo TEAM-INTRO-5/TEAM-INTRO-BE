@@ -142,7 +142,7 @@ public class UserController {
                     cookie.setPath("/"); // accessToken 재발급시에만 사용가능하도록 설정
                     cookie.setMaxAge(0); // 쿠키 만료 시점을 설정
                     // HTTPS를 사용할 경우 true로 설정
-                    cookie.setSecure(false);
+                    cookie.setSecure(true);
                     response.addCookie(cookie);
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);

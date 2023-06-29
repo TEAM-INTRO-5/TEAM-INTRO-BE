@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -83,42 +84,55 @@ public class WidgetRequest {
         @Schema(description = "프로필 이미지", example = "url 경로")
         private String profile;
         @Schema(description = "성명", example = "홍길동")
+        @NotNull
         private String name;
         @Schema(description = "소속", example = "지원사업부")
+        @NotNull
         private String group;
         @Schema(description = "직책", example = "주임")
+        @NotNull
         private String position;
         @Schema(description = "한줄 소개", example = "스타트업 전문 패스트 빌더입니다.")
+        @NotNull
         private String tagline;
         @Schema(description = "이메일", example = "example@gmail.com")
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
         private String email;
         @Schema(description = "SNS 사용 여부", example = "true")
+        @NotNull
         private Boolean snsStatus;
         @Schema(description = "인스타그램 사용 여부", example = "true")
+        @NotNull
         private Boolean instagramStatus;
         @Schema(description = "인스타그램 url 주소", example = "url 주소")
         private String instagram;
         @Schema(description = "링크드인 사용 여부", example = "true")
+        @NotNull
         private Boolean linkedInStatus;
         @Schema(description = "링크드인 url 주소", example = "url 주소")
         private String linkedIn;
         @Schema(description = "유튜브 사용 여부", example = "true")
+        @NotNull
         private Boolean youtubeStatus;
         @Schema(description = "유튜브 url 주소", example = "url 주소")
         private String youtube;
         @Schema(description = "노션 사용 여부", example = "true")
+        @NotNull
         private Boolean notionStatus;
         @Schema(description = "노션 url 주소", example = "url 주소")
         private String notion;
         @Schema(description = "네이버 블로그 사용 여부", example = "true")
+        @NotNull
         private Boolean naverBlogStatus;
         @Schema(description = "네이버 블로그 url 주소", example = "url 주소")
         private String naverBlog;
         @Schema(description = "브런치 스토리 사용 여부", example = "true")
+        @NotNull
         private Boolean brunchStroyStatus;
         @Schema(description = "브런치 스토리 url 주소", example = "url 주소")
         private String brunchStroy;
         @Schema(description = "페이스북 사용 여부", example = "true")
+        @NotNull
         private Boolean facebookStatus;
         @Schema(description = "페이스북 url 주소", example = "url 주소")
         private String facebook;
@@ -151,10 +165,15 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePerformanceElementInDTO {
         @Schema(description = "성과지표 설명", example = "핵심 지표")
+        @NotNull
+        @Size(max = 12)
         private String descrition;
         @Schema(description = "성과지표 부가 설명", example = "전년 대비 상승율")
+        @NotNull
+        @Size(max = 30)
         private String additionalDescrition;
         @Schema(description = "숫자 지표", example = "99%")
+        @Pattern(regexp = "^\\d+(\\.\\d{1,2})?%$", message = "지표는 숫자와 % 기호만 포함해야 합니다.")
         private String indicator;
     }
 
@@ -176,6 +195,7 @@ public class WidgetRequest {
         @NotNull(message = "widget_status 필드는 반드시 true 또는 false 값을 가져야 합니다.")
         private Boolean widgetStatus;
         @Schema(description = "지도 사용 여부", example = "true")
+        @NotNull
         private Boolean mapStatus;
         @Schema(description = "전체 주소", example = "강남대로 364")
         private String fullAddress;
@@ -204,8 +224,12 @@ public class WidgetRequest {
         @Schema(description = "팀 컬쳐 이미지", example = "URL 주소")
         private String image;
         @Schema(description = "팀 컬쳐", example = "수평적인 커뮤니케이션")
+        @NotNull
+        @Size(max = 20)
         private String culture;
         @Schema(description = "팀 컬쳐 설명", example = "누구나 두려움 없이 아이디어를 발산할 수 있는 안전한 조직을 바랍니다. 단, 누구나 책임 blah~blah")
+        @NotNull
+        @Size(max = 200)
         private String description;
     }
 
@@ -278,10 +302,17 @@ public class WidgetRequest {
         @Schema(description = "연혁 이미지", example = "URL 주소")
         private String image;
         @Schema(description = "날짜", example = "2023-07-07")
+        @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "날짜 형식이 올바르지 않습니다. (예: '2023-07-07')")
+        @NotNull
+        @Size(max = 20)
         private LocalDate date;
         @Schema(description = "연혁", example = "패스트캠퍼스 기업협력 프로젝트")
+        @NotNull
+        @Size(max = 30)
         private String title;
         @Schema(description = "연혁 설명", example = "패스트캠퍼스와 함께 진행한 MOU 프로젝트, 전체 곡객 수 30프로 이상 증가하는 프로젝트로 다양한 파트너사에 긍정적 피드백 받음")
+        @NotNull
+        @Size(max = 80)
         private String description;
     }
 
@@ -314,12 +345,19 @@ public class WidgetRequest {
         @Schema(description = "이미지", example = "URL 주소")
         private String image;
         @Schema(description = "이름", example = "홍길동")
+        @NotNull
+        @Size(max = 12)
         private String name;
         @Schema(description = "소속", example = "블로그 체험단 소속")
+        @NotNull
+        @Size(max = 12)
         private String group;
         @Schema(description = "별점", example = "3")
+        @NotNull
         private Integer rating;
         @Schema(description = "리뷰 상세", example = "해당 제품이 시간 절약에 도움이 되므로 돈을 지불하고 사용하고 있습니다.")
+        @NotNull
+        @Size(max = 100)
         private String details;
     }
 
@@ -350,8 +388,11 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePatentElementInDTO {
         @Schema(description = "구분", example = "PATENT")
+        @NotNull
         private PatentType patentType;
         @Schema(description = "특허/인증 이름", example = "특허/인증 발급 정보")
+        @NotNull
+        @Size(max = 12)
         private String title;
         @Schema(description = "특허/인증 이미지", example = "URL 주소")
         private String image;
@@ -368,13 +409,6 @@ public class WidgetRequest {
     /**
      * 보도 자료
      */
-//    @Getter
-//    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-//    public static class ImportNewsInDTO {
-//        @Schema(description = "링크 주소", example = "url 주소")
-//        private String url;
-//    }
-
     @Getter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateNewsInDTO {
@@ -391,14 +425,21 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SaveNewsElementInDTO {
         @Schema(description = "보도자료 이미지", example = "url 경로")
+        @NotNull
         private String image;
         @Schema(description = "보도날짜", example = "2023-06-07")
+        @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "날짜 형식이 올바르지 않습니다. (예: '2023-07-07')")
+        @NotNull
         private LocalDate date;
         @Schema(description = "보도매체", example = "중앙일보")
+        @NotNull
         private String press;
         @Schema(description = "기사 제목", example = "기사 제목")
+        @NotNull
         private String title;
         @Schema(description = "기사 설명", example = "##년도 ##컨퍼런스")
+        @NotNull
+        @Size(max = 100)
         private String description;
     }
 
@@ -429,8 +470,11 @@ public class WidgetRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class SavePartnersElementInDTO {
         @Schema(description = "구분", example = "PARTNERS")
+        @NotNull
         private PartnersType partnersType;
         @Schema(description = "회사 이름", example = "질링스")
+        @NotNull
+        @Size(max = 40)
         private String companyName;
         @Schema(description = "회사 로고", example = "url 주소")
         private String logo;
@@ -472,33 +516,39 @@ public class WidgetRequest {
         @NotNull(message = "widget_status 필드는 반드시 true 또는 false 값을 가져야 합니다.")
         private Boolean widgetStatus;
         @Schema(description = "인스타그램 사용 여부", example = "true")
+        @NotNull
         private Boolean instagramStatus;
         @Schema(description = "인스타그램 아이디", example = "instagram_zillinks")
         private String instagram;
         @Schema(description = "링크드인 사용 여부", example = "true")
+        @NotNull
         private Boolean linkedInStatus;
         @Schema(description = "링크드인 아이디", example = "linkedIn_zillinks")
         private String linkedIn;
         @Schema(description = "유튜브 사용 여부", example = "true")
+        @NotNull
         private Boolean youtubeStatus;
         @Schema(description = "유튜브 아이디", example = "youtube_zillinks")
         private String youtube;
         @Schema(description = "노션 사용 여부", example = "true")
+        @NotNull
         private Boolean notionStatus;
         @Schema(description = "노션 아이디", example = "notion_zillinks")
         private String notion;
         @Schema(description = "네이버블로그 사용 여부", example = "true")
+        @NotNull
         private Boolean naverBlogStatus;
         @Schema(description = "네이버블로그 아이디", example = "naverBlog_zillinks")
         private String naverBlog;
         @Schema(description = "브런치스토리 사용 여부", example = "true")
+        @NotNull
         private Boolean brunchStroyStatus;
         @Schema(description = "브런치스토리 아이디", example = "brunchStroy_zillinks")
         private String brunchStroy;
         @Schema(description = "페이스북 사용 여부", example = "true")
+        @NotNull
         private Boolean facebookStatus;
         @Schema(description = "페이스북 아이디", example = "facebook_zillinks")
         private String facebook;
     }
-
 }

@@ -33,12 +33,6 @@ public class S3UploadController {
 
     private final S3UploaderService s3UploaderService;
 
-//    @PostMapping("/delete-test")
-//    public ResponseEntity<?> deleteImage(@RequestParam("url") String url) {
-//        s3UploaderService.delete(url);
-//        return ResponseEntity.ok("ok");
-//    }
-
     @Operation(summary = "이미지 업로드 경로 반환", description = "이미지 저장 후 저장 경로 반환")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = S3UploadResponse.PathResponse.class))),

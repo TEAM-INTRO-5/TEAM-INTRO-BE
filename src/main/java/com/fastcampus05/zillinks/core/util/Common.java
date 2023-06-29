@@ -71,9 +71,7 @@ public class Common {
 
     public static <T> ResponseEntity<byte[]> excelGenerator(List<T> data, Class<T> clazz, String filename) {
         try (Workbook workbook = new XSSFWorkbook()) {
-
             Sheet sheet = workbook.createSheet(filename);
-
             // create header row
             Row headerRow = sheet.createRow(0);
             List<Field> fields = Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toList());
@@ -82,7 +80,6 @@ public class Common {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(field.getName());
             }
-
             // create data rows
             for (int i = 0; i < data.size(); i++) {
                 T item = data.get(i);
@@ -110,7 +107,6 @@ public class Common {
                     }
                 }
             }
-
             byte[] bytes = null;
             HttpHeaders headers = null;
             try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
@@ -194,24 +190,6 @@ public class Common {
 
     public static NewsElement importNews(String url) {
         try {
-//            // Docker 컨테이너 IP와 포트(4444)로 수정
-//            java.net.URL hubUrl = new URL("http://localhost:4444/wd/hub");
-//
-//            // 웹 드라이버 인스턴스 생성 및 연결
-//            FirefoxOptions options = new FirefoxOptions();
-//            options.addArguments("--headless");
-//            options.addArguments("--disable-dev-shm-usage");
-//            options.addArguments("--no-sandbox");
-//            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-//            WebDriver driver = new RemoteWebDriver(hubUrl, options);
-//
-//            driver.get(url);
-//
-//            // 페이지 로딩 시간을 기다림 (예: 최대 10초)
-//            new WebDriverWait(driver, Duration.ofSeconds(30)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id("title_area")));
-//
-//            String htmlContent = driver.getPageSource();
-//            Document doc = Jsoup.parse(htmlContent);
             Document doc = Jsoup.connect(url).get();
 
             // 이미지 추출
