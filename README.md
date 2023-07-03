@@ -28,14 +28,4 @@
 ![시스템 아키텍쳐 설계](upload/9BDC76DD-4C16-40F8-887D-48564FF1571D.png)
 
 ## ERD (v1)
-![ERD](upload/스크린샷 2023-06-16 오전 3.19.53.png)
-
-## 시연 영상
-* 회원가입
-  <a href='https://github.com/TEAM-INTRO-5/TEAM-INTRO-BE/tree/dev/upload/1._회원가입.mov'>회원가입.mov</a>
-* 로그인
-  <a href='https://github.com/TEAM-INTRO-5/TEAM-INTRO-BE/tree/dev/upload/첫로그인회사페이지만들기.mp4'>첫로그인회사페이지만들기.mp4</a>
-* 회사 소개 페이지 만들기
-  <a href='https://github.com/TEAM-INTRO-5/TEAM-INTRO-BE/tree/dev/upload/Untitled.mp4'>빌더_생성하기.mov</a>
-* 완성된 회사 소개 페이지
-  <a href='https://github.com/TEAM-INTRO-5/TEAM-INTRO-BE/tree/dev/upload/화면_기록_2023-06-30_오후_1.17.51.mov'>화면_기록_2023-06-30_오후_1.17.51.mov</a>
+![ERD](upload/erdV1.png)
