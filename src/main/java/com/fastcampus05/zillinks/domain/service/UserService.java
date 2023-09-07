@@ -152,7 +152,7 @@ public class UserService {
     @Transactional
     public OAuthLoginOutDTO oauthLogin(String code, List<String> validList) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("code", code); // 핵심
+        body.add("code", code);
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
         body.add("redirect_uri", redirectUri);
@@ -182,7 +182,6 @@ public class UserService {
 
             // google 정보가 존재, 로그인 진행
             GoogleAccount googleAccountPS = googleAccountOP.get();
-            // check-point 로그인 로그를 남길 때 일반 로그인과 소셜 로그인을 관리하는건 어떨까?
             // 로그인 정보 저장(로깅)
             loginLogRepository.save(LoginLog.toEntity(googleAccountPS.getUser().getId(), validList, LoginPath.GOOGLE));
 

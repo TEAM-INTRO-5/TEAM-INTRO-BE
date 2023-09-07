@@ -17,7 +17,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         User userPS = userRepository.findByLoginId(loginId).orElseThrow(
-                () -> new InternalAuthenticationServiceException("인증 실패")); // 나중에 테스트할 때 설명해드림.
+                () -> new InternalAuthenticationServiceException("인증 실패"));
         return new MyUserDetails(userPS);
     }
 }

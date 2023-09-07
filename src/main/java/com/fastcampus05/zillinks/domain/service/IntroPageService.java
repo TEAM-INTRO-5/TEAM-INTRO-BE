@@ -192,7 +192,6 @@ public class IntroPageService {
 
 
         // pavicon 저장된 경로 변경이 없을 경우 기존 데이터 사용으로 간주 - 삭제X
-        // check-point 원하는대로 동작하는지 테스트 필요
         List<String> pathOrginList = new ArrayList<>();
         pathOrginList.add(companyInfoPS.getLogo());
 
@@ -219,18 +218,7 @@ public class IntroPageService {
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
 
-//        if (introPagePS.getSaveStatus().equals(SaveStatus.OPEN) && updateSiteInfoInDTO.getSubDomain().isBlank()) {
-//            // pavicon 경로에 대한 삭제 전에 throw가 이루어져야한다.
-//            // S3 서버랑, FILE_TB에 이미 올라가 있는 상태일 것이다.
-//            if (!introPagePS.getSiteInfo().getPavicon().equals(updateSiteInfoInDTO.getPavicon())) {
-//                s3UploaderRepository.delete(updateSiteInfoInDTO.getPavicon());
-//                s3UploaderFileRepository.delete(s3UploaderFileRepository.findByEncodingPath(updateSiteInfoInDTO.getPavicon()).orElseThrow(
-//                        () -> new Exception500("삭제해야할 파일을 찾지 못했습니다.")
-//                ));
-//            }
-//        }
         // pavicon 저장된 경로 변경이 없을 경우 기존 데이터 사용으로 간주 - 삭제X
-        // check-point 원하는대로 동작하는지 테스트 필요
         List<String> pathOrginList = new ArrayList<>();
         pathOrginList.add(introPagePS.getSiteInfo().getPavicon());
         List<String> pathList = new ArrayList<>();
