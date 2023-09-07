@@ -90,19 +90,4 @@ class S3UploaderServiceTest extends DummyEntity {
         Assertions.assertThat(pathResponse.getUploadPath()).isEqualTo("test.jpg");
         log.info("getUploadPath={}", pathResponse.getUploadPath());
     }
-
-
-
-//    @Test
-//    public void getUrlByNameTest() throws Exception {
-//        // given
-//        User taeheoki = newUser("taeheoki@nate.com", "2258701327");
-//        IntroPage introPage = newMockIntroPage(1L, taeheoki);
-//
-//        // when
-//        String logoPath = s3UploaderService.getUrlByName(introPage, "logo");
-//
-//        // then
-//        Assertions.assertThat(logoPath).isEqualTo("logo_path1");
-//    }
 }

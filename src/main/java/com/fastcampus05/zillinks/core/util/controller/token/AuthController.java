@@ -92,7 +92,6 @@ public class AuthController {
             if (!StringUtils.hasText(tokenResponse.getRefreshToken())) {
                 tokenResponse.setRefreshToken(MyJwtProvider.TOKEN_PREFIX + refreshJwt);
             } else {
-                // check-point
                 // remember_me가 true일 경우 refresh-token을 설정한 뒤 넘겨준다.
                 if (!value.isEmpty()) {
                     try {

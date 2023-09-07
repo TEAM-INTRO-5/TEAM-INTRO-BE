@@ -72,8 +72,6 @@ public class DashboardService {
                 break;
             }
         }
-//        S3UploaderFile s3UploaderFilePS = s3UploaderFileRepository.findByEncodingPath(path)
-//                .orElseThrow(() -> new Exception400("type", "존재하지 않은 파일입니다."));
         downloadLogRepository.save(DownloadLog.builder()
                 .introPage(introPagePS)
                 .downloadType(DownloadType.valueOf(downloadInDTO.getType()))
@@ -144,7 +142,6 @@ public class DashboardService {
         if (!contactUsLogPS.getIntroPage().equals(introPagePS))
             throw new Exception401("해당 게시물을 열람할 권한이 없습니다.");
 
-        // check-point 변경 요망
         String status = null;
         if (contactUsLogPS.getContactUsStatus().equals(ContactUsStatus.UNCONFIRMED))
             status = "-";
@@ -224,8 +221,6 @@ public class DashboardService {
     public List<ExcelOutDTO.ContactUsOutDTO> excelContactUs(DashboardRequest.ExcelContactUsInDTO excelContactUsInDTO, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
-//        User userPS = userRepository.findById(1L)
-//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
         IntroPage introPagePS = Optional.ofNullable(userPS.getIntroPage())
                 .orElseThrow(() -> new Exception400("user_id", "해당 유저의 intro_page는 존재하지 않습니다."));
@@ -242,10 +237,7 @@ public class DashboardService {
                 .collect(Collectors.toList());
     }
 
-//    public List<ExcelOutDTO.DownloadOutDTO> excelDownload(DownloadType type) {
     public List<ExcelOutDTO.DownloadOutDTO> excelDownload(DownloadType type, User user) {
-//        User userPS = userRepository.findById(1L)
-//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 
@@ -262,8 +254,6 @@ public class DashboardService {
     }
 
     public List<ExcelOutDTO.VisitorOutDTO> excelVisitor(DashboardRequest.ExcelVisitorInDTO excelVisitorInDTO, User user) {
-//        User userPS = userRepository.findById(1L)
-//                .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));
 

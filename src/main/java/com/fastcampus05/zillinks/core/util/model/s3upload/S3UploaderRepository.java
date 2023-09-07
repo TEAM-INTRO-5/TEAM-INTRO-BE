@@ -50,8 +50,6 @@ public class S3UploaderRepository {
 
         // uploadFile JPEG 파일로 변환후 resize 진행
         if (type.equals("image")) {
-//            File image = transform(file);
-//            return upload(image, fileName);
             return upload(file, fileName);
         } else {
             return upload(file, fileName);
@@ -78,7 +76,6 @@ public class S3UploaderRepository {
     }
 
     public void delete(String fileUrl) {
-        // check-point
         // Default Image 일 경우 삭제하지 않는다.
         if (fileUrl.equals(DEFAULT_IMAGE))
             return;
@@ -91,7 +88,6 @@ public class S3UploaderRepository {
             log.info("버킷 내 객체 삭제 성공 : {}", fileName);
         } catch (AmazonClientException e) {
             log.error("버킷 내 객체 삭제 실패: {}", e.getMessage());
-            // check-point 삭제 실패시 그냥 통과시켜야하나?
             throw new Exception500("버킷 내 객체 삭제 실패");
         }
     }
@@ -105,7 +101,6 @@ public class S3UploaderRepository {
 
         try {
             originalImage = ImageIO.read(new FileInputStream(file));
-            // check-point
             // 가로 세로 리사이징
             resizedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 

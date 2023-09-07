@@ -40,7 +40,6 @@ public class RefreshTokenService {
 
         // refreshToken의 만료 기간이 7일 이내일 경우 새롭게 갱신하여 보내준다.
         String jwt = null;
-        // 추가할 부분
         log.info("isWithInWeek={}", isWithInWeek);
         if (isWithInWeek) {
             refreshTokenRepository.delete(rtkPS);

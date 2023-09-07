@@ -794,7 +794,6 @@ public class WidgetService {
     /**
      * 보고 자료
      */
-//    public WidgetResponse.ImportNewsOutDTO importNews(WidgetRequest.ImportNewsInDTO importNewsInDTO, User user) {
     public WidgetResponse.ImportNewsOutDTO importNews(String url, User user) {
         User userPS = userRepository.findById(user.getId())
                 .orElseThrow(() -> new Exception400("id", "등록되지 않은 유저입니다."));

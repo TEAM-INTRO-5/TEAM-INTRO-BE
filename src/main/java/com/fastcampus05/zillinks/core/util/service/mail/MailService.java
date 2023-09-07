@@ -43,7 +43,6 @@ public class MailService {
         }
         String verificationCode = sb.toString();
 
-        // chaeck-point type에 따라 메일의 발송 문구가 달라진다.
         try {
             MailHandler mailHandler = new MailHandler(javaMailSender);
             mailHandler.setTo(mailInDTO.getEmail());
@@ -99,7 +98,6 @@ public class MailService {
 
         String newPassword = RandomStringGenerator.generateRandomString();
 
-        // chaeck-point type에 따라 메일의 발송 문구가 달라진다.
         try {
             MailHandler mailHandler = new MailHandler(javaMailSender);
             mailHandler.setTo(email);
@@ -161,7 +159,6 @@ public class MailService {
                     + "</html>";
             mailHandler.setText(htmlContent, true);
             mailHandler.setAttach(file.getOriginalFilename(), file);
-//            mailHandler.setAttach(file.getName(), file);
             mailHandler.send();
         } catch (Exception e) {
             throw new Exception500("이메일 전송에 실패하였습니다.");
